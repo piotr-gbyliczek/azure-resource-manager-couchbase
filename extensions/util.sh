@@ -51,24 +51,19 @@ chgrp couchbase $MOUNTPOINT
 
 turnOffTransparentHugepages ()
 {
-echo "#!/bin/bash
-### BEGIN INIT INFO
-# Provides:          disable-thp
-# Required-Start:    $local_fs
-# Required-Stop:
-# X-Start-Before:    couchbase-server
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Disable THP
-# Description:       disables Transparent Huge Pages (THP) on boot
-### END INIT INFO
+if [ ! -f /etc/rc.d/rc.local ]; then 
+  echo "#!/bin/bash
+  " > /etc/rc.d/rc.local
+fi
 
+echo "
 echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
 echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag
-" > /etc/init.d/disable-thp
-chmod 755 /etc/init.d/disable-thp
-service disable-thp start
-update-rc.d disable-thp defaults
+" >> /etc/rc.d/rc.local
+
+chmod 755 /etc/rc.d/rc.local
+systemctl start rc-local.service
+systemctl enable rc-local.service
 }
 
 setSwappinessToZero ()
@@ -89,7 +84,5 @@ addCBGroup ()
     ls $path
     $cli --username $username --password $password --create --group-name
     #runs in the directory where couchbase is installed
-{
-
 
 }
