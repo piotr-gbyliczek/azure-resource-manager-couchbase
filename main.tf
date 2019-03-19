@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "cbtest" {
-  name     = "cbtestRG"
+  name     = "cbtest"
   location = "uksouth"
 }
 
@@ -74,6 +74,26 @@ resource "azurerm_lb_rule" "cbtest" {
   probe_id                       = "${azurerm_lb_probe.cbtest.id}"
 }
 
+resource "azurerm_network_security_group" "cbtest" {
+  name                = "acceptanceTestSecurityGroup1"
+  location            = "${azurerm_resource_group.cbtest.location}"
+  resource_group_name = "${azurerm_resource_group.cbtest.name}"
+}
+
+resource "azurerm_network_security_rule" "cbtest" {
+  name                        = "allin"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = "${azurerm_resource_group.cbtest.name}"
+  network_security_group_name = "${azurerm_network_security_group.cbtest.name}"
+}
+
 resource "azurerm_virtual_machine_scale_set" "cbtest" {
   name                = "mytestscaleset-1"
   location            = "${azurerm_resource_group.cbtest.location}"
@@ -97,7 +117,7 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
   sku {
     name     = "Standard_B2ms"
     tier     = "Standard"
-    capacity = 3
+    capacity = 2
   }
   storage_profile_image_reference {
     publisher = "OpenLogic"
@@ -125,7 +145,7 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
 
     settings = <<SETTINGS
     {
-        "fileUris": [ "https://cbhelpers.blob.core.windows.net/extensions/server.sh","https://cbhelpers.blob.core.windows.net/extensions/util.sh" ],
+        "fileUris": [ "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/server.sh","https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/util.sh" ],
         "commandToExecute": "bash server.sh 6.0.1 admin securepassword 2.1.2 random-string"
     }
     SETTINGS
@@ -143,8 +163,9 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
     }
   }
   network_profile {
-    name    = "terraformnetworkprofile"
-    primary = true
+    name                      = "terraformnetworkprofile"
+    primary                   = true
+    network_security_group_id = "${azurerm_network_security_group.cbtest.id}"
 
     ip_configuration {
       name                                   = "TestIPConfiguration"
