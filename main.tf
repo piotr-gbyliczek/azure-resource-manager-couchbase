@@ -56,9 +56,22 @@ resource "azurerm_lb_nat_pool" "lbnatpool" {
 resource "azurerm_lb_probe" "cbtest" {
   resource_group_name = "${azurerm_resource_group.cbtest.name}"
   loadbalancer_id     = "${azurerm_lb.cbtest.id}"
-  name                = "http-probe"
-  request_path        = "/health"
-  port                = 8080
+  name                = "cb-probe"
+  port                = 8091
+}
+
+resource "azurerm_lb_rule" "cbtest" {
+  resource_group_name            = "${azurerm_resource_group.cbtest.name}"
+  loadbalancer_id                = "${azurerm_lb.cbtest.id}"
+  name                           = "cbtest_lb-rule"
+  protocol                       = "tcp"
+  frontend_port                  = "8091"
+  backend_port                   = "8091"
+  frontend_ip_configuration_name = "PublicIPAddress"
+  enable_floating_ip             = false
+  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool.id}"
+  idle_timeout_in_minutes        = 5
+  probe_id                       = "${azurerm_lb_probe.cbtest.id}"
 }
 
 resource "azurerm_virtual_machine_scale_set" "cbtest" {
@@ -67,46 +80,43 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
   resource_group_name = "${azurerm_resource_group.cbtest.name}"
 
   # automatic rolling upgrade
-  automatic_os_upgrade = true
-  upgrade_policy_mode  = "Rolling"
+  automatic_os_upgrade = false
+  upgrade_policy_mode  = "Manual"
 
-  rolling_upgrade_policy {
-    max_batch_instance_percent              = 20
-    max_unhealthy_instance_percent          = 20
-    max_unhealthy_upgraded_instance_percent = 5
-    pause_time_between_batches              = "PT0S"
-  }
+  # rolling_upgrade_policy {
+  #   max_batch_instance_percent              = 20
+  #   max_unhealthy_instance_percent          = 20
+  #   max_unhealthy_upgraded_instance_percent = 5
+  #   pause_time_between_batches              = "PT0S"
+  # }
+
 
   # required when using rolling upgrade policy
-  health_probe_id = "${azurerm_lb_probe.cbtest.id}"
+  # health_probe_id = "${azurerm_lb_probe.cbtest.id}"
 
   sku {
     name     = "Standard_B2ms"
     tier     = "Standard"
     capacity = 3
   }
-
   storage_profile_image_reference {
     publisher = "OpenLogic"
     offer     = "CentOS"
     sku       = "7.6"
     version   = "latest"
   }
-
   storage_profile_os_disk {
     name              = ""
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
-
   storage_profile_data_disk {
     lun           = 0
     caching       = "ReadWrite"
     create_option = "Empty"
     disk_size_gb  = 10
   }
-
   extension {
     name                 = "MSILinuxExtension"
     publisher            = "Microsoft.Azure.Extensions"
@@ -120,12 +130,10 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
     }
     SETTINGS
   }
-
   os_profile {
     computer_name_prefix = "testvm"
     admin_username       = "myadmin"
   }
-
   os_profile_linux_config {
     disable_password_authentication = true
 
@@ -134,7 +142,6 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
       key_data = "${file("~/.ssh/id_rsa.pub")}"
     }
   }
-
   network_profile {
     name    = "terraformnetworkprofile"
     primary = true
@@ -147,7 +154,6 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
       load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool.*.id, count.index)}"]
     }
   }
-
   tags = {
     environment = "testing"
   }
