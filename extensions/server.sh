@@ -53,7 +53,7 @@ do
 done
 
 nodeName=`echo $nodeName \
-    | sed 's/_/-/g'`
+    | sed 's/_.*//'`
 
 nodeDNS='vm'$nodeIndex'.'$nodeName'-'$uniqueString'.'$location'.cloudapp.azure.com'
 rallyDNS='vm0.'$nodeName'-'$uniqueString'.'$location'.cloudapp.azure.com'

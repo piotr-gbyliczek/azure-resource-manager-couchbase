@@ -9,7 +9,7 @@ echo version \'$version\'
 
 echo "Installing Couchbase Sync Gateway..."
 wget https://packages.couchbase.com/releases/couchbase-sync-gateway/${version}/couchbase-sync-gateway-enterprise_${version}_x86_64.rpm
-yum -i couchbase-sync-gateway-enterprise_${version}_x86_64.rpm
+yum -y install couchbase-sync-gateway-enterprise_${version}_x86_64.rpm
 
 echo "Calling util.sh..."
 source util.sh
