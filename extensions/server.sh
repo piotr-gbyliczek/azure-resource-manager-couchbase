@@ -37,17 +37,26 @@ echo "Configuring Couchbase Server..."
 #nodeIndex = `curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/name?api-version=2017-04-02&format=text"`
 # good example here https://github.com/bonggeek/Samples/blob/master/imds/imds.sh
 
+nodeName="null"
+while [[ $nodeName == "null" ]]
+do
+  nodeName=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-04-02" \
+    | jq ".name" \
+    | sed 's/"//g'`
+done
+
 nodeIndex="null"
 while [[ $nodeIndex == "null" ]]
 do
-  nodeIndex=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-04-02" \
-    | jq ".name" \
-    | sed 's/.*_//' \
-    | sed 's/"//'`
+  nodeIndex=`echo $nodeName \
+    | sed 's/.*_//'`
 done
 
-nodeDNS='vm'$nodeIndex'.server-'$uniqueString'.'$location'.cloudapp.azure.com'
-rallyDNS='vm0.server-'$uniqueString'.'$location'.cloudapp.azure.com'
+nodeName=`echo $nodeName \
+    | sed 's/_/-/g'`
+
+nodeDNS='vm'$nodeIndex'.'$nodeName'-'$uniqueString'.'$location'.cloudapp.azure.com'
+rallyDNS='vm0.'$nodeName'-'$uniqueString'.'$location'.cloudapp.azure.com'
 
 echo "Adding an entry to /etc/hosts to simulate split brain DNS..."
 echo "
@@ -69,7 +78,7 @@ echo "Running couchbase-cli node-init"
 if [[ $nodeIndex == "0" ]]
 then
   totalRAM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-  dataRAM=$((50 * $totalRAM / 100000))
+  dataRAM=$((30 * $totalRAM / 100000))
   indexRAM=$((15 * $totalRAM / 100000))
 
   echo "Running couchbase-cli cluster-init"

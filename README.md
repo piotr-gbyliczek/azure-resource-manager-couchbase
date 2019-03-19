@@ -29,4 +29,14 @@ VMSS_INSTANCE_SIZE_2='Standard_B1ms'
 VMSS_INSTANCE_COUNT_2=2
 
 VMSS_INSTANCE_USERNAME='admin_user_name'
+
+CB_VERSION='6.0.1'
+CB_ADMIN_USER='admin'
+CB_ADMIN_PASS='securepassword'
+SG_VERSION='2.1.2'
+UNIQUE_STRING='random-string'
+
+SACC_NAME='cbhelpers'
+SACC_KIND='StorageV2'
+SACC_SKU='Standard_ZRS'
 ```
