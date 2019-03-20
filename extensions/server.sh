@@ -5,14 +5,12 @@ echo "Running server.sh"
 version=$1
 adminUsername=$2
 adminPassword=$3
-uniqueString=$4
 location=$5
 
 echo "Using the settings:"
 echo version \'$version\'
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
-echo uniqueString \'$uniqueString\'
 echo location \'$location\'
 
 echo "Installing prerequisites..."
@@ -55,8 +53,8 @@ done
 nodeName=`echo $nodeName \
     | sed 's/_.*//'`
 
-nodeDNS='vm'$nodeIndex'.'$nodeName'-'$uniqueString'.'$location'.cloudapp.azure.com'
-rallyDNS='vm0.'$nodeName'-'$uniqueString'.'$location'.cloudapp.azure.com'
+nodeDNS='vm'$nodeIndex'.'$nodeName'.'$location'.cloudapp.azure.com'
+rallyDNS='vm0.'$nodeName'.'$location'.cloudapp.azure.com'
 
 echo "Adding an entry to /etc/hosts to simulate split brain DNS..."
 echo "
