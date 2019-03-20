@@ -5,7 +5,7 @@ echo "Running server.sh"
 version=$1
 adminUsername=$2
 adminPassword=$3
-location=$5
+location=$4
 
 echo "Using the settings:"
 echo version \'$version\'
