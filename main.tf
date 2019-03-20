@@ -99,44 +99,36 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
   location            = "${azurerm_resource_group.cbtest.location}"
   resource_group_name = "${azurerm_resource_group.cbtest.name}"
 
-  # automatic rolling upgrade
   automatic_os_upgrade = false
   upgrade_policy_mode  = "Manual"
-
-  # rolling_upgrade_policy {
-  #   max_batch_instance_percent              = 20
-  #   max_unhealthy_instance_percent          = 20
-  #   max_unhealthy_upgraded_instance_percent = 5
-  #   pause_time_between_batches              = "PT0S"
-  # }
-
-
-  # required when using rolling upgrade policy
-  # health_probe_id = "${azurerm_lb_probe.cbtest.id}"
 
   sku {
     name     = "Standard_B2ms"
     tier     = "Standard"
     capacity = 2
   }
+
   storage_profile_image_reference {
     publisher = "OpenLogic"
     offer     = "CentOS"
     sku       = "7.6"
     version   = "latest"
   }
+
   storage_profile_os_disk {
     name              = ""
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
+
   storage_profile_data_disk {
     lun           = 0
     caching       = "ReadWrite"
     create_option = "Empty"
     disk_size_gb  = 10
   }
+
   extension {
     name                 = "MSILinuxExtension"
     publisher            = "Microsoft.Azure.Extensions"
@@ -145,15 +137,20 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
 
     settings = <<SETTINGS
     {
-        "fileUris": [ "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/server.sh","https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/util.sh" ],
-        "commandToExecute": "bash server.sh 6.0.1 admin securepassword 2.1.2 random-string"
+        "fileUris": [ 
+          "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/server.sh",
+          "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/util.sh"
+        ],
+          "commandToExecute": "bash server.sh 6.0.1 admin securepassword 2.1.2 random-string"
     }
     SETTINGS
   }
+
   os_profile {
     computer_name_prefix = "testvm"
     admin_username       = "myadmin"
   }
+
   os_profile_linux_config {
     disable_password_authentication = true
 
@@ -162,6 +159,7 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
       key_data = "${file("~/.ssh/id_rsa.pub")}"
     }
   }
+
   network_profile {
     name                      = "terraformnetworkprofile"
     primary                   = true
@@ -175,6 +173,7 @@ resource "azurerm_virtual_machine_scale_set" "cbtest" {
       load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool.*.id, count.index)}"]
     }
   }
+
   tags = {
     environment = "testing"
   }
