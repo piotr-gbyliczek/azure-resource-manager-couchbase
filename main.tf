@@ -154,6 +154,49 @@ resource "azurerm_network_security_rule" "nsg-rule-nde" {
   network_security_group_name = "${azurerm_network_security_group.nsg.name}"
 }
 
+
+resource "azurerm_storage_account" "couchbase-storage" {
+  name                = "cbhelpers"
+  resource_group_name = "${azurerm_resource_group.rgroup.name}"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  location = "uksouth"
+}
+
+resource "azurerm_storage_container" "couchbase-storage-container" {
+  name                  = "extensions"
+  resource_group_name   = "${azurerm_resource_group.rgroup.name}"
+  storage_account_name  = "${azurerm_storage_account.couchbase-storage.name}"
+  container_access_type = "container"
+}
+
+resource "azurerm_storage_blob" "blob1" {
+  name = "server.sh"
+  source = "extensions/server.sh"
+  type = "block"
+  resource_group_name    = "${azurerm_resource_group.rgroup.name}"
+  storage_account_name   = "${azurerm_storage_account.couchbase-storage.name}"
+  storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
+}
+
+resource "azurerm_storage_blob" "blob2" {
+  name = "util.sh"
+  source = "extensions/util.sh"
+  type = "block"
+  resource_group_name    = "${azurerm_resource_group.rgroup.name}"
+  storage_account_name   = "${azurerm_storage_account.couchbase-storage.name}"
+  storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
+}
+
+resource "azurerm_storage_blob" "blob3" {
+  name = "syncGateway.sh"
+  source = "extensions/syncGateway.sh"
+  type = "block"
+  resource_group_name    = "${azurerm_resource_group.rgroup.name}"
+  storage_account_name   = "${azurerm_storage_account.couchbase-storage.name}"
+  storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
+}
+
 resource "azurerm_public_ip" "public-ip-couchbase" {
   name                = "couchbase-public-ip"
   location            = "${azurerm_resource_group.rgroup.location}"
@@ -210,6 +253,7 @@ resource "azurerm_lb_rule" "rule-couchbase" {
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"
   idle_timeout_in_minutes        = 5
   probe_id                       = "${azurerm_lb_probe.probe-couchbase.id}"
+  load_distribution              = "SourceIP"
 }
 
 
@@ -249,7 +293,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
     disk_size_gb  = 10
   }
 
-/*  extension {
+  extension {
     name                 = "MSILinuxExtension"
     publisher            = "Microsoft.Azure.Extensions"
     type                 = "CustomScript"
@@ -258,14 +302,14 @@ resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
     settings = <<SETTINGS
     {
         "fileUris": [
-          "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/server.sh",
-          "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/util.sh"
+          "https://cbhelpers.blob.core.windows.net/extensions/util.sh",
+          "https://cbhelpers.blob.core.windows.net/extensions/server.sh"
         ],
-          "commandToExecute": "bash server.sh 6.0.1 admin securepassword random-string uksouth"
+          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth"
     }
-    SETTINGS
+SETTINGS
   }
-*/
+
   os_profile {
     computer_name_prefix = "couchbase-server"
     admin_username       = "node4"
@@ -361,6 +405,7 @@ resource "azurerm_lb_rule" "rule-syncgateway-ui" {
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"
   idle_timeout_in_minutes        = 5
   probe_id                       = "${azurerm_lb_probe.probe-syncgateway-ui.id}"
+  load_distribution              = "SourceIP"
 }
 
 resource "azurerm_lb_probe" "probe-syncgateway" {
@@ -382,6 +427,7 @@ resource "azurerm_lb_rule" "rule-syncgateway" {
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"
   idle_timeout_in_minutes        = 5
   probe_id                       = "${azurerm_lb_probe.probe-syncgateway.id}"
+  load_distribution              = "SourceIP"
 }
 
 
@@ -421,7 +467,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
     disk_size_gb  = 10
   }
 
-/*  extension {
+  extension {
     name                 = "MSILinuxExtension"
     publisher            = "Microsoft.Azure.Extensions"
     type                 = "CustomScript"
@@ -430,14 +476,14 @@ resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
     settings = <<SETTINGS
     {
         "fileUris": [
-          "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/syncGateway.sh",
-          "https://gist.githubusercontent.com/russmckendrick/ce816a1d0b72b3ce84dc83acea48c17a/raw/ab9c4f3c32f5cf0fc545794765de531b6624931a/util.sh"
+          "https://cbhelpers.blob.core.windows.net/extensions/syncGateway.sh",
+          "https://cbhelpers.blob.core.windows.net/extensions/util.sh"
         ],
-          "commandToExecute": "bash server.sh 6.0.1 admin securepassword random-string uksouth"
+          "commandToExecute": "bash syncGateway.sh 2.1.2"
     }
-    SETTINGS
+SETTINGS
   }
-*/
+
   os_profile {
     computer_name_prefix = "syncgateway-server"
     admin_username       = "node4"

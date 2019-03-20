@@ -104,16 +104,16 @@ else
     sleep 10
   done
 
-  echo "Running couchbase-cli rebalance"
-  output=""
-  while [[ ! $output =~ "SUCCESS" ]]
-  do
-    output=`./couchbase-cli rebalance \
-      --cluster=$rallyDNS \
-      --user=$adminUsername \
-      --pass=$adminPassword`
-    echo rebalance output \'$output\'
-    sleep 10
-  done
+#  echo "Running couchbase-cli rebalance"
+#  output=""
+#  while [[ ! $output =~ "SUCCESS" ]]
+#  do
+#    output=`./couchbase-cli rebalance \
+#      --cluster=$rallyDNS \
+#      --user=$adminUsername \
+#      --pass=$adminPassword`
+#    echo rebalance output \'$output\'
+#    sleep 10
+#  done
 
 fi
