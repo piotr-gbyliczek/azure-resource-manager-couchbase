@@ -6,12 +6,14 @@ version=$1
 adminUsername=$2
 adminPassword=$3
 location=$4
+uniquestring=$5
 
 echo "Using the settings:"
 echo version \'$version\'
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
 echo location \'$location\'
+echo uniquestring \'$uniquestring\'
 
 echo "Installing prerequisites..."
 yum -y install python-httplib2 epel-release
@@ -53,8 +55,11 @@ done
 nodeName=`echo $nodeName \
     | sed 's/_.*//'`
 
-nodeDNS='vm'$nodeIndex'.'$nodeName'.'$location'.cloudapp.azure.com'
-rallyDNS='vm0.'$nodeName'.'$location'.cloudapp.azure.com'
+nodeDNS='vm'$nodeIndex'.'$nodeName'-'$uniquestring'.'$location'.cloudapp.azure.com'
+rallyDNS='vm0.'$nodeName'-'$uniquestring'.'$location'.cloudapp.azure.com'
+
+#nodeDNS=`hostname -f`
+#rallyDNS=`echo $nodeDNS | sed 's/[[:digit:]]\{6\}./000000./1'`
 
 echo "Adding an entry to /etc/hosts to simulate split brain DNS..."
 echo "
@@ -90,7 +95,7 @@ then
 else
   echo "Running couchbase-cli server-add"
   output=""
-  while [[ $output != "Server $nodeDNS:8091 added" && ! $output =~ "Node is already part of cluster." ]]
+  while [[ $output != "Server added" && ! $output =~ "Node is already part of cluster." ]]
   do
     output=`./couchbase-cli server-add \
       --cluster=$rallyDNS \
