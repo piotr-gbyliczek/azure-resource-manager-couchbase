@@ -353,6 +353,7 @@ SETTINGS
   tags = {
     environment = "testing"
   }
+  depends_on = ["azurerm_network_security_rule.nsg-rule-ssh", "azurerm_network_security_rule.nsg-rule-epm", "azurerm_network_security_rule.nsg-rule-sync", "azurerm_network_security_rule.nsg-rule-server", "azurerm_network_security_rule.nsg-rule-index", "azurerm_network_security_rule.nsg-rule-analytics", "azurerm_network_security_rule.nsg-rule-int", "azurerm_network_security_rule.nsg-rule-xdcr", "azurerm_network_security_rule.nsg-rule-ssl", "azurerm_network_security_rule.nsg-rule-nde"]
 }
 
 
@@ -527,4 +528,5 @@ SETTINGS
   tags = {
     environment = "testing"
   }
+  depends_on = ["azurerm_network_security_rule.nsg-rule-ssh", "azurerm_network_security_rule.nsg-rule-epm", "azurerm_network_security_rule.nsg-rule-sync", "azurerm_network_security_rule.nsg-rule-server", "azurerm_network_security_rule.nsg-rule-index", "azurerm_network_security_rule.nsg-rule-analytics", "azurerm_network_security_rule.nsg-rule-int", "azurerm_network_security_rule.nsg-rule-xdcr", "azurerm_network_security_rule.nsg-rule-ssl", "azurerm_network_security_rule.nsg-rule-nde"]
 }

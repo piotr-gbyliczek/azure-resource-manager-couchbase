@@ -70,13 +70,25 @@ echo "
 cd /opt/couchbase/bin/
 
 echo "Running couchbase-cli node-init"
-./couchbase-cli node-init \
-  --cluster=$nodeDNS \
-  --node-init-hostname=$nodeDNS \
-  --node-init-data-path=/datadisk/data \
-  --node-init-index-path=/datadisk/index \
-  --user=$adminUsername \
-  --pass=$adminPassword
+output=""
+counter=0
+while [[ $output != "SUCCESS: Node initialized" ]]
+do
+  output=`./couchbase-cli node-init \
+   --cluster=$nodeDNS \
+   --node-init-hostname=$nodeDNS \
+   --node-init-data-path=/datadisk/data \
+   --node-init-index-path=/datadisk/index \
+   --user=$adminUsername \
+   --pass=$adminPassword`
+  echo node-init output \'$output\'
+  sleep 10
+  ((counter++))
+  if [[ $counter == 20 ]] 
+  then 
+    exit 1
+  fi
+done
 
 if [[ $nodeIndex == "0" ]]
 then
@@ -84,16 +96,29 @@ then
   dataRAM=$((30 * $totalRAM / 100000))
   indexRAM=$((15 * $totalRAM / 100000))
 
-  echo "Running couchbase-cli cluster-init"
-  ./couchbase-cli cluster-init \
-    --cluster=$nodeDNS \
-    --cluster-ramsize=$dataRAM \
-    --cluster-index-ramsize=$indexRAM \
-    --cluster-username=$adminUsername \
-    --cluster-password=$adminPassword \
-    --services=data,index,query,fts,eventing,analytics
+  output=""
+  counter=0
+  while [[ $output != "SUCCESS: Cluster initialized" ]]
+  do
+    echo "Running couchbase-cli cluster-init"
+    output=`./couchbase-cli cluster-init \
+      --cluster=$nodeDNS \
+      --cluster-ramsize=$dataRAM \
+      --cluster-index-ramsize=$indexRAM \
+      --cluster-username=$adminUsername \
+      --cluster-password=$adminPassword \
+      --services=data,index,query,fts,eventing,analytics`
+    echo cluster-init output \'$output\'
+    sleep 10
+  ((counter++))
+  if [[ $counter == 20 ]] 
+  then 
+    exit 1
+  fi
+  done
 else
   echo "Running couchbase-cli server-add"
+  counter=0
   output=""
   while [[ $output != "Server added" && ! $output =~ "Node is already part of cluster." ]]
   do
@@ -107,6 +132,11 @@ else
       --services=data,index,query,fts,eventing,analytics`
     echo server-add output \'$output\'
     sleep 10
+    ((counter++))
+    if [[ $counter == 20 ]] 
+    then 
+      exit 1
+    fi
   done
 
 #  echo "Running couchbase-cli rebalance"
