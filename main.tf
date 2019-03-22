@@ -340,8 +340,8 @@ SETTINGS
       name                                   = "TestIPConfiguration"
       primary                                = true
       subnet_id                              = "${azurerm_subnet.subnet1.id}"
-#      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
-#      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
+      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
+      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
       public_ip_address_configuration {
         name = "PublicIpAddress"
         idle_timeout = 15
@@ -515,8 +515,8 @@ SETTINGS
       name                                   = "TestIPConfiguration"
       primary                                = true
       subnet_id                              = "${azurerm_subnet.subnet1.id}"
-#      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
-#      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
+      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
+      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
       public_ip_address_configuration {
         name = "PublicIpAddress"
         idle_timeout = 15

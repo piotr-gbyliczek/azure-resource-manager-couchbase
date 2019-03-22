@@ -111,7 +111,7 @@ then
       --cluster-index-ramsize=$indexRAM \
       --cluster-username=$adminUsername \
       --cluster-password=$adminPassword \
-      --services=data,index,query,fts,eventing,analytics`
+      --services=data,index,query,fts,eventing`
     echo cluster-init output \'$output\'
     sleep 10
   ((counter++))
@@ -133,7 +133,7 @@ else
       --server-add=$nodeDNS \
       --server-add-username=$adminUsername \
       --server-add-password=$adminPassword \
-      --services=data,index,query,fts,eventing,analytics`
+      --services=data,index,query,fts,eventing`
     echo server-add output \'$output\'
     sleep 10
     ((counter++))
@@ -143,16 +143,16 @@ else
     fi
   done
 
-#  echo "Running couchbase-cli rebalance"
-#  output=""
-#  while [[ ! $output =~ "SUCCESS" ]]
-#  do
-#    output=`./couchbase-cli rebalance \
-#      --cluster=$rallyDNS \
-#      --user=$adminUsername \
-#      --pass=$adminPassword`
-#    echo rebalance output \'$output\'
-#    sleep 10
-#  done
+  echo "Running couchbase-cli rebalance"
+  output=""
+  while [[ ! $output =~ "SUCCESS" ]]
+  do
+    output=`./couchbase-cli rebalance \
+      --cluster=$rallyDNS \
+      --user=$adminUsername \
+      --pass=$adminPassword`
+    echo rebalance output \'$output\'
+    sleep 10
+  done
 
 fi
