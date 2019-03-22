@@ -162,7 +162,7 @@ resource "azurerm_network_security_rule" "nsg-rule-nde" {
 
 
 resource "azurerm_storage_account" "couchbase-storage" {
-  name                = "cbhelpers"
+  name                = "${random_string.unique-string.result}"
   resource_group_name = "${azurerm_resource_group.rgroup.name}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
@@ -273,8 +273,8 @@ resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
   overprovision = false
 
   sku {
-    name     = "Standard_DS12_v2"
-#    name     = "Standard_B2ms"
+#    name     = "Standard_DS12_v2"
+    name     = "Standard_B2ms"
     tier     = "Standard"
     capacity = 3
   }
@@ -309,8 +309,8 @@ resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
     settings = <<SETTINGS
     {
         "fileUris": [
-          "https://cbhelpers.blob.core.windows.net/extensions/util.sh",
-          "https://cbhelpers.blob.core.windows.net/extensions/server.sh"
+          "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh",
+          "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/server.sh"
         ],
           "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth ${random_string.unique-string.result}"
     }
@@ -340,8 +340,8 @@ SETTINGS
       name                                   = "TestIPConfiguration"
       primary                                = true
       subnet_id                              = "${azurerm_subnet.subnet1.id}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
-      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
+#      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
+#      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
       public_ip_address_configuration {
         name = "PublicIpAddress"
         idle_timeout = 15
@@ -484,8 +484,8 @@ resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
     settings = <<SETTINGS
     {
         "fileUris": [
-          "https://cbhelpers.blob.core.windows.net/extensions/syncGateway.sh",
-          "https://cbhelpers.blob.core.windows.net/extensions/util.sh"
+          "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/syncGateway.sh",
+          "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh"
         ],
           "commandToExecute": "bash syncGateway.sh 2.1.2"
     }
@@ -515,8 +515,8 @@ SETTINGS
       name                                   = "TestIPConfiguration"
       primary                                = true
       subnet_id                              = "${azurerm_subnet.subnet1.id}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
-      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
+#      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
+#      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
       public_ip_address_configuration {
         name = "PublicIpAddress"
         idle_timeout = 15

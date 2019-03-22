@@ -51,7 +51,7 @@ chgrp couchbase $MOUNTPOINT
 
 turnOffTransparentHugepages ()
 {
-if [ ! -f /etc/rc.d/rc.local ]; then 
+if [ ! -f /etc/rc.d/rc.local ]; then
   echo "#!/bin/bash
   " > /etc/rc.d/rc.local
 fi
@@ -62,7 +62,7 @@ echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag
 " >> /etc/rc.d/rc.local
 
 chmod 755 /etc/rc.d/rc.local
-systemctl start rc-local.service
+systemctl restart rc-local.service
 systemctl enable rc-local.service
 }
 
@@ -76,7 +76,7 @@ vm.swappiness = 0
 }
 
 addCBGroup ()
-{    
+{
     $username = $1
     $password = $2
     path = ${3-'/opt/couchbase/bin/'}
@@ -85,4 +85,70 @@ addCBGroup ()
     $cli --username $username --password $password --create --group-name
     #runs in the directory where couchbase is installed
 
+}
+
+tuneDisks ()
+if [ ! -f /etc/rc.d/rc.local ]; then
+  echo "#!/bin/bash
+  " > /etc/rc.d/rc.local
+fi
+{
+ for DISK in $(lsblk -dln | grep disk | grep sd | cut -c 1-4)
+ do
+   echo "
+   echo 'deadline' > /sys/block/${DISK}/queue/scheduler
+   echo '1024' > /sys/block/${DISK}/queue/nr_requests
+   echo '100' > /sys/block/${DISK}/queue/iosched/read_expire
+   echo '4' > /sys/block/${DISK}/queue/iosched/writes_starved
+   echo '0' > /sys/block/${DISK}/queue/rotational
+   echo '0' > /sys/block/${DISK}/queue/add_random
+   echo '2' > /sys/block/${DISK}/queue/rq_affinity
+   " >> /etc/rc.d/rc.local
+ done
+
+ chmod 755 /etc/rc.d/rc.local
+ systemctl restart rc-local.service
+ systemctl enable rc-local.service
+}
+
+tuneSettings ()
+{
+echo "
+# Recommended for Couchbase
+net.ipv4.tcp_keepalive_time = 120
+net.ipv4.tcp_keepalive_intvl = 15
+net.ipv4.tcp_keepalive_probes = 5
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_max_tw_buckets = 1440000
+vm.overcommit_memory = 0
+vm.min_free_kbytes = 524288
+vm.dirty_background_bytes = 1073741824
+vm.dirty_bytes = 1073741824
+vm.dirty_expire_centisecs = 300
+vm.dirty_writeback_centisecs = 100
+vm.zone_reclaim_mode = 0
+fs.file-max = 2851364
+" >> /etc/sysctl.conf
+
+sysctl -p
+}
+
+userLimits ()
+{
+  echo "
+  couchbase soft nofile 131072
+  couchbase hard nofile 131072
+  couchbase hard core unlimited
+  " >> /etc/security/limits.conf
+}
+
+cpuTuning ()
+{
+  CPU=`grep 'processor' /proc/cpuinfo | sort -u | wc -l`
+  if [[ $CPU -le 4 ]]; then
+    echo f > /sys/class/net/eth0/queues/rx-0/rps_cpus
+  else
+    echo ff+ > /sys/class/net/eth0/queues/rx-0/rps_cpus
+  fi
 }

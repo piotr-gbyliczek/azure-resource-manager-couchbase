@@ -30,6 +30,10 @@ formatDataDisk
 turnOffTransparentHugepages
 setSwappinessToZero
 adjustTCPKeepalive
+cpuTuning
+userLimits
+tuneSettings
+tuneDisks
 
 echo "Configuring Couchbase Server..."
 
@@ -84,8 +88,8 @@ do
   echo node-init output \'$output\'
   sleep 10
   ((counter++))
-  if [[ $counter == 20 ]] 
-  then 
+  if [[ $counter == 20 ]]
+  then
     exit 1
   fi
 done
@@ -111,8 +115,8 @@ then
     echo cluster-init output \'$output\'
     sleep 10
   ((counter++))
-  if [[ $counter == 20 ]] 
-  then 
+  if [[ $counter == 20 ]]
+  then
     exit 1
   fi
   done
@@ -133,8 +137,8 @@ else
     echo server-add output \'$output\'
     sleep 10
     ((counter++))
-    if [[ $counter == 20 ]] 
-    then 
+    if [[ $counter == 20 ]]
+    then
       exit 1
     fi
   done
