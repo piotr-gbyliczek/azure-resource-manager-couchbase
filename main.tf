@@ -312,7 +312,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
           "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh",
           "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/server.sh"
         ],
-          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth ${random_string.unique-string.result}"
+          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${random_string.unique-string.result}"
     }
 SETTINGS
   }

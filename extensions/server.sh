@@ -6,13 +6,15 @@ version=$1
 adminUsername=$2
 adminPassword=$3
 location=$4
-uniquestring=$5
+services=$5
+uniquestring=$6
 
 echo "Using the settings:"
 echo version \'$version\'
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
 echo location \'$location\'
+echo services \'$services\'
 echo uniquestring \'$uniquestring\'
 
 echo "Installing prerequisites..."
@@ -111,7 +113,7 @@ then
       --cluster-index-ramsize=$indexRAM \
       --cluster-username=$adminUsername \
       --cluster-password=$adminPassword \
-      --services=data,index,query,fts,eventing`
+      --services=$services`
     echo cluster-init output \'$output\'
     sleep 10
   ((counter++))
@@ -133,7 +135,7 @@ else
       --server-add=$nodeDNS \
       --server-add-username=$adminUsername \
       --server-add-password=$adminPassword \
-      --services=data,index,query,fts,eventing`
+      --services=$services`
     echo server-add output \'$output\'
     sleep 10
     ((counter++))
