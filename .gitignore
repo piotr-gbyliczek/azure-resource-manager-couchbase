@@ -2,3 +2,4 @@
 tags
 .terraform
 *.tfstate*
+*.tfvars
