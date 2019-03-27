@@ -1,94 +1,123 @@
-resource "random_string" "unique-string" {
-  length = 20
-  special = false
-  upper = false
+######################################################################################################
+# Local Setup
+######################################################################################################
+
+# What is the minimum version of Terraform we need?
+terraform {
+  required_version = ">= 0.11.0"
 }
 
-module "rgroup" {
-  source  = "adfinis-forks/resource-group/azurerm"
-  version = "0.0.0"
+#################
+# If you are not using the Azure CLI then you will need to create a service principle,
+# fill the details in secrets.tf file (see sample) which is .gitignored
+# For more information on creating the service principle see the following URL;
+# https://www.terraform.io/docs/providers/azurerm/auth/service_principal_client_secret.html
+#################
+# provider "azurerm" {
+#   subscription_id = "${var.subscription_id}"
+#   client_id       = "${var.client_id}"
+#   client_secret   = "${var.client_secret}"
+#   tenant_id       = "${var.tenant_id}"
+# }
+
+######################################################################################################
+# Enviroment Setup
+######################################################################################################
+
+#################
+# Create the resource group, using a resource here rather 
+# than a module to allow the group to be created before
+# we run anything else.
+#################
+resource "azurerm_resource_group" "resource_group" {
   name     = "${var.resource_group_name}"
   location = "${var.location}"
-  tags     = "${list(var.default_tags)}"
+  tags     = "${merge(var.default_tags, map("type","resource"))}"
+}
+
+resource "random_string" "unique-string" {
+  length  = 20
+  special = false
+  upper   = false
 }
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "couchbase-vnet"
-  location = "${var.location}"
+  location            = "${var.location}"
   address_space       = ["10.0.0.0/16"]
-  resource_group_name = "${module.rgroup.name}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
 }
 
 resource "azurerm_subnet" "subnet1" {
   name                 = "couchbase-subnet"
-  resource_group_name  = "${module.rgroup.name}"
+  resource_group_name  = "${azurerm_resource_group.resource_group.name}"
   virtual_network_name = "${azurerm_virtual_network.vnet.name}"
   address_prefix       = "10.0.2.0/24"
 }
 
 module "couchbase-nsg" {
-  source  				= "Azure/network-security-group/azurerm"
-  version 				= "1.1.1"
-  security_group_name	= "couchbase-nsg"
-  resource_group_name 	= "${module.rgroup.name}"
-  location = "${var.location}"
-  custom_rules = "${var.nsg-custom-rules}"
+  source              = "Azure/network-security-group/azurerm"
+  version             = "1.1.1"
+  security_group_name = "couchbase-nsg"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
+  location            = "${var.location}"
+  custom_rules        = "${var.nsg-custom-rules}"
 }
 
 resource "azurerm_storage_account" "couchbase-storage" {
-  name                = "${random_string.unique-string.result}"
-  resource_group_name = "${module.rgroup.name}"
+  name                     = "${random_string.unique-string.result}"
+  resource_group_name      = "${azurerm_resource_group.resource_group.name}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  location = "uksouth"
+  location                 = "uksouth"
 }
 
 resource "azurerm_storage_container" "couchbase-storage-container" {
   name                  = "extensions"
-  resource_group_name   = "${module.rgroup.name}"
+  resource_group_name   = "${azurerm_resource_group.resource_group.name}"
   storage_account_name  = "${azurerm_storage_account.couchbase-storage.name}"
   container_access_type = "container"
 }
 
 resource "azurerm_storage_blob" "blob1" {
-  name = "server.sh"
-  source = "extensions/server.sh"
-  type = "block"
-  resource_group_name    = "${module.rgroup.name}"
+  name                   = "server.sh"
+  source                 = "extensions/server.sh"
+  type                   = "block"
+  resource_group_name    = "${azurerm_resource_group.resource_group.name}"
   storage_account_name   = "${azurerm_storage_account.couchbase-storage.name}"
   storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
 }
 
 resource "azurerm_storage_blob" "blob2" {
-  name = "util.sh"
-  source = "extensions/util.sh"
-  type = "block"
-  resource_group_name    = "${module.rgroup.name}"
+  name                   = "util.sh"
+  source                 = "extensions/util.sh"
+  type                   = "block"
+  resource_group_name    = "${azurerm_resource_group.resource_group.name}"
   storage_account_name   = "${azurerm_storage_account.couchbase-storage.name}"
   storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
 }
 
 resource "azurerm_storage_blob" "blob3" {
-  name = "syncGateway.sh"
-  source = "extensions/syncGateway.sh"
-  type = "block"
-  resource_group_name    = "${module.rgroup.name}"
+  name                   = "syncGateway.sh"
+  source                 = "extensions/syncGateway.sh"
+  type                   = "block"
+  resource_group_name    = "${azurerm_resource_group.resource_group.name}"
   storage_account_name   = "${azurerm_storage_account.couchbase-storage.name}"
   storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
 }
 
 resource "azurerm_public_ip" "public-ip-couchbase" {
   name                = "couchbase-public-ip"
-  location = "${var.location}"
-  resource_group_name = "${module.rgroup.name}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   allocation_method   = "Dynamic"
   domain_name_label   = "couchbase-server-${random_string.unique-string.result}"
 }
 
 resource "azurerm_lb" "lb-couchbase" {
   name                = "couchbase-lb"
-  location = "${var.location}"
-  resource_group_name = "${module.rgroup.name}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
 
   frontend_ip_configuration {
     name                 = "CouchbasePublicIPAddress"
@@ -97,14 +126,14 @@ resource "azurerm_lb" "lb-couchbase" {
 }
 
 resource "azurerm_lb_backend_address_pool" "bpepool-couchbase" {
-  resource_group_name = "${module.rgroup.name}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id     = "${azurerm_lb.lb-couchbase.id}"
   name                = "CouchbaseBackendAddressPool"
 }
 
 resource "azurerm_lb_nat_pool" "lbnatpool-couchbase" {
   count                          = 3
-  resource_group_name            = "${module.rgroup.name}"
+  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
   name                           = "ssh"
   loadbalancer_id                = "${azurerm_lb.lb-couchbase.id}"
   protocol                       = "Tcp"
@@ -115,14 +144,14 @@ resource "azurerm_lb_nat_pool" "lbnatpool-couchbase" {
 }
 
 resource "azurerm_lb_probe" "probe-couchbase" {
-  resource_group_name = "${module.rgroup.name}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id     = "${azurerm_lb.lb-couchbase.id}"
   name                = "couchbase-probe-admin-ui"
   port                = 8091
 }
 
 resource "azurerm_lb_rule" "rule-couchbase" {
-  resource_group_name            = "${module.rgroup.name}"
+  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id                = "${azurerm_lb.lb-couchbase.id}"
   name                           = "couchbase-rule-admin-ui"
   protocol                       = "tcp"
@@ -136,18 +165,17 @@ resource "azurerm_lb_rule" "rule-couchbase" {
   load_distribution              = "SourceIP"
 }
 
-
 resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
   name                = "couchbase-server"
-  location = "${var.location}"
-  resource_group_name = "${module.rgroup.name}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
 
   automatic_os_upgrade = false
   upgrade_policy_mode  = "Manual"
-  overprovision = false
+  overprovision        = false
 
   sku {
-#    name     = "Standard_DS12_v2"
+    #    name     = "Standard_DS12_v2"
     name     = "Standard_B2ms"
     tier     = "Standard"
     capacity = 3
@@ -216,9 +244,10 @@ SETTINGS
       subnet_id                              = "${azurerm_subnet.subnet1.id}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
       load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
+
       public_ip_address_configuration {
-        name = "PublicIpAddress"
-        idle_timeout = 15
+        name              = "PublicIpAddress"
+        idle_timeout      = 15
         domain_name_label = "couchbase-server-${random_string.unique-string.result}"
       }
     }
@@ -229,19 +258,18 @@ SETTINGS
   }
 }
 
-
 resource "azurerm_public_ip" "public-ip-syncgateway" {
   name                = "syncgateway-public-ip"
-  location = "${var.location}"
-  resource_group_name = "${module.rgroup.name}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   allocation_method   = "Dynamic"
   domain_name_label   = "syncgateway-${random_string.unique-string.result}"
 }
 
 resource "azurerm_lb" "lb-syncgateway" {
   name                = "syncgateway-lb"
-  location = "${var.location}"
-  resource_group_name = "${module.rgroup.name}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
 
   frontend_ip_configuration {
     name                 = "SyncGatewayPublicIPAddress"
@@ -250,14 +278,14 @@ resource "azurerm_lb" "lb-syncgateway" {
 }
 
 resource "azurerm_lb_backend_address_pool" "bpepool-syncgateway" {
-  resource_group_name = "${module.rgroup.name}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id     = "${azurerm_lb.lb-syncgateway.id}"
   name                = "SyncGatewayBackendAddressPool"
 }
 
 resource "azurerm_lb_nat_pool" "lbnatpool-syncgateway" {
   count                          = 3
-  resource_group_name            = "${module.rgroup.name}"
+  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
   name                           = "ssh"
   loadbalancer_id                = "${azurerm_lb.lb-syncgateway.id}"
   protocol                       = "Tcp"
@@ -268,14 +296,14 @@ resource "azurerm_lb_nat_pool" "lbnatpool-syncgateway" {
 }
 
 resource "azurerm_lb_probe" "probe-syncgateway-ui" {
-  resource_group_name = "${module.rgroup.name}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id     = "${azurerm_lb.lb-syncgateway.id}"
   name                = "syncgateway-probe-admin-ui"
   port                = 4985
 }
 
 resource "azurerm_lb_rule" "rule-syncgateway-ui" {
-  resource_group_name            = "${module.rgroup.name}"
+  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id                = "${azurerm_lb.lb-syncgateway.id}"
   name                           = "syncgateway-rule-admin-ui"
   protocol                       = "tcp"
@@ -290,14 +318,14 @@ resource "azurerm_lb_rule" "rule-syncgateway-ui" {
 }
 
 resource "azurerm_lb_probe" "probe-syncgateway" {
-  resource_group_name = "${module.rgroup.name}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id     = "${azurerm_lb.lb-syncgateway.id}"
   name                = "syncgateway-probe"
   port                = 4984
 }
 
 resource "azurerm_lb_rule" "rule-syncgateway" {
-  resource_group_name            = "${module.rgroup.name}"
+  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
   loadbalancer_id                = "${azurerm_lb.lb-syncgateway.id}"
   name                           = "syncgateway-rule"
   protocol                       = "tcp"
@@ -311,15 +339,14 @@ resource "azurerm_lb_rule" "rule-syncgateway" {
   load_distribution              = "SourceIP"
 }
 
-
 resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
   name                = "syncgateway-server"
-  location = "${var.location}"
-  resource_group_name = "${module.rgroup.name}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
 
   automatic_os_upgrade = false
   upgrade_policy_mode  = "Manual"
-  overprovision = false
+  overprovision        = false
 
   sku {
     name     = "Standard_B2ms"
@@ -390,9 +417,10 @@ SETTINGS
       subnet_id                              = "${azurerm_subnet.subnet1.id}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
       load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
+
       public_ip_address_configuration {
-        name = "PublicIpAddress"
-        idle_timeout = 15
+        name              = "PublicIpAddress"
+        idle_timeout      = 15
         domain_name_label = "syncgateway-server-${random_string.unique-string.result}"
       }
     }
