@@ -9,11 +9,12 @@ module "rgroup" {
   version = "0.0.0"
   name     = "${var.resource_group_name}"
   location = "${var.location}"
-  tags     = "${var.default_tags}"
+  tags     = "${list(var.default_tags)}"
 }
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "couchbase-vnet"
+  location = "${var.location}"
   address_space       = ["10.0.0.0/16"]
   resource_group_name = "${module.rgroup.name}"
 }
@@ -78,6 +79,7 @@ resource "azurerm_storage_blob" "blob3" {
 
 resource "azurerm_public_ip" "public-ip-couchbase" {
   name                = "couchbase-public-ip"
+  location = "${var.location}"
   resource_group_name = "${module.rgroup.name}"
   allocation_method   = "Dynamic"
   domain_name_label   = "couchbase-server-${random_string.unique-string.result}"
@@ -85,6 +87,7 @@ resource "azurerm_public_ip" "public-ip-couchbase" {
 
 resource "azurerm_lb" "lb-couchbase" {
   name                = "couchbase-lb"
+  location = "${var.location}"
   resource_group_name = "${module.rgroup.name}"
 
   frontend_ip_configuration {
@@ -136,6 +139,7 @@ resource "azurerm_lb_rule" "rule-couchbase" {
 
 resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
   name                = "couchbase-server"
+  location = "${var.location}"
   resource_group_name = "${module.rgroup.name}"
 
   automatic_os_upgrade = false
@@ -228,6 +232,7 @@ SETTINGS
 
 resource "azurerm_public_ip" "public-ip-syncgateway" {
   name                = "syncgateway-public-ip"
+  location = "${var.location}"
   resource_group_name = "${module.rgroup.name}"
   allocation_method   = "Dynamic"
   domain_name_label   = "syncgateway-${random_string.unique-string.result}"
@@ -235,6 +240,7 @@ resource "azurerm_public_ip" "public-ip-syncgateway" {
 
 resource "azurerm_lb" "lb-syncgateway" {
   name                = "syncgateway-lb"
+  location = "${var.location}"
   resource_group_name = "${module.rgroup.name}"
 
   frontend_ip_configuration {
@@ -308,6 +314,7 @@ resource "azurerm_lb_rule" "rule-syncgateway" {
 
 resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
   name                = "syncgateway-server"
+  location = "${var.location}"
   resource_group_name = "${module.rgroup.name}"
 
   automatic_os_upgrade = false
