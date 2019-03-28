@@ -16,6 +16,82 @@ variable "default_tags" {
 
 variable "nsg-custom-rules" {
   description = "network security rules for couchbase deployment"
-  type = "list"
-  default  = []
+  type        = "list"
+  default     = []
+}
+
+######################################################################################################
+# Dictionary
+######################################################################################################
+
+variable "long_name" {
+  default = ""
+}
+
+variable "short_name" {
+  default = ""
+}
+
+#################
+# General
+#################
+
+variable "suffix_resource-group" {
+  default = "rg"
+}
+
+variable "suffix_availability-set" {
+  default = "as"
+}
+
+#################
+# Compute
+#################
+
+variable "suffix_virtual-machine" {
+  default = "vm"
+}
+
+#################
+# Networking
+#################
+
+variable "suffix_vnet" {
+  default = "vnet"
+}
+
+variable "suffix_subnet" {
+  default = "sub"
+}
+
+variable "suffix_nic" {
+  default = "nic"
+}
+
+variable "suffix_public-ip" {
+  default = "pip"
+}
+
+variable "suffix_load-balancer" {
+  default = "lb"
+}
+
+variable "suffix_app-gateway" {
+  default = "agw"
+}
+
+variable "suffix_network-watcher" {
+  default = "nwatcher"
+}
+
+variable "suffix_nsg" {
+  default = "nsg"
+}
+
+#################
+# Containers
+#################
+
+variable "suffix_container-registry" {
+  default = "registry"
 }

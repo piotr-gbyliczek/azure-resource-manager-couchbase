@@ -1,7 +1,9 @@
 #################
 # Resource group and location information
 #################
-resource_group_name = "couchbase-deployment"
+long_name = "couchbase-deployment"
+
+short_name = "couchbase"
 
 location = "uksouth"
 

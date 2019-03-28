@@ -30,7 +30,7 @@ terraform {
 # we run anything else.
 #################
 resource "azurerm_resource_group" "resource_group" {
-  name     = "${var.resource_group_name}"
+  name     = "${var.long_name}-${var.suffix_resource-group}"
   location = "${var.location}"
   tags     = "${merge(var.default_tags, map("type","resource"))}"
 }
@@ -41,24 +41,41 @@ resource "random_string" "unique-string" {
   upper   = false
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = "couchbase-vnet"
-  location            = "${var.location}"
-  address_space       = ["10.0.0.0/16"]
+#################
+# Create the VNET
+#################
+module "application-vnet" {
+  source              = "modules/vnet"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
+  location            = "${var.location}"
+  tags                = "${merge(var.default_tags, map("type","network"))}"
+  vnet_name           = "${var.long_name}-${var.suffix_vnet}"
+  address_space       = "10.11.0.0/16"
 }
 
-resource "azurerm_subnet" "subnet1" {
-  name                 = "couchbase-subnet"
-  resource_group_name  = "${azurerm_resource_group.resource_group.name}"
-  virtual_network_name = "${azurerm_virtual_network.vnet.name}"
-  address_prefix       = "10.0.2.0/24"
+#################
+# Create the Subnets
+#################
+module "application-subnets" {
+  source              = "modules/subnet"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
+  location            = "${var.location}"
+  tags                = "${var.default_tags}"
+  vnet_name           = "${module.application-vnet.vnet_name}"
+
+  subnets = [
+    {
+      # This will be subnet 1
+      name   = "${var.short_name}-app-${var.suffix_subnet}"
+      prefix = "10.0.2.0/24"
+    },
+  ]
 }
 
 module "couchbase-nsg" {
   source              = "Azure/network-security-group/azurerm"
   version             = "1.1.1"
-  security_group_name = "couchbase-nsg"
+  security_group_name = "${var.short_name}-${var.suffix_nsg}"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
   location            = "${var.location}"
   custom_rules        = "${var.nsg-custom-rules}"
@@ -241,7 +258,7 @@ SETTINGS
     ip_configuration {
       name                                   = "TestIPConfiguration"
       primary                                = true
-      subnet_id                              = "${azurerm_subnet.subnet1.id}"
+      subnet_id                              = "${element(module.application-subnets.vnet_subnets, 0)}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
       load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
 
@@ -414,7 +431,7 @@ SETTINGS
     ip_configuration {
       name                                   = "TestIPConfiguration"
       primary                                = true
-      subnet_id                              = "${azurerm_subnet.subnet1.id}"
+      subnet_id                              = "${element(module.application-subnets.vnet_subnets, 0)}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
       load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
 
