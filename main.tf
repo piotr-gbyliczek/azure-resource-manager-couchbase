@@ -25,7 +25,7 @@ terraform {
 ######################################################################################################
 
 #################
-# Create the resource group, using a resource here rather 
+# Create the resource group, using a resource here rather
 # than a module to allow the group to be created before
 # we run anything else.
 #################
@@ -123,6 +123,7 @@ resource "azurerm_storage_blob" "blob3" {
   storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
 }
 
+/*
 resource "azurerm_public_ip" "public-ip-couchbase" {
   name                = "couchbase-public-ip"
   location            = "${var.location}"
@@ -447,3 +448,4 @@ SETTINGS
     environment = "testing"
   }
 }
+*/
