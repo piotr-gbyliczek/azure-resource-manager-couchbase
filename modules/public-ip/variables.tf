@@ -25,3 +25,8 @@ variable "public_ip_allocation" {
   description = "Should the public ip be Dynamic or Static?"
   default     = "Dynamic"
 }
+
+variable "public_ip_domain_name" {
+  description = "domain name prefix assigned to the public ip"
+  default     = ""
+}

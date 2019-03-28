@@ -4,4 +4,5 @@ resource "azurerm_public_ip" "public_ip" {
   tags                = "${var.tags}"
   name                = "${var.public_ip_name}"
   allocation_method   = "${var.public_ip_allocation}"
+  domain_name_label   = "${var.public_ip_domain_name}"
 }

@@ -78,3 +78,8 @@ variable "lb_probe_interval" {
   description = "Interval in seconds the load balancer health probe rule does a check"
   default     = 5
 }
+
+variable "load_distribution" {
+  description = "Rule persistence setting"
+  default = "none"
+}

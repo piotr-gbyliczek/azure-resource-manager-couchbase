@@ -67,7 +67,7 @@ module "application-subnets" {
     {
       # This will be subnet 1
       name   = "${var.short_name}-app-${var.suffix_subnet}"
-      prefix = "10.0.2.0/24"
+      prefix = "10.11.2.0/24"
     },
   ]
 }
@@ -86,7 +86,7 @@ resource "azurerm_storage_account" "couchbase-storage" {
   resource_group_name      = "${azurerm_resource_group.resource_group.name}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  location                 = "uksouth"
+  location            = "${var.location}"
 }
 
 resource "azurerm_storage_container" "couchbase-storage-container" {
@@ -123,65 +123,55 @@ resource "azurerm_storage_blob" "blob3" {
   storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
 }
 
-/*
-resource "azurerm_public_ip" "public-ip-couchbase" {
-  name                = "couchbase-public-ip"
+
+module "public-ip-couchbase" {
+  source = "modules/public-ip"
+  public_ip_name = "couchbase-public-ip"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  allocation_method   = "Dynamic"
-  domain_name_label   = "couchbase-server-${random_string.unique-string.result}"
+  public_ip_domain_name   = "server-${random_string.unique-string.result}"
 }
 
-resource "azurerm_lb" "lb-couchbase" {
-  name                = "couchbase-lb"
+module "public-ip-syncgateway" {
+  source = "modules/public-ip"
+  public_ip_name = "syncgateway-public-ip"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
+  public_ip_domain_name   = "syncgateway-${random_string.unique-string.result}"
+}
 
-  frontend_ip_configuration {
-    name                 = "CouchbasePublicIPAddress"
-    public_ip_address_id = "${azurerm_public_ip.public-ip-couchbase.id}"
+module "lb-couchbase" {
+  source              = "modules/loadbalancer"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
+  location            = "${var.location}"
+  tags                = "${merge(var.default_tags, map("type","loadbalancer"))}"
+  name                = "couchbase-lb"
+  type                = "public"
+  public_ip_id        = "${module.public-ip-couchbase.public_ip_id}"
+  subnet_id           = "${element(module.application-subnets.vnet_subnet_names, 0)}"
+
+  lb_port {
+    admin-ui  = ["8091", "Tcp", "8091","SourceIP"]
   }
 }
 
-resource "azurerm_lb_backend_address_pool" "bpepool-couchbase" {
+module "lb-syncgateway" {
+  source              = "modules/loadbalancer"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id     = "${azurerm_lb.lb-couchbase.id}"
-  name                = "CouchbaseBackendAddressPool"
+  location            = "${var.location}"
+  tags                = "${merge(var.default_tags, map("type","loadbalancer"))}"
+  name                = "syncgateway-lb"
+  type                = "public"
+  public_ip_id        = "${module.public-ip-syncgateway.public_ip_id}"
+  subnet_id           = "${element(module.application-subnets.vnet_subnet_names, 0)}"
+
+  lb_port {
+    ui  = ["4984", "Tcp", "4984","SourceIP"]
+    admin-ui = ["4985", "Tcp", "4985","SourceIP"]
+  }
 }
 
-resource "azurerm_lb_nat_pool" "lbnatpool-couchbase" {
-  count                          = 3
-  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
-  name                           = "ssh"
-  loadbalancer_id                = "${azurerm_lb.lb-couchbase.id}"
-  protocol                       = "Tcp"
-  frontend_port_start            = 50000
-  frontend_port_end              = 50119
-  backend_port                   = 22
-  frontend_ip_configuration_name = "CouchbasePublicIPAddress"
-}
-
-resource "azurerm_lb_probe" "probe-couchbase" {
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id     = "${azurerm_lb.lb-couchbase.id}"
-  name                = "couchbase-probe-admin-ui"
-  port                = 8091
-}
-
-resource "azurerm_lb_rule" "rule-couchbase" {
-  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id                = "${azurerm_lb.lb-couchbase.id}"
-  name                           = "couchbase-rule-admin-ui"
-  protocol                       = "tcp"
-  frontend_port                  = "8091"
-  backend_port                   = "8091"
-  frontend_ip_configuration_name = "CouchbasePublicIPAddress"
-  enable_floating_ip             = false
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"
-  idle_timeout_in_minutes        = 5
-  probe_id                       = "${azurerm_lb_probe.probe-couchbase.id}"
-  load_distribution              = "SourceIP"
-}
+/*
 
 resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
   name                = "couchbase-server"
@@ -276,86 +266,6 @@ SETTINGS
   }
 }
 
-resource "azurerm_public_ip" "public-ip-syncgateway" {
-  name                = "syncgateway-public-ip"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  allocation_method   = "Dynamic"
-  domain_name_label   = "syncgateway-${random_string.unique-string.result}"
-}
-
-resource "azurerm_lb" "lb-syncgateway" {
-  name                = "syncgateway-lb"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-
-  frontend_ip_configuration {
-    name                 = "SyncGatewayPublicIPAddress"
-    public_ip_address_id = "${azurerm_public_ip.public-ip-syncgateway.id}"
-  }
-}
-
-resource "azurerm_lb_backend_address_pool" "bpepool-syncgateway" {
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id     = "${azurerm_lb.lb-syncgateway.id}"
-  name                = "SyncGatewayBackendAddressPool"
-}
-
-resource "azurerm_lb_nat_pool" "lbnatpool-syncgateway" {
-  count                          = 3
-  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
-  name                           = "ssh"
-  loadbalancer_id                = "${azurerm_lb.lb-syncgateway.id}"
-  protocol                       = "Tcp"
-  frontend_port_start            = 50000
-  frontend_port_end              = 50119
-  backend_port                   = 22
-  frontend_ip_configuration_name = "SyncGatewayPublicIPAddress"
-}
-
-resource "azurerm_lb_probe" "probe-syncgateway-ui" {
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id     = "${azurerm_lb.lb-syncgateway.id}"
-  name                = "syncgateway-probe-admin-ui"
-  port                = 4985
-}
-
-resource "azurerm_lb_rule" "rule-syncgateway-ui" {
-  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id                = "${azurerm_lb.lb-syncgateway.id}"
-  name                           = "syncgateway-rule-admin-ui"
-  protocol                       = "tcp"
-  frontend_port                  = "4985"
-  backend_port                   = "4985"
-  frontend_ip_configuration_name = "SyncGatewayPublicIPAddress"
-  enable_floating_ip             = false
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"
-  idle_timeout_in_minutes        = 5
-  probe_id                       = "${azurerm_lb_probe.probe-syncgateway-ui.id}"
-  load_distribution              = "SourceIP"
-}
-
-resource "azurerm_lb_probe" "probe-syncgateway" {
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id     = "${azurerm_lb.lb-syncgateway.id}"
-  name                = "syncgateway-probe"
-  port                = 4984
-}
-
-resource "azurerm_lb_rule" "rule-syncgateway" {
-  resource_group_name            = "${azurerm_resource_group.resource_group.name}"
-  loadbalancer_id                = "${azurerm_lb.lb-syncgateway.id}"
-  name                           = "syncgateway-rule"
-  protocol                       = "tcp"
-  frontend_port                  = "4984"
-  backend_port                   = "4984"
-  frontend_ip_configuration_name = "SyncGatewayPublicIPAddress"
-  enable_floating_ip             = false
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"
-  idle_timeout_in_minutes        = 5
-  probe_id                       = "${azurerm_lb_probe.probe-syncgateway.id}"
-  load_distribution              = "SourceIP"
-}
 
 resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
   name                = "syncgateway-server"
