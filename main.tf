@@ -171,6 +171,25 @@ module "lb-syncgateway" {
   }
 }
 
+module "vmss-couchbase" {
+  source = "modules/virtual-machine-scale-set"
+  virtual_machine_scale_set_name                = "couchbase-server"
+  virtual_machine_scale_set_location            = "${var.location}"
+  virtual_machine_scale_set_resource_group = "${azurerm_resource_group.resource_group.name}"
+
+#  automatic_os_upgrade = false
+#  upgrade_policy_mode  = "Manual"
+#  overprovision        = false
+
+#  sku {
+#    #    name     = "Standard_DS12_v2"
+#    name     = "Standard_B2ms"
+#    tier     = "Standard"
+#    capacity = 3
+}
+
+
+
 /*
 
 resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
