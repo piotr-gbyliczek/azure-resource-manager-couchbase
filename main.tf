@@ -175,7 +175,8 @@ module "vmss-couchbase" {
   source = "modules/virtual-machine-scale-set"
   virtual_machine_scale_set_name                = "${var.short_name}-server"
   virtual_machine_scale_set_location            = "${var.location}"
-  virtual_machine_scale_set_resource_group      = "${azurerm_resource_group.resource_group.name}"
+  virtual_machine_scale_set_resource_group      = "${azurerm_resource_group.resource_group.name.id}"
+  virtual_machine_scale_set_network_security_group      = "${module.couchbase-nsg.id}"
   virtual_machine_scale_set_load_balancer       = "${module.lb-couchbase.id}"
   virtual_machine_scale_set_vnet                = "${module.application-vnet.id}"
 

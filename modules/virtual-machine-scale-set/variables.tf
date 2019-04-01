@@ -22,6 +22,21 @@ variable "virtual_machine_scale_set_vnet" {
   default = ""
 }
 
+variable "virtual_machine_scale_set_network_security_group" {
+  description = "virtual machine scale set network security group"
+  default = ""
+}
+
+variable "virtual_machine_scale_set_storage_account" {
+  description = "storage account for the extension scripts"
+  default = ""
+}
+
+variable "virtual_machine_scale_set_unique_string" {
+  description = "unique string appended to domain name"
+  default = ""
+}
+
 variable "automatic_os_upgrade" {
   description = "automatic os upgrade boolean"
   default = false
