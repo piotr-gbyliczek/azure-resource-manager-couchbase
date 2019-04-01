@@ -24,14 +24,14 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
     name              = ""
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+    managed_disk_type = "${var.virtual_machine_storage_managed_disk_type}"
   }
 
   storage_profile_data_disk {
     lun           = 0
     caching       = "ReadWrite"
     create_option = "Empty"
-    disk_size_gb  = 10
+    disk_size_gb  = "${var.virtual_machine_storage_data_disk_size}"
   }
 
   extension {
@@ -52,35 +52,35 @@ SETTINGS
   }
 
   os_profile {
-    computer_name_prefix = "couchbase-server"
-    admin_username       = "node4"
+    computer_name_prefix = "${var.virtual_machine_scale_set_name}"
+    admin_username       = "${var.os_admin_username}"
   }
 
   os_profile_linux_config {
-    disable_password_authentication = true
+    disable_password_authentication = "${var.virtual_machine_set_os_password_authentication_disable}"
 
     ssh_keys {
-      path     = "/home/node4/.ssh/authorized_keys"
+      path     = "/home/${var.os_admin_username}/.ssh/authorized_keys"
       key_data = "${file("~/.ssh/id_rsa.pub")}"
     }
   }
 
   network_profile {
-    name                      = "couchbase-server--network-profile"
+    name                      = "${var.virtual_machine_scale_set_name}-network-profile"
     primary                   = true
-    network_security_group_id = "${module.couchbase-nsg.network_security_group_id}"
+    network_security_group_id = "${var.virtual_machine_scale_set_resource_group.network_security_group_id}"
 
     ip_configuration {
-      name                                   = "TestIPConfiguration"
+      name                                   = "${var.virtual_machine_scale_set_name}-IPConfiguration"
       primary                                = true
-      subnet_id                              = "${element(module.application-subnets.vnet_subnets, 0)}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
-      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
+      subnet_id                              = "${element(var.virtual_machine_scale_set_vnet.vnet_subnets, 0)}"
+      load_balancer_backend_address_pool_ids = ["${var.virtual_machine_scale_set_load_balancer.lb_backend_address_pool_id}"]
+#      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
 
       public_ip_address_configuration {
         name              = "PublicIpAddress"
         idle_timeout      = 15
-        domain_name_label = "couchbase-server-${random_string.unique-string.result}"
+        domain_name_label = "${var.virtual_machine_scale_set_name}-${random_string.unique-string.result}"
       }
     }
   }
