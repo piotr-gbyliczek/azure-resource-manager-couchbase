@@ -175,10 +175,14 @@ module "vmss-couchbase" {
   source = "modules/virtual-machine-scale-set"
   virtual_machine_scale_set_name                = "${var.short_name}-server"
   virtual_machine_scale_set_location            = "${var.location}"
-  virtual_machine_scale_set_resource_group      = "${azurerm_resource_group.resource_group.name.id}"
-  virtual_machine_scale_set_network_security_group      = "${module.couchbase-nsg.id}"
-  virtual_machine_scale_set_load_balancer       = "${module.lb-couchbase.id}"
-  virtual_machine_scale_set_vnet                = "${module.application-vnet.id}"
+  virtual_machine_scale_set_resource_group      = "${azurerm_resource_group.resource_group.name}"
+  virtual_machine_scale_set_network_security_group      = "${module.couchbase-nsg.network_security_group_id}"
+  virtual_machine_scale_set_load_balancer       = "${module.lb-couchbase.lb_id}"
+  virtual_machine_scale_set_load_balancer_backend_id       = "${module.lb-couchbase.lb_backend_address_pool_id}"
+  virtual_machine_scale_set_vnet                = "${module.application-vnet.vnet_name}"
+  virtual_machine_scale_set_vnet_subnets        = "${module.application-subnets.vnet_subnets[0]}"
+  virtual_machine_scale_set_storage_account     = "${azurerm_storage_account.couchbase-storage.name}"
+  virtual_machine_scale_set_unique_string       = "${random_string.unique-string.result}"
 
 #  automatic_os_upgrade = false
 #  upgrade_policy_mode  = "Manual"

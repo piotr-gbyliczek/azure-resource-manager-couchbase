@@ -17,8 +17,18 @@ variable "virtual_machine_scale_set_load_balancer" {
   default = ""
 }
 
+variable "virtual_machine_scale_set_load_balancer_backend_id" {
+  description = "virtual machine scale set load balancer backend ids"
+  default = ""
+}
+
 variable "virtual_machine_scale_set_vnet" {
   description = "virtual machine scale set virtual network"
+  default = ""
+}
+
+variable "virtual_machine_scale_set_vnet_subnets" {
+  description = "virtual machine scale set virtual network subnets"
   default = ""
 }
 

@@ -43,10 +43,10 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
     settings = <<SETTINGS
     {
         "fileUris": [
-          "https://${var.virtual_machine_scale_set_storage_account.name}.blob.core.windows.net/extensions/util.sh",
-          "https://${var.virtual_machine_scale_set_storage_account.name}.blob.core.windows.net/extensions/server.sh"
+          "https://${var.virtual_machine_scale_set_storage_account}.blob.core.windows.net/extensions/util.sh",
+          "https://${var.virtual_machine_scale_set_storage_account}.blob.core.windows.net/extensions/server.sh"
         ],
-          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${var.virtual_machine_scale_set_unique_string.result}"
+          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${var.virtual_machine_scale_set_unique_string}"
     }
 SETTINGS
   }
@@ -73,14 +73,14 @@ SETTINGS
     ip_configuration {
       name                                   = "${var.virtual_machine_scale_set_name}-IPConfiguration"
       primary                                = true
-#      subnet_id                              = "${element(var.virtual_machine_scale_set_vnet.id.vnet_subnets, 0)}"
-#      load_balancer_backend_address_pool_ids = ["${var.virtual_machine_scale_set_load_balancer.id.lb_backend_address_pool_id}"]
-#      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
+      subnet_id                              = "${var.virtual_machine_scale_set_vnet_subnets}"
+      load_balancer_backend_address_pool_ids = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
+#      load_balancer_inbound_nat_rules_ids    = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
 
       public_ip_address_configuration {
         name              = "PublicIpAddress"
         idle_timeout      = 15
-        domain_name_label = "${var.virtual_machine_scale_set_name}-${random_string.unique-string.result}"
+        domain_name_label = "${var.virtual_machine_scale_set_name}-${var.virtual_machine_scale_set_unique_string}"
       }
     }
   }
