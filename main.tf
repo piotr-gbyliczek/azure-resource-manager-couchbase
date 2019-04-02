@@ -181,207 +181,34 @@ module "vmss-couchbase" {
   virtual_machine_scale_set_load_balancer_backend_id       = "${module.lb-couchbase.lb_backend_address_pool_id}"
   virtual_machine_scale_set_vnet                = "${module.application-vnet.vnet_name}"
   virtual_machine_scale_set_vnet_subnets        = "${module.application-subnets.vnet_subnets[0]}"
-  virtual_machine_scale_set_storage_account     = "${azurerm_storage_account.couchbase-storage.name}"
+#  virtual_machine_scale_set_storage_account     = "${azurerm_storage_account.couchbase-storage.name}"
   virtual_machine_scale_set_unique_string       = "${random_string.unique-string.result}"
-
-#  automatic_os_upgrade = false
-#  upgrade_policy_mode  = "Manual"
-#  overprovision        = false
-
-#  sku {
-#    #    name     = "Standard_DS12_v2"
-#    name     = "Standard_B2ms"
-#    tier     = "Standard"
-#    capacity = 3
-}
-
-
-
-/*
-
-resource "azurerm_virtual_machine_scale_set" "vmss-couchbase" {
-  name                = "couchbase-server"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-
-  automatic_os_upgrade = false
-  upgrade_policy_mode  = "Manual"
-  overprovision        = false
-
-  sku {
-    #    name     = "Standard_DS12_v2"
-    name     = "Standard_B2ms"
-    tier     = "Standard"
-    capacity = 3
-  }
-
-  storage_profile_image_reference {
-    publisher = "OpenLogic"
-    offer     = "CentOS"
-    sku       = "7.6"
-    version   = "latest"
-  }
-
-  storage_profile_os_disk {
-    name              = ""
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
-
-  storage_profile_data_disk {
-    lun           = 0
-    caching       = "ReadWrite"
-    create_option = "Empty"
-    disk_size_gb  = 10
-  }
-
-  extension {
-    name                 = "MSILinuxExtension"
-    publisher            = "Microsoft.Azure.Extensions"
-    type                 = "CustomScript"
-    type_handler_version = "2.0"
-
-    settings = <<SETTINGS
-    {
-        "fileUris": [
+  virtual_machine_scale_set_extension_settings_fileuris = [
           "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh",
           "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/server.sh"
-        ],
-          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${random_string.unique-string.result}"
-    }
-SETTINGS
-  }
-
-  os_profile {
-    computer_name_prefix = "couchbase-server"
-    admin_username       = "node4"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/node4/.ssh/authorized_keys"
-      key_data = "${file("~/.ssh/id_rsa.pub")}"
-    }
-  }
-
-  network_profile {
-    name                      = "couchbase-server--network-profile"
-    primary                   = true
-    network_security_group_id = "${module.couchbase-nsg.network_security_group_id}"
-
-    ip_configuration {
-      name                                   = "TestIPConfiguration"
-      primary                                = true
-      subnet_id                              = "${element(module.application-subnets.vnet_subnets, 0)}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-couchbase.id}"]
-      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-couchbase.*.id, count.index)}"]
-
-      public_ip_address_configuration {
-        name              = "PublicIpAddress"
-        idle_timeout      = 15
-        domain_name_label = "couchbase-server-${random_string.unique-string.result}"
-      }
-    }
-  }
-
-  tags = {
-    environment = "testing"
-  }
+        ]
+  virtual_machine_scale_set_extension_settings_command_to_execute = "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${random_string.unique-string.result}"
+  virtual_machine_scale_set_size = 3
+  virtual_machine_storage_data_disk_size = 32
 }
 
 
-resource "azurerm_virtual_machine_scale_set" "vmss-syncgateway" {
-  name                = "syncgateway-server"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.resource_group.name}"
-
-  automatic_os_upgrade = false
-  upgrade_policy_mode  = "Manual"
-  overprovision        = false
-
-  sku {
-    name     = "Standard_B2ms"
-    tier     = "Standard"
-    capacity = 2
-  }
-
-  storage_profile_image_reference {
-    publisher = "OpenLogic"
-    offer     = "CentOS"
-    sku       = "7.6"
-    version   = "latest"
-  }
-
-  storage_profile_os_disk {
-    name              = ""
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
-
-  storage_profile_data_disk {
-    lun           = 0
-    caching       = "ReadWrite"
-    create_option = "Empty"
-    disk_size_gb  = 10
-  }
-
-  extension {
-    name                 = "MSILinuxExtension"
-    publisher            = "Microsoft.Azure.Extensions"
-    type                 = "CustomScript"
-    type_handler_version = "2.0"
-
-    settings = <<SETTINGS
-    {
-        "fileUris": [
+module "vmss-syncgateway" {
+  source = "modules/virtual-machine-scale-set"
+  virtual_machine_scale_set_name                = "${var.short_name}-syncgateway"
+  virtual_machine_scale_set_location            = "${var.location}"
+  virtual_machine_scale_set_resource_group      = "${azurerm_resource_group.resource_group.name}"
+  virtual_machine_scale_set_network_security_group      = "${module.couchbase-nsg.network_security_group_id}"
+  virtual_machine_scale_set_load_balancer       = "${module.lb-syncgateway.lb_id}"
+  virtual_machine_scale_set_load_balancer_backend_id       = "${module.lb-syncgateway.lb_backend_address_pool_id}"
+  virtual_machine_scale_set_vnet                = "${module.application-vnet.vnet_name}"
+  virtual_machine_scale_set_vnet_subnets        = "${module.application-subnets.vnet_subnets[0]}"
+#  virtual_machine_scale_set_storage_account     = "${azurerm_storage_account.couchbase-storage.name}"
+  virtual_machine_scale_set_unique_string       = "${random_string.unique-string.result}"
+  virtual_machine_scale_set_extension_settings_fileuris = [
           "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/syncGateway.sh",
           "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh"
-        ],
-          "commandToExecute": "bash syncGateway.sh 2.1.2"
-    }
-SETTINGS
-  }
-
-  os_profile {
-    computer_name_prefix = "syncgateway-server"
-    admin_username       = "node4"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/node4/.ssh/authorized_keys"
-      key_data = "${file("~/.ssh/id_rsa.pub")}"
-    }
-  }
-
-  network_profile {
-    name                      = "syncgateway-network-profile"
-    primary                   = true
-    network_security_group_id = "${module.couchbase-nsg.network_security_group_id}"
-
-    ip_configuration {
-      name                                   = "TestIPConfiguration"
-      primary                                = true
-      subnet_id                              = "${element(module.application-subnets.vnet_subnets, 0)}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool-syncgateway.id}"]
-      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool-syncgateway.*.id, count.index)}"]
-
-      public_ip_address_configuration {
-        name              = "PublicIpAddress"
-        idle_timeout      = 15
-        domain_name_label = "syncgateway-server-${random_string.unique-string.result}"
-      }
-    }
-  }
-
-  tags = {
-    environment = "testing"
-  }
+        ]
+  virtual_machine_scale_set_extension_settings_command_to_execute = "bash syncGateway.sh 2.1.2"
+  virtual_machine_scale_set_size = 2
 }
-*/

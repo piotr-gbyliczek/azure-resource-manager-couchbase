@@ -41,15 +41,16 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
     type_handler_version = "2.0"
 
     settings = <<SETTINGS
-    {
-        "fileUris": [
-          "https://${var.virtual_machine_scale_set_storage_account}.blob.core.windows.net/extensions/util.sh",
-          "https://${var.virtual_machine_scale_set_storage_account}.blob.core.windows.net/extensions/server.sh"
-        ],
-          "commandToExecute": "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${var.virtual_machine_scale_set_unique_string}"
-    }
+      {
+          "fileUris": [
+             "${var.virtual_machine_scale_set_extension_settings_fileuris[0]}",
+             "${var.virtual_machine_scale_set_extension_settings_fileuris[1]}"
+           ],
+          "commandToExecute": "${var.virtual_machine_scale_set_extension_settings_command_to_execute}"
+      }
 SETTINGS
-  }
+}
+
 
   os_profile {
     computer_name_prefix = "${var.virtual_machine_scale_set_name}"
@@ -83,9 +84,5 @@ SETTINGS
         domain_name_label = "${var.virtual_machine_scale_set_name}-${var.virtual_machine_scale_set_unique_string}"
       }
     }
-  }
-
-  tags = {
-    environment = "testing"
   }
 }

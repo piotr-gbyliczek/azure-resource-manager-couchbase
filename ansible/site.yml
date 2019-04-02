@@ -1,0 +1,139 @@
+---
+- name: Couchbase setup - git
+  hosts: all
+  tasks:
+  - name: update all packages
+    yum:
+      state: latest
+      name: '*'
+      update_cache: true
+  - name: install git
+    yum:
+      state: present
+      name: git
+#  - name: Clone git repository
+#    git:
+#      repo: 'https://github.com/whitespace-software/ServerConfiguration'
+#      repo: 'https://github.com/couchbase-partners/azure-resource-manager-couchbase.git'
+#      dest: '~/github/'
+#    ignore_errors: true
+
+- name: Couchbase setup - nginx
+  hosts: all
+  tasks:
+  - name: install prerequisites
+    yum:
+      name: yum-utils
+      state: present
+  - name: install nginx stable repository
+    yum_repository:
+      name: nginx-stable
+      description: nginx stable repo
+      baseurl: 'http://nginx.org/packages/centos/$releasever/$basearch/'
+      enabled: no
+      gpgcheck: yes
+      gpgkey: 'https://nginx.org/keys/nginx_signing.key'
+      file: 'nginx.repo'
+  - name: install nginx mainline repository
+    yum_repository:
+      name: nginx-mainline
+      description: nginx mainline repo
+      baseurl: 'http://nginx.org/packages/mainline/centos/$releasever/$basearch/'
+      enabled: yes
+      gpgcheck: yes
+      gpgkey: 'https://nginx.org/keys/nginx_signing.key'
+      file: 'nginx.repo'
+  - name: install nginx
+    yum:
+      name: nginx
+      state: present
+  - name: install configuration files
+    copy:
+      src: 'default.conf'
+      dest: '/etc/nginx/conf.d/default.conf'
+      owner: nginx
+      group: nginx
+      mode: 0644
+  - name: create nginx ssl directory
+    file:
+      dest: /etc/nginx/ssl
+      state: directory
+      owner: nginx
+      group: nginx
+      mode: 0644
+
+- name: Couchbase setup - docker and docker-compose
+  hosts: all
+  vars:
+    docker_compose_version: '1.24.0'
+    docker_user: admin-user
+  tasks:
+  - name: install docker prerequisites
+    yum:
+      name:
+      - ca-certificates
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      state: present
+  - name: install docker repository
+    get_url:
+      dest: '/etc/yum.repos.d/docker-ce.repo'
+      mode: 0440
+      url: 'https://download.docker.com/linux/centos/docker-ce.repo'
+  - name: install docker
+    yum:
+      name: docker-ce
+      state: present
+  - name: add docker user to docker group
+    user:
+      name: "{{ docker_user }}"
+      groups: docker
+      append: yes
+  - name: install docker-composer
+    get_url:
+      dest: '/usr/local/bin/docker-compose'
+      url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
+      checksum: 'sha256:https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64.sha256'
+      mode: 0755
+
+- name: Couchbase setup - azure-cli
+  hosts: all
+  vars:
+    docker_user: admin-user
+  tasks:
+  - name: install azure-cli repository
+    yum_repository:
+      name: azure-cli
+      description: Azure CLI
+      baseurl: 'https://packages.microsoft.com/yumrepos/azure-cli'
+      enabled: yes
+      gpgcheck: yes
+      gpgkey: 'https://packages.microsoft.com/keys/microsoft.asc'
+      file: 'azure-cli.repo'
+  - name: install azure-cli
+    yum:
+      name: azure-cli
+      state: present
+  - name: copy azure scripts
+    copy:
+      src: "{{ item }}"
+      dest: "/home/{{ docker_user }}/{{ item }}"
+      owner: "{{ docker_user }}"
+      mode: 0744
+    with_items:
+      - updateAllContainers.sh
+      - updateReVAPI.sh
+  - name : copy container template
+    copy:
+      src: 'sync_gateway.json'
+      dest: '/home/sync_gateway/sync_gateway.json'
+  - name: restart services
+    systemd:
+      state: restarted
+      enabled: true
+      name: "{{ item }}"
+    with_items:
+     - sync_gateway
+     - nginx
+     - docker

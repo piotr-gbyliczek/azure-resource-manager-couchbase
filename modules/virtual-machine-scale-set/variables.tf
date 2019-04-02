@@ -93,3 +93,12 @@ variable "virtual_machine_set_os_password_authentication_disable" {
   description = "OS Profile password authentication disable boolean"
   default = true
 }
+variable "virtual_machine_scale_set_extension_settings_command_to_execute" {
+  description = "virtual_machine_scale_set_extension settings command to run"
+  default = ""
+}
+variable "virtual_machine_scale_set_extension_settings_fileuris" {
+  description = "virtual_machine_scale_set_extension settings URIs of the files to execute"
+  type = "list"
+
+}

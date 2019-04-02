@@ -2,3 +2,5 @@
 tags
 .terraform
 *.tfstate*
+ansible.cfg
+*.retry
