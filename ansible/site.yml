@@ -18,6 +18,28 @@
 #      dest: '~/github/'
 #    ignore_errors: true
 
+# play below requires PyOpenSSL module >= 0.15 installed locally.
+- name: generate selfsigned ssl certificate locally
+  hosts: localhost
+  become: false
+  tasks:
+  - name: generate openssl private key
+    openssl_privatekey:
+      path: files/wssskey.pem
+      size: 2048
+  - name: generate certificate request
+    openssl_csr:
+      path: files/wssscert.csr
+      privatekey_path: files/wssskey.pem
+      common_name: www.wssscert.com
+  - name: generate a self signed openssl certificate
+    openssl_certificate:
+      path: files/wssscert.pem
+      privatekey_path: files/wssskey.pem
+      csr_path: files/wssscert.csr
+      provider: selfsigned
+
+
 - name: Couchbase setup - nginx
   hosts: all
   tasks:
@@ -60,7 +82,24 @@
       state: directory
       owner: nginx
       group: nginx
+      mode: 0750
+  - name: copy self signed certificate to instance
+    copy:
+      src: "{{ item }}"
+      dest: "/etc/nginx/ssl/{{ item }}"
+      owner: nginx
+      group: nginx
       mode: 0644
+    with_items:
+     - wssscert.pem
+     - wssskey.pem
+  - name: enable high port for nginx in selinux
+    seport:
+      ports: 18100
+      proto: tcp
+      setype: http_port_t
+      state: present
+
 
 - name: Couchbase setup - docker and docker-compose
   hosts: all

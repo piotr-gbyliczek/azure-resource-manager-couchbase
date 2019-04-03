@@ -69,6 +69,11 @@ module "application-subnets" {
       name   = "${var.short_name}-app-${var.suffix_subnet}"
       prefix = "10.11.2.0/24"
     },
+    {
+      # This will be subnet 2
+      name   = "${var.short_name}-appgw-${var.suffix_subnet}"
+      prefix = "10.11.3.0/24"
+    },
   ]
 }
 
@@ -155,6 +160,7 @@ module "lb-couchbase" {
   }
 }
 
+
 module "lb-syncgateway" {
   source              = "modules/loadbalancer"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
@@ -170,6 +176,7 @@ module "lb-syncgateway" {
     admin-ui = ["4985", "Tcp", "4985","SourceIP"]
   }
 }
+
 
 module "vmss-couchbase" {
   source = "modules/virtual-machine-scale-set"
