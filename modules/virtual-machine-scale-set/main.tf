@@ -49,8 +49,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
           "commandToExecute": "${var.virtual_machine_scale_set_extension_settings_command_to_execute}"
       }
 SETTINGS
-}
-
+  }
 
   os_profile {
     computer_name_prefix = "${var.virtual_machine_scale_set_name}"
@@ -76,7 +75,9 @@ SETTINGS
       primary                                = true
       subnet_id                              = "${var.virtual_machine_scale_set_vnet_subnets}"
       load_balancer_backend_address_pool_ids = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
-#      load_balancer_inbound_nat_rules_ids    = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
+
+      # application_gateway_backend_address_pool_ids = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
+      # load_balancer_inbound_nat_rules_ids    = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
 
       public_ip_address_configuration {
         name              = "PublicIpAddress"

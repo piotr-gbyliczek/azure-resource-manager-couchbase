@@ -15,33 +15,37 @@ variable "tags" {
 }
 
 # Everything below is for the application gateway module
-
-
-variable "backend_address_pool_name" {
-  description = "backend address pool name"
-  default = ""
+variable "name" {
+  description = "Name of the load balancer"
+  default     = ""
 }
 
-variable "frontend_port_name" {
-  description = "frontend port name"
-  default = ""
-  }
+variable "public_ip_id" {
+  description = "ID of the public ip address which should be assigned to the load balancer"
+  default     = ""
+}
 
-variable "frontend_ip_configuration_name" {
-  description = "frontend port name"
-  default = ""
-  }
-variable "http_setting_name" {
-  description = "frontend port name"
-  default = ""
-  }
+variable "subnet_id" {
+  description = "ID of the subnet where the load balancer should be placed"
+  default     = ""
+}
 
-variable "listener_name" {
-  description = "frontend port name"
-  default = ""
-  }
+variable "ag_port" {
+  description = "Protocols to be used for lb health probes and rules. [frontend_port, protocol, backend_port]"
+  default     = {}
+}
 
-variable "request_routing_rule_name"  {
-  description = "frontend port name"
-  default = ""
-}    
+variable "sku_name" {
+  description = ""
+  default     = "Standard_Small"
+}
+
+variable "sku_tier" {
+  description = ""
+  default     = "Standard"
+}
+
+variable "sku_capacity" {
+  description = ""
+  default     = "2"
+}
