@@ -1,4 +1,4 @@
-resource "azurerm_application_gateway" "gateway" {
+resource "azurerm_application_gateway" "network" {
   resource_group_name = "${var.resource_group_name}"
   location            = "${var.location}"
   tags                = "${var.tags}"
