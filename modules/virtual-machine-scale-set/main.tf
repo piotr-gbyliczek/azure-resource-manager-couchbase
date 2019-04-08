@@ -162,11 +162,9 @@ SETTINGS
     network_security_group_id = "${var.virtual_machine_scale_set_network_security_group}"
 
     ip_configuration {
-      name      = "${var.virtual_machine_scale_set_name}-IPConfiguration"
-      primary   = true
-      subnet_id = "${var.virtual_machine_scale_set_vnet_subnets}"
-
-      # load_balancer_backend_address_pool_ids = ["${var.type == "lb" ? var.virtual_machine_scale_set_load_balancer_backend_id : ""}"]
+      name                                         = "${var.virtual_machine_scale_set_name}-IPConfiguration"
+      primary                                      = true
+      subnet_id                                    = "${var.virtual_machine_scale_set_vnet_subnets}"
       application_gateway_backend_address_pool_ids = ["${var.application_gateway_backend_address_pool_id}"]
 
       public_ip_address_configuration {

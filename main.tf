@@ -198,11 +198,11 @@ module "vmss-couchbase" {
 
 module "vmss-syncgateway" {
   source                                           = "modules/virtual-machine-scale-set"
+  type                                             = "ag"
   virtual_machine_scale_set_name                   = "${var.short_name}-syncgateway"
   virtual_machine_scale_set_location               = "${var.location}"
   virtual_machine_scale_set_resource_group         = "${azurerm_resource_group.resource_group.name}"
   virtual_machine_scale_set_network_security_group = "${module.couchbase-nsg.network_security_group_id}"
-  type                                             = "ag"
   application_gateway_backend_address_pool_id      = "${module.ag-syncgateway.backend_address_pool}"
   virtual_machine_scale_set_vnet                   = "${module.application-vnet.vnet_name}"
   virtual_machine_scale_set_vnet_subnets           = "${module.application-subnets.vnet_subnets[0]}"
