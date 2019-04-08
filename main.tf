@@ -174,22 +174,6 @@ module "ag-syncgateway" {
   }
 }
 
-# module "lb-syncgateway" {
-#   source              = "modules/loadbalancer"
-#   resource_group_name = "${azurerm_resource_group.resource_group.name}"
-#   location            = "${var.location}"
-#   tags                = "${merge(var.default_tags, map("type","loadbalancer"))}"
-#   name                = "syncgateway-lb"
-#   type                = "public"
-#   public_ip_id        = "${module.public-ip-syncgateway.public_ip_id}"
-#   subnet_id           = "${element(module.application-subnets.vnet_subnet_names, 0)}"
-
-#   lb_port {
-#     ui  = ["4984", "Tcp", "4984","SourceIP"]
-#     admin-ui = ["4985", "Tcp", "4985","SourceIP"]
-#   }
-# }
-
 module "vmss-couchbase" {
   source                                             = "modules/virtual-machine-scale-set"
   type                                               = "lb"
@@ -222,9 +206,7 @@ module "vmss-syncgateway" {
   application_gateway_backend_address_pool_id      = "${module.ag-syncgateway.backend_address_pool}"
   virtual_machine_scale_set_vnet                   = "${module.application-vnet.vnet_name}"
   virtual_machine_scale_set_vnet_subnets           = "${module.application-subnets.vnet_subnets[0]}"
-
-  #  virtual_machine_scale_set_storage_account     = "${azurerm_storage_account.couchbase-storage.name}"
-  virtual_machine_scale_set_unique_string = "${random_string.unique-string.result}"
+  virtual_machine_scale_set_unique_string          = "${random_string.unique-string.result}"
 
   virtual_machine_scale_set_extension_settings_fileuris = [
     "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/syncGateway.sh",
