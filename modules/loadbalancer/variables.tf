@@ -61,7 +61,7 @@ variable "frontend_private_ip_address" {
 
 variable "frontend_private_ip_address_allocation" {
   description = "(Optional) Frontend ip allocation type (Static or Dynamic)"
-  default     = "Dynamic"
+  default     = "dynamic"
 }
 
 variable "lb_port" {
@@ -83,3 +83,4 @@ variable "load_distribution" {
   description = "Rule persistence setting"
   default = "none"
 }
+

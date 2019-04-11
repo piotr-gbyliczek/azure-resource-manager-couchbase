@@ -7,7 +7,7 @@ resource "azurerm_network_security_group" "nsg" {
 
 locals {
   rules_locked_down_no = "${length(var.rules_locked_down)}"
-  rules_groups_no      = "${var.no_of_rules}"
+  rules_groups_no      = "${var.no_of_group_rules}"
   rules_open_no        = "${length(var.rules_open)}"
 }
 
@@ -51,7 +51,7 @@ resource "azurerm_network_security_rule" "rules_groups" {
   access                                = "${lookup(var.rules_groups[count.index], "access", "Allow")}"
   protocol                              = "${lookup(var.rules_groups[count.index], "protocol", "*")}"
   source_port_range                     = "${lookup(var.rules_groups[count.index], "source_port_range", "*")}"
-  source_application_security_group_ids = ["${lookup(var.rules_groups[count.index], "application_security_group_id")}"]
+  source_application_security_group_ids = ["${var.application_security_group_ids}"]
   destination_port_range                = "${lookup(var.rules_groups[count.index], "destination_port_range", "*")}"
   destination_address_prefix            = "${lookup(var.rules_groups[count.index], "destination_address_prefix", "*")}"
   description                           = "${lookup(var.rules_groups[count.index], "description", "Security rule for ${lookup(var.rules_groups[count.index], "name", "default_rule_name")}")}"

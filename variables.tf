@@ -14,12 +14,22 @@ variable "default_tags" {
   default     = {}
 }
 
-variable "nsg-custom-rules" {
-  description = "network security rules for couchbase deployment"
+variable "nsg-rules-open" {
+  description = "open network security rules for couchbase deployment"
   type        = "list"
   default     = []
 }
 
+variable "nsg-rules-locked" {
+  description = "locked down network security rules for couchbase deployment"
+  type        = "list"
+  default     = []
+}
+variable "nsg-rules-groups" {
+  description = "network security rules associated to application security groups for couchbase deployment"
+  type        = "list"
+  default     = []
+}
 ######################################################################################################
 # Dictionary
 ######################################################################################################
@@ -86,6 +96,10 @@ variable "suffix_network-watcher" {
 
 variable "suffix_nsg" {
   default = "nsg"
+}
+
+variable "suffix_asg" {
+  default = "asg"
 }
 
 #################

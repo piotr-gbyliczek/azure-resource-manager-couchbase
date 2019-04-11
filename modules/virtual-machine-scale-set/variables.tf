@@ -45,8 +45,12 @@ variable "virtual_machine_scale_set_vnet_subnets" {
 
 variable "virtual_machine_scale_set_network_security_group" {
   description = "virtual machine scale set network security group"
-  default     = ""
 }
+
+variable "virtual_machine_scale_set_application_security_group" {
+  description = "virtual machine scale set application security group"
+  default = ""
+  }
 
 variable "virtual_machine_scale_set_storage_account" {
   description = "storage account for the extension scripts"

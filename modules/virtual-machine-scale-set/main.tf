@@ -76,6 +76,7 @@ SETTINGS
       primary                                = true
       subnet_id                              = "${var.virtual_machine_scale_set_vnet_subnets}"
       load_balancer_backend_address_pool_ids = ["${var.virtual_machine_scale_set_load_balancer_backend_id}"]
+      application_security_group_ids         = ["${var.virtual_machine_scale_set_application_security_group}"]
 
       # application_gateway_backend_address_pool_ids = ["${var.type == "ag" ? var.application_gateway_backend_address_pool_id : ""}"]
 
@@ -166,6 +167,7 @@ SETTINGS
       primary                                      = true
       subnet_id                                    = "${var.virtual_machine_scale_set_vnet_subnets}"
       application_gateway_backend_address_pool_ids = ["${var.application_gateway_backend_address_pool_id}"]
+      application_security_group_ids         = ["${var.virtual_machine_scale_set_application_security_group}"]
 
       public_ip_address_configuration {
         name              = "PublicIpAddress"

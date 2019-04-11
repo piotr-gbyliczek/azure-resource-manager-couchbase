@@ -21,6 +21,17 @@ variable "name" {
   default     = ""
 }
 
+variable "rules" {
+  description = "Security rules for the network security group using this format name = [priority, direction, access, protocol, source_port_range, destination_port_range, source_address_prefix, destination_address_prefix]"
+  type        = "list"
+  default     = []
+}
+
+variable "no_of_group_rules" {
+  description = ""
+  default     = "0"
+}
+
 # Custom security rules
 # [priority, direction, access, protocol, source_port_range, destination_port_range, description]"
 # All the fields are required.
@@ -60,9 +71,4 @@ variable "rules_groups_no" {
 variable "application_security_group_ids" {
   description = ""
   default     = ""
-}
-
-variable "no_of_rules" {
-  description = ""
-  default     = "0"
 }

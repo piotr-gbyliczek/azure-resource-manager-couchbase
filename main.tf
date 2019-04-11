@@ -77,13 +77,22 @@ module "application-subnets" {
   ]
 }
 
-module "couchbase-nsg" {
-  source              = "Azure/network-security-group/azurerm"
-  version             = "1.1.1"
-  security_group_name = "${var.short_name}-${var.suffix_nsg}"
+resource "azurerm_application_security_group" "couchbase-asg" {
+  name                = "${var.short_name}-${var.suffix_asg}"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
   location            = "${var.location}"
-  custom_rules        = "${var.nsg-custom-rules}"
+}
+
+module "couchbase-nsg" {
+  source              = "modules/network-security-group"
+  name = "${var.short_name}-${var.suffix_nsg}"
+  resource_group_name = "${azurerm_resource_group.resource_group.name}"
+  location            = "${var.location}"
+  rules_open          = "${var.nsg-rules-open}"
+  rules_locked_down   = "${var.nsg-rules-locked}"
+  rules_groups        = "${var.nsg-rules-groups}"
+  no_of_group_rules     = 8
+  application_security_group_ids = "${azurerm_application_security_group.couchbase-asg.id}"
 }
 
 resource "azurerm_storage_account" "couchbase-storage" {
@@ -185,6 +194,7 @@ module "vmss-couchbase" {
   virtual_machine_scale_set_vnet                     = "${module.application-vnet.vnet_name}"
   virtual_machine_scale_set_vnet_subnets             = "${module.application-subnets.vnet_subnets[0]}"
   virtual_machine_scale_set_unique_string            = "${random_string.unique-string.result}"
+  virtual_machine_scale_set_application_security_group = "${azurerm_application_security_group.couchbase-asg.id}"
 
   virtual_machine_scale_set_extension_settings_fileuris = [
     "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh",
@@ -207,6 +217,7 @@ module "vmss-syncgateway" {
   virtual_machine_scale_set_vnet                   = "${module.application-vnet.vnet_name}"
   virtual_machine_scale_set_vnet_subnets           = "${module.application-subnets.vnet_subnets[0]}"
   virtual_machine_scale_set_unique_string          = "${random_string.unique-string.result}"
+  virtual_machine_scale_set_application_security_group = "${azurerm_application_security_group.couchbase-asg.id}"
 
   virtual_machine_scale_set_extension_settings_fileuris = [
     "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/syncGateway.sh",

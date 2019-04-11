@@ -20,3 +20,13 @@ variable "name" {
   description = "Name of the availability set to create"
   default     = ""
 }
+
+variable "managed" {
+  description = "Is the availability set managed?"
+  default     = "false"
+}
+
+variable "fault_domain_count" {
+  description = "No. of fault domains"
+  default     = "3"
+}

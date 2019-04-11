@@ -11,6 +11,7 @@ resource "azurerm_virtual_machine" "vm-linux" {
   name                  = "${var.name}"
   network_interface_ids = ["${var.nics}"]
   vm_size               = "${var.vm_size}"
+  availability_set_id   = "${var.availability_set != "" ? var.availability_set : ""}"
 
   storage_image_reference {
     publisher = "${module.os.calculated_value_os_publisher}"
@@ -45,6 +46,7 @@ resource "azurerm_virtual_machine" "vm-windows" {
   name                  = "${var.name}"
   network_interface_ids = ["${var.nics}"]
   vm_size               = "${var.vm_size}"
+  availability_set_id   = "${var.availability_set != "" ? var.availability_set : ""}"
 
   storage_image_reference {
     publisher = "${module.os.calculated_value_os_publisher}"

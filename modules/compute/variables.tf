@@ -71,3 +71,8 @@ variable "nb_instances" {
   description = "This is used to decide if a VM should be created, leave at the default value"
   default     = "1"
 }
+
+variable "availability_set" {
+  description = ""
+  default     = ""
+}
