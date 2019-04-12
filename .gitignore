@@ -5,4 +5,4 @@ tags
 ansible.cfg
 *.retry
 ansible/files/wsss*
-
+rules_locked.tfvars
