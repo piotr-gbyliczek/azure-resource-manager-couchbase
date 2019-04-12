@@ -27,7 +27,7 @@ nsg-rules-open = [
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = "Any"
+    source_address_prefix      = "Internet"
     destination_address_prefix = "*"
     description                = "Open access for initial setup"
   },
