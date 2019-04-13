@@ -45,8 +45,10 @@
   tasks:
   - name: install prerequisites
     yum:
-      name: yum-utils
       state: present
+      name:
+       - policycoreutils-python
+       - yum-utils
   - name: install nginx stable repository
     yum_repository:
       name: nginx-stable
@@ -114,6 +116,7 @@
       - yum-utils
       - device-mapper-persistent-data
       - lvm2
+      - python-docker-py
       state: present
   - name: install docker repository
     get_url:
@@ -139,15 +142,7 @@
 - name: Couchbase setup - azure-cli
   hosts: all
   vars:
-    docker_user: 79b9cf91-8e83-4ac3-a24e-4fc74f791510
-    docker_registry_password: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          36303566303261313137363632303432363263623364353631303863616530303234343036386366
-          6661323437343032323633326338363630653434323235350a376464346262653333656331343766
-          32366430623933336632353334363061353966326630313937363464316336366235613338626161
-          3433333334316563340a663838303965383564393939323230326565353639353166646532333333
-          39646661326437333234626336646530333464653138613833373338336431643566623634393265
-          3637313762613362326339356231326165656435643561616566
+    docker_user : admin-user
   tasks:
   - name: install azure-cli repository
     yum_repository:
@@ -184,9 +179,23 @@
      - sync_gateway
      - nginx
      - docker
+- name: Couchbase setup - docker images
+  hosts: all
+  become_user: admin-user
+  vars:
+    docker_registry_user: 79b9cf91-8e83-4ac3-a24e-4fc74f791510
+    docker_registry_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          36303566303261313137363632303432363263623364353631303863616530303234343036386366
+          6661323437343032323633326338363630653434323235350a376464346262653333656331343766
+          32366430623933336632353334363061353966326630313937363464316336366235613338626161
+          3433333334316563340a663838303965383564393939323230326565353639353166646532333333
+          39646661326437333234626336646530333464653138613833373338336431643566623634393265
+          3637313762613362326339356231326165656435643561616566
+  tasks:
   - name: Log into private registry and force re-authorization
     docker_login:
       registry: wsinternalcontainerregistry.azurecr.io
-      username: "{{ docker_user }}"
+      username: "{{ docker_registry_user }}"
       password: "{{ docker_registry_password }} "
-      reauthorize: yes
+#      reauthorize: yes

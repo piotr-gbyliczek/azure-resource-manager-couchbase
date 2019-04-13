@@ -2,5 +2,5 @@
 # az vmss list-instance-public-ips --resource-group couchbase-deployment-rg --name couchbase-server -o yaml | grep -E "fqdn|ipAddress" | sed 's/^.*fqdn: //g' | sed 's/^.*ipAddress: /ansible_host=/g' | sed 's/^\(^.*ansible_host.*$\)/\1 ansible_user=/g' | sed 'N;s/\n/ /'
 
 [all]
-vm0.couchbase-syncgateway-ssz8y5qw7hkobya58un7.uksouth.cloudapp.azure.com ansible_host=51.140.125.110 ansible_user=admin-user
-vm1.couchbase-syncgateway-ssz8y5qw7hkobya58un7.uksouth.cloudapp.azure.com ansible_host=51.140.65.72 ansible_user=admin-user
+vm0.couchbase-syncgateway-ka56bwstoef06c2kvtxf.uksouth.cloudapp.azure.com ansible_host=51.140.54.16 ansible_user=admin-user
+vm1.couchbase-syncgateway-ka56bwstoef06c2kvtxf.uksouth.cloudapp.azure.com ansible_host=51.140.53.110 ansible_user=admin-user
