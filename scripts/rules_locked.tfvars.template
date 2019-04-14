@@ -7,7 +7,7 @@ nsg-rules-open = [
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix    = "Internet"
+    source_address_prefix      = "Internet"
     destination_address_prefix = "*"
     description                = "SSH"
   },

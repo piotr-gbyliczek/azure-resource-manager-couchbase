@@ -1,3 +1,7 @@
+######################################################################################################
+# Azure
+######################################################################################################
+
 variable "resource_group_name" {
   description = "Name of the resource group we will be creating"
   default     = ""
@@ -25,11 +29,34 @@ variable "nsg-rules-locked" {
   type        = "list"
   default     = []
 }
+
 variable "nsg-rules-groups" {
   description = "network security rules associated to application security groups for couchbase deployment"
   type        = "list"
   default     = []
 }
+
+variable "static_ips" {
+  description = "List of static IP addresses"
+  default     = ""
+}
+
+######################################################################################################
+# Couchbase
+######################################################################################################
+
+variable "couchbase_version" {
+  default = "6.0.1"
+}
+
+variable "couchbase_username" {
+  default = "admin"
+}
+
+variable "couchbase_password" {
+  default = "securepassword"
+}
+
 ######################################################################################################
 # Dictionary
 ######################################################################################################

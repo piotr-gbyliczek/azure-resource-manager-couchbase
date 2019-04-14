@@ -41,6 +41,10 @@ resource "random_string" "unique-string" {
   upper   = false
 }
 
+######################################################################################################
+# Network Setup
+######################################################################################################
+
 #################
 # Create the VNET
 #################
@@ -77,15 +81,25 @@ module "application-subnets" {
   ]
 }
 
+#################
+# Create the Inital NSG
+#################
 module "couchbase-nsg" {
   source              = "modules/network-security-group"
-  name = "${var.short_name}-${var.suffix_nsg}"
+  name                = "${var.short_name}-${var.suffix_nsg}"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
   location            = "${var.location}"
   rules_open          = "${var.nsg-rules-open}"
   rules_locked_down   = "${var.nsg-rules-locked}"
 }
 
+######################################################################################################
+# Storage Setup
+######################################################################################################
+
+#################
+# Create the Storage Account
+#################
 resource "azurerm_storage_account" "couchbase-storage" {
   name                     = "${random_string.unique-string.result}"
   resource_group_name      = "${azurerm_resource_group.resource_group.name}"
@@ -94,6 +108,9 @@ resource "azurerm_storage_account" "couchbase-storage" {
   location                 = "${var.location}"
 }
 
+#################
+# Create the Storage Container
+#################
 resource "azurerm_storage_container" "couchbase-storage-container" {
   name                  = "extensions"
   resource_group_name   = "${azurerm_resource_group.resource_group.name}"
@@ -101,6 +118,9 @@ resource "azurerm_storage_container" "couchbase-storage-container" {
   container_access_type = "container"
 }
 
+#################
+# Upload the extention scripts
+#################
 resource "azurerm_storage_blob" "blob1" {
   name                   = "server.sh"
   source                 = "extensions/server.sh"
@@ -128,20 +148,16 @@ resource "azurerm_storage_blob" "blob3" {
   storage_container_name = "${azurerm_storage_container.couchbase-storage-container.name}"
 }
 
+######################################################################################################
+# Couchbase Cluster
+######################################################################################################
+
 module "public-ip-couchbase" {
   source                = "modules/public-ip"
   public_ip_name        = "couchbase-public-ip"
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.resource_group.name}"
   public_ip_domain_name = "server-${random_string.unique-string.result}"
-}
-
-module "public-ip-syncgateway" {
-  source                = "modules/public-ip"
-  public_ip_name        = "syncgateway-public-ip"
-  location              = "${var.location}"
-  resource_group_name   = "${azurerm_resource_group.resource_group.name}"
-  public_ip_domain_name = "syncgateway-${random_string.unique-string.result}"
 }
 
 module "lb-couchbase" {
@@ -159,6 +175,39 @@ module "lb-couchbase" {
   }
 }
 
+module "vmss-couchbase" {
+  source                                             = "modules/virtual-machine-scale-set"
+  type                                               = "lb"
+  virtual_machine_scale_set_name                     = "${var.short_name}-server"
+  virtual_machine_scale_set_location                 = "${var.location}"
+  virtual_machine_scale_set_resource_group           = "${azurerm_resource_group.resource_group.name}"
+  virtual_machine_scale_set_network_security_group   = "${module.couchbase-nsg.network_security_group_id}"
+  virtual_machine_scale_set_load_balancer_backend_id = "${module.lb-couchbase.lb_backend_address_pool_id}"
+  virtual_machine_scale_set_vnet                     = "${module.application-vnet.vnet_name}"
+  virtual_machine_scale_set_vnet_subnets             = "${module.application-subnets.vnet_subnets[0]}"
+  virtual_machine_scale_set_unique_string            = "${random_string.unique-string.result}"
+
+  virtual_machine_scale_set_extension_settings_fileuris = [
+    "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh",
+    "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/server.sh",
+  ]
+
+  virtual_machine_scale_set_extension_settings_command_to_execute = "bash server.sh ${var.couchbase_version} ${var.couchbase_username} ${var.couchbase_password} ${var.location} data,index,query,fts,eventing ${random_string.unique-string.result}"
+  virtual_machine_scale_set_size                                  = 3
+  virtual_machine_storage_data_disk_size                          = 32
+}
+
+######################################################################################################
+# SyncGateway
+######################################################################################################
+module "public-ip-syncgateway" {
+  source                = "modules/public-ip"
+  public_ip_name        = "syncgateway-public-ip"
+  location              = "${var.location}"
+  resource_group_name   = "${azurerm_resource_group.resource_group.name}"
+  public_ip_domain_name = "syncgateway-${random_string.unique-string.result}"
+}
+
 module "ag-syncgateway" {
   source              = "modules/application-gateway"
   resource_group_name = "${azurerm_resource_group.resource_group.name}"
@@ -172,28 +221,6 @@ module "ag-syncgateway" {
     ui       = ["4984"]
     admin-ui = ["4985"]
   }
-}
-
-module "vmss-couchbase" {
-  source                                             = "modules/virtual-machine-scale-set"
-  type                                               = "lb"
-  virtual_machine_scale_set_name                     = "${var.short_name}-server"
-  virtual_machine_scale_set_location                 = "${var.location}"
-  virtual_machine_scale_set_resource_group           = "${azurerm_resource_group.resource_group.name}"
-  virtual_machine_scale_set_network_security_group   = "${module.couchbase-nsg.network_security_group_id}"
-  virtual_machine_scale_set_load_balancer_backend_id = "${module.lb-couchbase.lb_backend_address_pool_id}"
-  virtual_machine_scale_set_vnet                     = "${module.application-vnet.vnet_name}"
-  virtual_machine_scale_set_vnet_subnets             = "${module.application-subnets.vnet_subnets[0]}"
-  virtual_machine_scale_set_unique_string            = "${random_string.unique-string.result}"
-  
-  virtual_machine_scale_set_extension_settings_fileuris = [
-    "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/util.sh",
-    "https://${azurerm_storage_account.couchbase-storage.name}.blob.core.windows.net/extensions/server.sh",
-  ]
-
-  virtual_machine_scale_set_extension_settings_command_to_execute = "bash server.sh 6.0.1 admin securepassword uksouth data,index,query,fts,eventing ${random_string.unique-string.result}"
-  virtual_machine_scale_set_size                                  = 3
-  virtual_machine_storage_data_disk_size                          = 32
 }
 
 module "vmss-syncgateway" {
@@ -217,8 +244,11 @@ module "vmss-syncgateway" {
   virtual_machine_scale_set_size                                  = 2
 }
 
+######################################################################################################
+# Lockdown
+######################################################################################################
 resource "null_resource" "vmss_couchbase_public_ips" {
   provisioner "local-exec" {
-    command = "bash vmss_public_ip.sh ${azurerm_resource_group.resource_group.name} ${var.short_name}-server"
+    command = "bash scripts/get_vmss_publicips.sh '${join(", ", module.vmss-couchbase.virtual_machine_scale_set_id)}' '${var.static_ips}'"
   }
 }

@@ -1,4 +1,4 @@
-az acr login --name wsinternalcontainerregistry
+# az acr login --name wsinternalcontainerregistry
 docker pull wsinternalcontainerregistry.azurecr.io/revapi:latest
 cd docker
 docker-compose down

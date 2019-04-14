@@ -162,6 +162,7 @@
       src: "{{ item }}"
       dest: "/home/{{ docker_user }}/{{ item }}"
       owner: "{{ docker_user }}"
+      group: "{{ docker_user }}"
       mode: 0744
     with_items:
       - updateAllContainers.sh
@@ -183,7 +184,7 @@
   hosts: all
   become_user: admin-user
   vars:
-    docker_registry_user: 79b9cf91-8e83-4ac3-a24e-4fc74f791510
+    docker_registry_user: "79b9cf91-8e83-4ac3-a24e-4fc74f791510"
     docker_registry_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           36303566303261313137363632303432363263623364353631303863616530303234343036386366
@@ -192,10 +193,27 @@
           3433333334316563340a663838303965383564393939323230326565353639353166646532333333
           39646661326437333234626336646530333464653138613833373338336431643566623634393265
           3637313762613362326339356231326165656435643561616566
+    docker_user : admin-user
   tasks:
   - name: Log into private registry and force re-authorization
     docker_login:
       registry: wsinternalcontainerregistry.azurecr.io
       username: "{{ docker_registry_user }}"
-      password: "{{ docker_registry_password }} "
-#      reauthorize: yes
+      password: "{{ docker_registry_password }}"
+      reauthorize: yes
+  - name: create docker folder
+    file:
+      path: "/home/{{ docker_user }}/{{ item }}"
+      state: directory
+    with_items:
+      - "docker"
+  - name: copy docker compose file
+    copy:
+      src: "{{ item }}"
+      dest: "/home/{{ docker_user }}/docker/{{ item }}"
+    with_items:
+      - docker-compose.yml
+  # - name: Run the updateAllContainers.sh script
+  #   shell: "bash updateAllContainers.sh"
+  #   args:
+  #     chdir: "/home/{{ docker_user }}"
