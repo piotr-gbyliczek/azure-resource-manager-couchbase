@@ -1,7 +1,0 @@
-# inventory generated using az command
-# az vmss list-instance-public-ips --resource-group couchbase-deployment-rg --name couchbase-syncgateway -o yaml | grep -E "fqdn|ipAddress" | sed 's/^.*fqdn: //g' | sed 's/^.*ipAddress: /ansible_host=/g' | sed 's/^\(^.*ansible_host.*$\)/\1 ansible_user=admin-user/g' | sed 'N;s/\n/ /'
-
-[all]
-vm0.couchbase-syncgateway-iwjin8c3y36yc43hiujz.uksouth.cloudapp.azure.com ansible_host=51.141.226.37 ansible_user=admin-user
-vm1.couchbase-syncgateway-iwjin8c3y36yc43hiujz.uksouth.cloudapp.azure.com ansible_host=51.141.226.104 ansible_user=admin-user
-
