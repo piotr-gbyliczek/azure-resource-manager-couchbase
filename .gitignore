@@ -1,4 +1,6 @@
-.env
-tags
 .terraform
 *.tfstate*
+*.retry
+rules_locked.auto.tfvars
+ansible/inventory
+ansible/files/wsss*

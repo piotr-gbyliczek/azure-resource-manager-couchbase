@@ -1,0 +1,33 @@
+{
+    "interface": "0.0.0.0:4984",
+        "adminInterface": "0.0.0.0:4985",
+        "log": ["*"],
+        "maxFileDescriptors": 250000,
+        "databases": {
+            "productionbucket": {
+                "server": "10.0.0.4,10.0.0.5,10.0.0.6",
+                "username": "sync_gateway",
+                "password": "YOURPASSWORD",
+                "bucket": "productionbucket",
+                "sync": "function(doc) { channel( doc.channels ); }",
+                "users": {
+                    "GUEST": {"disabled": true, "admin_channels": ["*"] }
+                },
+                "oidc": {
+                    "default_provider":"microsoft",
+                    "providers": {
+                        "microsoft": {
+                            "issuer":"https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0",
+                            "client_id":"get from azure app registrations",
+                            "validation_key":"get from azure app registration - keys",
+                            "callback_url":"https://www.whitespaceplatform.com/browser/login",
+                            "user_prefix": "wsprod",
+                            "register":true,
+                            "scope": [ "openid", "email", "offline_access" ]
+                        }
+                    }
+                }
+            }
+        }
+}
+

@@ -1,0 +1,28 @@
+---
+# tasks file for roles/stack
+
+- name: update all packages
+  yum:
+    name: "*"
+    state: "latest"
+    update_cache: "true"
+
+- name: install azure-cli repository
+  yum_repository:
+    name: "azure-cli"
+    description: "Azure CLI"
+    baseurl: "https://packages.microsoft.com/yumrepos/azure-cli"
+    enabled: "yes"
+    gpgcheck: "yes"
+    gpgkey: "https://packages.microsoft.com/keys/microsoft.asc"
+    file: "azure-cli.repo"
+  
+- name: install packages
+  yum:
+    name: "{{ stack_packages }}"
+    state: "present"
+
+- name: put SELinux in permissive mode, logging actions that would be blocked
+  selinux:
+    policy: "targeted"
+    state: "permissive"

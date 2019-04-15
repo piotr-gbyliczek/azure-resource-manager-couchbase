@@ -1,0 +1,7 @@
+---
+# defaults file for roles/stack
+
+stack_packages: 
+    - "git"
+    - "azure-cli"
+    - "libselinux-python"

@@ -1,0 +1,15 @@
+---
+
+- hosts: all
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/vars.yml
+  
+  roles:
+    - roles/stack
+    - roles/nginx
+    - roles/docker
+    - roles/whitespace

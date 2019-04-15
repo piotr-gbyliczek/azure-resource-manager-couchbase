@@ -1,0 +1,27 @@
+---
+# tasks file for roles/docker
+
+- name: install docker repository
+  get_url:
+    dest: '/etc/yum.repos.d/docker-ce.repo'
+    mode: 0440
+    url: 'https://download.docker.com/linux/centos/docker-ce.repo'
+
+- name: install docker prerequisites
+  yum:
+    name: "{{ docker_packages }}"
+    state: "present"
+
+- name: add docker user to docker group
+  user:
+    name: "{{ docker_user }}"
+    groups: "docker"
+    append: "yes"
+  notify: "restart docker"
+
+- name: install docker-compose
+  get_url:
+    dest: "/usr/local/bin/docker-compose"
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
+    checksum: "sha256:https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64.sha256"
+    mode: "0755"
