@@ -1,5 +1,44 @@
 nsg-rules-open = [
-        {
+  {
+    name                       = "Nginx"
+    priority                   = 119
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+    description                = "NginX"
+  },
+  {
+    name                       = "Nginx - ssl"
+    priority                   = 120
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+    description                = "NginX SSL port"
+  },
+  {
+    name                       = "nginxgatewayproxy"
+    priority                   = 121
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "18100"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+    description                = "NginX SyncGateway proxy"
+  }
+]
+
+nsg-rules-locked = [
+  {
     name                       = "SSH"
     priority                   = 100
     direction                  = "Inbound"
@@ -7,25 +46,10 @@ nsg-rules-open = [
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "Internet"
+    source_address_prefixes    = 
     destination_address_prefix = "*"
     description                = "SSH"
   },
-    {
-    name                       = "OpenAccess"
-    priority                   = 1000
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "Internet"
-    destination_address_prefix = "*"
-    description                = "Open access for initial setup"
-  },
-]
-
-nsg-rules-locked = [
   {
     name                       = "ErlangPortMapper"
     priority                   = 110
@@ -34,7 +58,7 @@ nsg-rules-locked = [
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "4369"
-    source_address_prefixes    = "123.123.123.123/32,123.123.123.124/32,123.123.123.125/32"
+    source_address_prefixes    = 
     destination_address_prefix = "*"
     description                = "ErlangPortMapper"
   },
@@ -136,41 +160,5 @@ nsg-rules-locked = [
     source_address_prefixes    =
     destination_address_prefix = "*"
     description                = "Node Data Exchange"
-  },
-  {
-    name                       = "Nginx"
-    priority                   = 119
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefixes    =
-    destination_address_prefix = "*"
-    description                = "NginX"
-  },
-  {
-    name                       = "Nginx - ssl"
-    priority                   = 120
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "443"
-    source_address_prefixes    =
-    destination_address_prefix = "*"
-    description                = "NginX SSL port"
-  },
-  {
-    name                       = "nginxgatewayproxy"
-    priority                   = 121
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "18100"
-    source_address_prefixes    =
-    destination_address_prefix = "*"
-    description                = "NginX SyncGateway proxy"
   },
 ]

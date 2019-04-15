@@ -8,6 +8,8 @@
   notify: "restart sync_gateway"
   become_user: "{{ sync_gateway_user }}"
   become: true
+  tags:
+      - "application"
 
 - name: copy azure scripts
   copy:
@@ -19,6 +21,8 @@
     - "updateReVAPI.sh"
   become_user: "{{ docker_user }}"
   become: true
+  tags:
+      - "application"
 
 - name: Log into private registry and force re-authorization
   docker_login:
@@ -28,6 +32,8 @@
     reauthorize: "yes"
   become_user: "{{ docker_user }}"
   become: true
+  tags:
+      - "application"
 
 - name: create docker folder
   file:
@@ -35,6 +41,8 @@
     state: "directory"
   become_user: "{{ docker_user }}"
   become: true
+  tags:
+      - "application"
 
 - name: copy docker compose file
   copy:
@@ -42,3 +50,5 @@
     dest: "/home/{{ docker_user }}/docker/docker-compose.yml"
   become_user: "{{ docker_user }}"
   become: true
+  tags:
+      - "application"

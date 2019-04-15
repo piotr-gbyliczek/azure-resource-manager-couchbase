@@ -12,7 +12,13 @@ After the initial deployment, which will create the rules to lock Couchbase down
 terraform apply
 ```
 
-You should then be able to run Ansible;
+You should then be able to run Ansible, first to configure ;
+
+```
+ansible-playbook --vault-id @prompt site.yml --skip-tags "applciation"
+```
+
+Then again to configure the application;
 
 ```
 ansible-playbook --vault-id @prompt site.yml

@@ -18,7 +18,7 @@ default_tags = {
   deployed_by = "node4"
 }
 
-static_ips = "83.244.243.48/28,185.121.139.106/32"
+static_ips = "83.244.243.48/28,83.166.165.252/32"
 
 couchbase_version = "6.0.1"
 
