@@ -245,10 +245,14 @@ module "vmss-syncgateway" {
 }
 
 ######################################################################################################
-# Lockdown
+# Create the locked down rules and Ansible inv - don't forget to re-run Terraform to lock it down
 ######################################################################################################
 resource "null_resource" "vmss_couchbase_public_ips" {
+  triggers {
+    build_number = "${timestamp()}"
+  }
+
   provisioner "local-exec" {
-    command = "bash scripts/get_vmss_publicips.sh '${join(", ", module.vmss-couchbase.virtual_machine_scale_set_id)}' '${var.static_ips}'"
+    command = "bash scripts/get_vmss_publicips.sh '${join(", ", module.vmss-couchbase.virtual_machine_scale_set_id)}' '${var.static_ips}' '${join(", ", module.vmss-syncgateway.virtual_machine_scale_set_id)}'"
   }
 }

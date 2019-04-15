@@ -1,0 +1,10 @@
+---
+# defaults file for roles/docker
+
+docker_packages:
+    - "ca-certificates"
+    - "yum-utils"
+    - "device-mapper-persistent-data"
+    - "lvm2"
+    - "python-docker-py"
+    - "docker-ce"

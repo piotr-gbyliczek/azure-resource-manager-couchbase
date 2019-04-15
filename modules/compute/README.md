@@ -1,1 +1,0 @@
-# Terraform Azutr Compute Module
