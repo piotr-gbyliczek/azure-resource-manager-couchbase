@@ -15,7 +15,7 @@ terraform apply
 You should then be able to run Ansible, first to configure ;
 
 ```
-ansible-playbook --vault-id @prompt site.yml --skip-tags "applciation"
+ansible-playbook --vault-id @prompt site.yml --skip-tags "application"
 ```
 
 Then again to configure the application;
