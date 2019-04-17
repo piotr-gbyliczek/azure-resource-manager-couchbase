@@ -1,0 +1,17 @@
+---
+# handlers file for roles/stack-users
+
+- name: expire_password
+  command: /usr/bin/passwd -e "{{ item.item.name }}"
+  with_items: "{{ created.results }}"
+  when: item.changed and item.item.noexpire is not defined and item.item.nopassword is not defined 
+
+- name: set_password_expiration
+  command: /usr/bin/chage -m 90 -M 120 "{{ item.item.name }}"
+  with_items: "{{ unsuspended.results }}"
+  when: item.changed and item.item.noexpire is not defined
+
+- name: set password not to expire
+  command: /usr/bin/passwd -e '' "{{ item.item.name }}"
+  with_items: "{{ created.results }}"
+  when: item.changed and item.item.noexpire is defined

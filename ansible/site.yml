@@ -7,9 +7,11 @@
 
   vars_files:
     - group_vars/vars.yml
+    - group_vars/users.yml
   
   roles:
     - roles/stack
     - roles/nginx
     - roles/docker
     - roles/whitespace
+    - roles/users

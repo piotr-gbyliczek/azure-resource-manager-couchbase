@@ -20,7 +20,7 @@ default_tags = {
 
 static_ips = "83.244.243.48/28,83.166.165.252/32"
 
-couchbase_version = "6.0.1"
+couchbase_version = "5.5.3"
 
 couchbase_username = "admin"
 
