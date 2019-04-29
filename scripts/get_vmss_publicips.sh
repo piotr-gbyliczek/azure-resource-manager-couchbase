@@ -17,5 +17,10 @@ cat scripts/rules_locked.tfvars.template | sed "s/^\(.*source_address_prefixes.*
 # This part of the script generates the Ansible inventory - it not pretty but works :)
 ######################################################################################################
 
-cat scripts/inventory.template > ansible/inventory
+echo "# inventory generated using az command" > ansible/inventory
+echo >> ansible/inventory
+echo "[servers]" >> ansible/inventory
+az vmss list-instance-public-ips --ids $couchbase -o yaml | grep -E "fqdn|ipAddress" | sed 's/^.*fqdn: //g' | sed 's/^.*ipAddress: /ansible_host=/g' | sed 's/^\(^.*ansible_host.*$\)/\1 ansible_user=admin-user/g' | sed 'N;s/\n/ /' >> ansible/inventory
+echo >> ansible/inventory
+echo "[syncgateways]" >> ansible/inventory
 az vmss list-instance-public-ips --ids $syncgateway -o yaml | grep -E "fqdn|ipAddress" | sed 's/^.*fqdn: //g' | sed 's/^.*ipAddress: /ansible_host=/g' | sed 's/^\(^.*ansible_host.*$\)/\1 ansible_user=admin-user/g' | sed 'N;s/\n/ /' >> ansible/inventory

@@ -4,3 +4,7 @@
 rules_locked.auto.tfvars
 ansible/inventory
 ansible/files/wsss*
+.env
+extensions/tags
+rules_locked.tfvars
+tags

@@ -157,7 +157,7 @@ module "public-ip-couchbase" {
   public_ip_name        = "couchbase-public-ip"
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.resource_group.name}"
-  public_ip_domain_name = "server-${random_string.unique-string.result}"
+  public_ip_domain_name = "${var.short_name}-server-${random_string.unique-string.result}"
 }
 
 module "lb-couchbase" {
@@ -172,6 +172,7 @@ module "lb-couchbase" {
 
   lb_port {
     admin-ui = ["8091", "Tcp", "8091", "SourceIP"]
+    admin-ui-ssl = ["18091", "Tcp", "18091", "SourceIP"]
   }
 }
 

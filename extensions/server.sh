@@ -26,6 +26,15 @@ wget http://packages.couchbase.com/releases/${version}/couchbase-server-enterpri
 yum -y install couchbase-server-enterprise-${version}-centos7.x86_64.rpm
 yum -y install couchbase-server
 
+echo "Adding Couchbase binaries to path"
+echo "
+CBPATH='/opt/couchbase/bin'
+if [[ ! \$PATH =~ \$CBPATH ]]; then
+  PATH=\$CBPATH:\$PATH
+  export PATH
+fi  
+" >> /etc/profile.d/sh.local
+
 echo "Calling util.sh..."
 source util.sh
 formatDataDisk
