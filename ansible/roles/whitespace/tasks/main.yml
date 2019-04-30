@@ -1,54 +1,123 @@
 ---
 # tasks file for roles/whitespace
 
-- name : copy container template
-  copy:
-    src: "sync_gateway.json"
-    dest: "/home/sync_gateway/sync_gateway.json"
-  notify: "restart sync_gateway"
-  become_user: "{{ sync_gateway_user }}"
-  become: true
-  tags:
-      - "application"
+# Configure Docker
+########################################################################
 
-- name: copy azure scripts
-  copy:
-    src: "{{ item }}"
-    dest: "/home/{{ docker_user }}/{{ item }}"
-    mode: "0744"
-  with_items:
-    - "updateAllContainers.sh"
-    - "updateReVAPI.sh"
-  become_user: "{{ docker_user }}"
-  become: true
-  tags:
-      - "application"
-
-- name: Log into private registry and force re-authorization
+- name: log into private registry and force re-authorization
   docker_login:
-    registry: wsinternalcontainerregistry.azurecr.io
-    username: "{{ docker_registry_user }}"
-    password: "{{ docker_registry_password }}"
-    reauthorize: "yes"
-  become_user: "{{ docker_user }}"
+    registry: "{{ docker.registry_url }}"
+    username: "{{ docker.registry_user }}"
+    password: "{{ docker.registry_password }}"
+  become_user: "{{ docker.user }}"
   become: true
   tags:
       - "application"
 
-- name: create docker folder
+# Create the folders we need
+########################################################################
+
+- name: create the working folder
   file:
-    path: "/home/{{ docker_user }}/docker"
+    path: "{{ app.working_folder }}"
     state: "directory"
-  become_user: "{{ docker_user }}"
+    owner: "{{ docker.user }}"
+    group: "{{ docker.user }}"
+  tags:
+      - "application"
+
+- name: create the docker folder
+  file:
+    path: "{{ app.working_folder }}/docker_{{ app.env }}"
+    state: "directory"
+    owner: "{{ docker.user }}"
+    group: "{{ docker.user }}"
+  tags:
+      - "application"
+
+# Generate the files we need from the templates
+########################################################################
+
+- name: copy the update script
+  template:
+    src: "update.sh.j2"
+    dest: "{{ app.working_folder }}/update_docker_{{ app.env }}.sh"
+    owner: "{{ docker.user }}"
+    group: "{{ docker.user }}"
+    mode: "744"
+  tags:
+    - "application"
+
+- name: create the docker-compose.yml file
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ app.working_folder }}/docker_{{ app.env }}/docker-compose.yml"
+    owner: "{{ docker.user }}"
+    group: "{{ docker.user }}"
+  tags:
+    - "application"
+
+- name : copy sync gateway config
+  template:
+    src: "sync_gateway.json.j2"
+    dest: "/home/{{ sync_gateway.user }}/sync_gateway.json"
+    owner: "{{ sync_gateway.user }}"
+    group: "{{ sync_gateway.user }}"
+  notify: "restart sync_gateway"
+  become_user: "{{ sync_gateway.user }}"
   become: true
   tags:
       - "application"
 
-- name: copy docker compose file
-  copy:
-    src: "docker-compose.yml"
-    dest: "/home/{{ docker_user }}/docker/docker-compose.yml"
-  become_user: "{{ docker_user }}"
+# Pull the images needed
+########################################################################
+
+- name: pull the docker images
+  docker_image:
+    name: "{{ item }}"
+  become_user: "{{ docker.user }}"
+  become: true
+  with_items: "{{ containers }}"
+  tags:
+      - "application"
+
+# Run Docker Compose and Prune
+########################################################################
+
+- name: run docker-compose
+  command: "{{ docker.compose_command }}"
+  args:
+    chdir: "{{ app.working_folder }}/docker_{{ app.env }}"
+  become_user: "{{ docker.user }}"
   become: true
   tags:
       - "application"
+
+- name: run docker prune
+  command: "{{ docker.prune_command }}"
+  args:
+    chdir: "{{ app.working_folder }}/docker_{{ app.env }}"
+  become_user: "{{ docker.user }}"
+  become: true
+  tags:
+      - "application"
+
+# Copy the NGINX configs
+########################################################################
+
+- name: install configuration files
+  copy:
+    src: "nginx-{{ app.env }}/{{ item }}"
+    dest: "/etc/nginx/conf.d/{{ item }}"
+    owner: "nginx"
+    group: "nginx"
+    mode: "0644"
+  notify: "restart nginx"
+  with_items: "{{ nginx_configs }}"
+
+
+# Print some information to the screen
+########################################################################
+
+- debug:
+    msg: "The sync gate way username is '{{ sync_gateway.user }}' and password '{{ sync_gateway.password }}'"

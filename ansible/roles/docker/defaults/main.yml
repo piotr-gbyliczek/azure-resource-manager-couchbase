@@ -6,5 +6,6 @@ docker_packages:
     - "yum-utils"
     - "device-mapper-persistent-data"
     - "lvm2"
-    - "python-docker-py"
     - "docker-ce"
+    - "python-docker-py"
+    - "python2-pip"

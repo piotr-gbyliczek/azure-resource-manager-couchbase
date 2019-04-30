@@ -1,0 +1,50 @@
+version: '3'
+services:
+  revapi:
+    image: wsinternalcontainerregistry.azurecr.io/revapi:{{ app.env }}
+    ports:
+      - "8092:8092"
+      - "8080:8080"
+    restart: always
+    environment:
+      - ENVCONFIG=api{{ app.env }}
+    extra_hosts:
+    - "localN1QL:{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL0:{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL1:{{ hostvars[groups['servers'][1]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL2:{{ hostvars[groups['servers'][2]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localSG:{{ ansible_default_ipv4.address }}"
+    - "localAV:{{ ansible_default_ipv4.address }}"
+  pdf-fragment-service:
+    image: wsinternalcontainerregistry.azurecr.io/pdf-fragment-service:{{ app.env }}
+    ports:
+      - "3000:3000"
+    restart: always
+  rebrowse:
+    image: wsinternalcontainerregistry.azurecr.io/rebrowse:{{ app.env }}
+    ports:
+      - "9080:80"
+    restart: always
+  sapi:
+    image: wsinternalcontainerregistry.azurecr.io/sapi:latest
+    ports:
+      - "9095:80"
+    restart: always
+  wsnotif:
+    image: wsinternalcontainerregistry.azurecr.io/wsnotif:{{ app.env }}
+    environment:
+      - localSG={{ ansible_default_ipv4.address }}
+    restart: always
+    extra_hosts:
+    - "localSG:{{ ansible_default_ipv4.address }}"
+  doc-router:
+    image: wsinternalcontainerregistry.azurecr.io/doc-router:{{ app.env }}
+    restart: always
+    extra_hosts:
+      - "localSG:{{ ansible_default_ipv4.address }}"
+      - "localN1QL:{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+  clamav:
+    image: mkodockx/docker-clamav:latest
+    ports:
+      - "3310:3310"
+    restart: always

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function run() {
+    docker pull wsinternalcontainerregistry.azurecr.io/revapi:{{ app.env }}
+    docker pull wsinternalcontainerregistry.azurecr.io/rebrowse:{{ app.env }}
+    docker pull wsinternalcontainerregistry.azurecr.io/pdf-fragment-service:{{ app.env }}
+    docker pull wsinternalcontainerregistry.azurecr.io/sapi:latest
+    docker pull wsinternalcontainerregistry.azurecr.io/wsnotif:{{ app.env }}
+    docker pull wsinternalcontainerregistry.azurecr.io/doc-router:{{ app.env }}
+
+    cd docker_{{ app.env }}
+    {{ docker.compose_path }} up -d --no-deps
+    docker image prune -af
+
+    # if [ ! $NO_ALERT ]; then
+    #     echo "Sending a Slack notification ..."
+    #     cd ../slack-notify
+    #     ./slack.sh
+    # fi
+}
+
+function locked() {
+    echo "Someone else is running this right now, try again in a sec."
+    exit 1
+}
+
+(flock -n 9 || locked; run) 9>{{ app.working_folder }}/update_docker_{{ app.env }}.lock

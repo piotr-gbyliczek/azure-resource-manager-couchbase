@@ -6,3 +6,9 @@
     name: "sync_gateway"
     state: "restarted"
     enabled: "true"
+
+- name: restart nginx
+  systemd:
+    name: "nginx"
+    state: "restarted"
+    enabled: "true"

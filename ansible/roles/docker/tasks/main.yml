@@ -14,14 +14,14 @@
 
 - name: add docker user to docker group
   user:
-    name: "{{ docker_user }}"
+    name: "{{ docker.user }}"
     groups: "docker"
     append: "yes"
   notify: "restart docker"
 
 - name: install docker-compose
   get_url:
-    dest: "/usr/local/bin/docker-compose"
-    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
-    checksum: "sha256:https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64.sha256"
+    dest: "{{ docker.compose_path }}"
+    url: "https://github.com/docker/compose/releases/download/{{ docker.compose_version }}/docker-compose-Linux-x86_64"
+    checksum: "sha256:https://github.com/docker/compose/releases/download/{{ docker.compose_version }}/docker-compose-Linux-x86_64.sha256"
     mode: "0755"

@@ -26,15 +26,6 @@
     name: "{{ nginx_packages }}"
     state: "present"
 
-- name: install configuration files
-  copy:
-    src: "default.conf"
-    dest: "/etc/nginx/conf.d/default.conf"
-    owner: "nginx"
-    group: "nginx"
-    mode: "0644"
-  notify: "restart nginx"
-
 - name: create nginx ssl directory
   file:
     dest: "/etc/nginx/ssl"
