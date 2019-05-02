@@ -49,8 +49,8 @@ variable "virtual_machine_scale_set_network_security_group" {
 
 variable "virtual_machine_scale_set_application_security_group" {
   description = "virtual machine scale set application security group"
-  default = ""
-  }
+  default     = ""
+}
 
 variable "virtual_machine_scale_set_storage_account" {
   description = "storage account for the extension scripts"
@@ -79,7 +79,7 @@ variable "overprovision" {
 
 variable "sku_name" {
   description = "SKU name"
-  default     = "Standard_B2ms"
+  default     = "Standard_DS12_v2"
 }
 
 variable "sku_tier" {

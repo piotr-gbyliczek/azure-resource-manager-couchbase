@@ -1,9 +1,9 @@
 #################
 # Resource group and location information
 #################
-long_name = "couchbase-deployment"
+long_name = "sandbox-couchbase-deployment"
 
-short_name = "couchbase"
+short_name = "sandbox"
 
 location = "uksouth"
 
@@ -12,8 +12,8 @@ location = "uksouth"
 #################
 
 default_tags = {
-  project     = "couchbase"
-  environment = "test"
+  project     = "couchbase-sandbox"
+  environment = "sandbox"
   costcenter  = "whitespace"
   deployed_by = "node4"
 }

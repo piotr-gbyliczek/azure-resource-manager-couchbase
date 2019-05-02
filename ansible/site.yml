@@ -6,7 +6,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/vars.yml
+    - group_vars/sandbox.yml
     - group_vars/users.yml
   
   roles:
@@ -19,7 +19,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/vars.yml
+    - group_vars/sandbox.yml
     - group_vars/users.yml
   
   roles:

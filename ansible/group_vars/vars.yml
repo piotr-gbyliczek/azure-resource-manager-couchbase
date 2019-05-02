@@ -6,6 +6,11 @@ app:
   env: "dev"
   working_folder: "/wsdocker"
 
+templates:
+  docker_compose: "docker-compose-{{  app.env }}.yml.j2"
+  sync_gateway: "sync_gateway-{{  app.env }}.json.j2"
+  update_script: "update-{{  app.env }}.sh.j2"
+
 sync_gateway:
   user: "sync_gateway"
   password: !vault |

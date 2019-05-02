@@ -40,7 +40,7 @@
 
 - name: copy the update script
   template:
-    src: "update.sh.j2"
+    src: "{{ templates.update_script }}"
     dest: "{{ app.working_folder }}/update_docker_{{ app.env }}.sh"
     owner: "{{ docker.user }}"
     group: "{{ docker.user }}"
@@ -50,7 +50,7 @@
 
 - name: create the docker-compose.yml file
   template:
-    src: "docker-compose.yml.j2"
+    src: "{{ templates.docker_compose }}"
     dest: "{{ app.working_folder }}/docker_{{ app.env }}/docker-compose.yml"
     owner: "{{ docker.user }}"
     group: "{{ docker.user }}"
@@ -59,7 +59,7 @@
 
 - name : copy sync gateway config
   template:
-    src: "sync_gateway.json.j2"
+    src: "{{ templates.sync_gateway }}"
     dest: "/home/{{ sync_gateway.user }}/sync_gateway.json"
     owner: "{{ sync_gateway.user }}"
     group: "{{ sync_gateway.user }}"
@@ -114,7 +114,6 @@
     mode: "0644"
   notify: "restart nginx"
   with_items: "{{ nginx_configs }}"
-
 
 # Print some information to the screen
 ########################################################################
