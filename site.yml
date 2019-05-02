@@ -13,10 +13,9 @@
     - roles/azure-rg
     - roles/azure-virtualnetwork
     - roles/azure-storeage    
-    # - roles/azure-nsg
+    - roles/azure-nsg
     # - roles/azure-loadbalancer
-    # - roles/azure-mysqldb
-    # - roles/azure-vmss
+    - roles/azure-vmss-couchbase
 
 
 # - hosts: all
