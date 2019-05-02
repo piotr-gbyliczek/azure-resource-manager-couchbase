@@ -1,0 +1,32 @@
+---
+# defaults file for roles/azure-loadbalancer
+
+resource_group: "default-ansible-rg"
+location: "uksouth"
+
+common_tags:
+  Name: "{{ resource_group }}"
+  Application: "{{ resource_group }}"
+
+loadbalancer:
+  name: "{{ resource_group }}-lb"
+  enable_floating_ip: "no"
+  public_ip:
+    name: "{{ resource_group }}-lb-pip"
+    allocation_method: "Static"
+  front:
+    protocol: "Tcp"
+    port: "80"
+    backend: "80"
+    timeout: "4"
+    distribution: "Default"
+  probe:
+    protocol: "Tcp"
+    port: "80"
+    interval: "10"
+    fail_count: "3"
+  nat:
+    natpool_start: "50000"
+    natpool_end: "50040"
+    natpool_port: "22"
+    natpool_protocol: "Tcp"

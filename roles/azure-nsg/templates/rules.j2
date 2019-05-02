@@ -1,0 +1,28 @@
+
+---
+
+nsg_rules:
+    - name: "AllowHTTP"
+      protocol: "Tcp"
+      source_address_prefix: "*"
+      destination_port_range: "80"
+      access: "Allow"
+      priority: "101"
+      direction: "Inbound"
+    - name: "AllowHTTPS"
+      protocol: "Tcp"
+      source_address_prefix: "*"
+      destination_port_range: "443"
+      access: "Allow"
+      priority: "102"
+      direction: Inbound
+    - name: "AllowSSH"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ssh | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "22"
+      access: "Allow"
+      priority: "200"
+      direction: "Inbound"

@@ -1,0 +1,16 @@
+---
+# defaults file for roles/azure-virtualnetwork
+
+resource_group: "default-ansible-rg"
+location: "uksouth"
+
+common_tags:
+  Name: "{{ resource_group }}"
+  Application: "{{ resource_group }}"
+
+network:
+  name: "ansible-default-vnet"
+  cidr_block: "10.0.0.0/16"
+  subnets:
+    - { name: 'public-sub',  subnet: '10.0.10.0/24' }
+    - { name: 'private-sub', subnet: '10.0.20.0/24' }

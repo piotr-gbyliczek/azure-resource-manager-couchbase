@@ -1,0 +1,15 @@
+---
+# defaults file for roles/azure-nsg
+
+resource_group: "default-ansible-rg"
+location: "uksouth"
+
+common_tags:
+  Name: "{{ resource_group }}"
+  Application: "{{ resource_group }}"
+
+nsg:
+  name: "ansible-default-nsg"
+
+trusted_ssh:
+  - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible

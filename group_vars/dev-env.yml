@@ -1,0 +1,99 @@
+---
+
+# Some defaults for Azure
+##################################################
+resource_group: "{{ app.name }}-rg"
+location: "uksouth"
+
+# Tags
+##################################################
+common_tags:
+  "Name": "{{ app.name }}"
+  "Application": "{{  app.name }}"
+  "Environment": "Demo"
+  "Costcenter": "mpn"
+  "Division": "n4stack"
+  "Consumer": "r.mckendrick@node4.co.uk"
+
+# Environmentment Details
+##################################################
+
+# virtual network
+network:
+  name: "{{ app.name }}-vnet"
+  cidr_block: "10.11.0.0/16"
+  subnets:
+    - { name: 'app-sub',    subnet: '10.11.2.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.11.3.0/24' }
+
+# network security group
+nsg:
+  name: "{{ app.name }}-nsg"
+trusted_ssh:
+  - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
+  - "83.166.165.252/32"
+
+# storeage account and atomic_container
+storeage:
+  name: "{{ app.shortname }}sa"
+  type: "Standard_LRS"
+  container: "extentions"
+  files:
+    - "server.sh"
+    - "syncGateway.sh"
+    - "util.sh"
+
+# load balancer
+loadbalancer:
+  name: "{{ app.name }}-lb"
+  enable_floating_ip: false
+  public_ip:
+    name: "{{ app.name }}-lb-pip"
+    allocation_method: "Static"
+  front:
+    protocol: "Tcp"
+    port: "80"
+    backend: "80"
+    timeout: "4"
+    distribution: "Default"
+  probe:
+    protocol: "Tcp"
+    port: "80"
+    interval: "10"
+    fail_count: "3"
+  nat:
+    natpool_start: "50000"
+    natpool_end: "50040"
+    natpool_port: "22"
+    natpool_protocol: "Tcp"
+
+# virtual machine scale set
+vmss:
+  name: "{{ app.name }}-vmss"
+  short_name: "web"
+  size: "Standard_B1s"
+  capacity: "2"
+  overprovision: "no"
+  admin_username: "node4"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/node4/.ssh/authorized_keys"
+    data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
+  vnet:
+    name: "{{ app.name }}-vnet"
+    subnet_name: "public-sub"
+    load_balancer: "{{ app.name }}-lb"
+    nsg: "{{ app.name }}-nsg"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks:
+      - lun: "0"
+        disk_size_gb: "10"
+        caching: "ReadWrite"
+        managed_disk_type: "Standard_LRS"
+  upgrade_policy: "Manual"

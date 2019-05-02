@@ -1,0 +1,47 @@
+---
+
+- name: Create, launch and configure our basic Azure environment
+  hosts: localhost
+  connection: local
+  gather_facts: True
+
+  vars_files:
+    - group_vars/dev-app.yml
+    - group_vars/dev-env.yml
+
+  roles:
+    - roles/azure-rg
+    - roles/azure-virtualnetwork
+    - roles/azure-storeage    
+    # - roles/azure-nsg
+    # - roles/azure-loadbalancer
+    # - roles/azure-mysqldb
+    # - roles/azure-vmss
+
+
+# - hosts: all
+#   gather_facts: true
+#   become: yes
+#   become_method: sudo
+
+#   vars_files:
+#     - group_vars/sandbox.yml
+#     - group_vars/users.yml
+  
+#   roles:
+#     - roles/stack
+#     - roles/users
+
+# - hosts: syncgateways
+#   gather_facts: true
+#   become: yes
+#   become_method: sudo
+
+#   vars_files:
+#     - group_vars/sandbox.yml
+#     - group_vars/users.yml
+  
+#   roles:
+#     - roles/nginx
+#     - roles/docker
+#     - roles/whitespace

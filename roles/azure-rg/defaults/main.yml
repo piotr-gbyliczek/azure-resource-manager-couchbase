@@ -1,0 +1,9 @@
+---
+# defaults file for roles/azure-rg
+
+common_tags:
+  Name: "{{ resource_group }}"
+  Application: "{{ resource_group }}"
+
+resource_group: "default-ansible-rg"
+location: "uksouth"
