@@ -6,10 +6,15 @@ app:
   env: "sandbox"
   working_folder: "/wsdocker"
 
+nginx:
+  user: "nginx"
+  default_page: "/usr/share/nginx/html/index.html"
+
 templates:
   docker_compose: "docker-compose.yml.j2"
   sync_gateway: "sync_gateway.json.j2"
   update_script: "update.sh.j2"
+  index_html: "index.html.j2"
 
 sync_gateway:
   user: "sync_gateway"

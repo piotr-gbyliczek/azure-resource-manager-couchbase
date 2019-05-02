@@ -114,9 +114,23 @@
     mode: "0644"
   notify: "restart nginx"
   with_items: "{{ nginx_configs }}"
+  tags:
+      - "application"
+
+- name: copy the updated index.html
+  template:
+    src: "{{ templates.index_html }}"
+    dest: "{{ nginx.default_page }}"
+    owner: "{{ nginx.user }}"
+    group: "{{ nginx.user }}"
+    mode: "755"
+  tags:
+    - "application"
 
 # Print some information to the screen
 ########################################################################
 
 - debug:
     msg: "The sync gate way username is '{{ sync_gateway.user }}' and password '{{ sync_gateway.password }}'"
+  tags:
+      - "application"
