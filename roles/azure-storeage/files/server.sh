@@ -5,17 +5,13 @@ echo "Running server.sh"
 version=$1
 adminUsername=$2
 adminPassword=$3
-location=$4
-services=$5
-uniquestring=$6
+services=$4
 
 echo "Using the settings:"
 echo version \'$version\'
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
-echo location \'$location\'
 echo services \'$services\'
-echo uniquestring \'$uniquestring\'
 
 echo "Installing prerequisites..."
 yum -y install python-httplib2 epel-release
@@ -48,33 +44,30 @@ tuneDisks
 
 echo "Configuring Couchbase Server..."
 
-# We can get the index directly with this, but unsure how to test for sucess.  Come back to later...
-#nodeIndex = `curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/name?api-version=2017-04-02&format=text"`
-# good example here https://github.com/bonggeek/Samples/blob/master/imds/imds.sh
 
-nodeName="null"
-while [[ $nodeName == "null" ]]
+nodeShort="null"
+while [[ $nodeShort == "null" ]]
 do
-  nodeName=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-04-02" \
-    | jq ".name" \
-    | sed 's/"//g'`
+  nodeShort=`hostname -s`
 done
 
 nodeIndex="null"
 while [[ $nodeIndex == "null" ]]
 do
-  nodeIndex=`echo $nodeName \
-    | sed 's/.*_//'`
+  nodeIndex=`echo ${nodeShort: -1}`
 done
 
-nodeName=`echo $nodeName \
-    | sed 's/_.*//'`
+nodeDNS="null"
+while [[ $nodeDNS == "null" ]]
+do
+  nodeDNS=`hostname -f`
+done
 
-nodeDNS='vm'$nodeIndex'.'$nodeName'-'$uniquestring'.'$location'.cloudapp.azure.com'
-rallyDNS='vm0.'$nodeName'-'$uniquestring'.'$location'.cloudapp.azure.com'
-
-#nodeDNS=`hostname -f`
-#rallyDNS=`echo $nodeDNS | sed 's/[[:digit:]]\{6\}./000000./1'`
+rallyDNS="null"
+while [[ $rallyDNS == "null" ]]
+do
+  rallyDNS=`hostname -s | sed 's/[0-9]*//g'`000000.`hostname -d`
+done
 
 echo "Adding an entry to /etc/hosts to simulate split brain DNS..."
 echo "

@@ -83,5 +83,5 @@
     publisher: "Microsoft.Azure.Extensions"
     type: "CustomScript"
     type_handler_version: "2.0"
-    settings: '{"commandToExecute": "hostname"}'
+    settings: '{ "fileUris": [ "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/server.sh", "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/util.sh" ], "commandToExecute": "hostname" }'
     auto_upgrade_minor_version: true

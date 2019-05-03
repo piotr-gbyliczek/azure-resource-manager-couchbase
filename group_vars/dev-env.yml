@@ -70,9 +70,9 @@ loadbalancer:
 # virtual machine scale set
 vmss:
   name: "{{ app.name }}-vmss"
-  short_name: "web"
-  size: "Standard_B1s"
-  capacity: "2"
+  short_name: "{{ app.shortname }}"
+  size: "Standard_B2ms"
+  capacity: "3"
   overprovision: "no"
   admin_username: "node4"
   key:
@@ -81,7 +81,7 @@ vmss:
     data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
   vnet:
     name: "{{ app.name }}-vnet"
-    subnet_name: "public-sub"
+    subnet_name: "app-sub"
     load_balancer: "{{ app.name }}-lb"
     nsg: "{{ app.name }}-nsg"
   image:
@@ -96,4 +96,4 @@ vmss:
         disk_size_gb: "10"
         caching: "ReadWrite"
         managed_disk_type: "Standard_LRS"
-  upgrade_policy: "Manual"
+  upgrade_policy: "Automatic"

@@ -3,8 +3,8 @@
 # Application vars
 
 app:
-  name: "cbansible" # this can contain characters such as -
-  shortname: "cbansible" # all lower-case, all one word
+  name: "wibblecb" # this can contain characters such as -
+  shortname: "couch" # all lower-case, all one word
   env: "dev"
   working_folder: "/wsdocker"
 
@@ -16,6 +16,17 @@ templates:
   sync_gateway: "sync_gateway-{{  app.env }}.json.j2"
   update_script: "update-{{  app.env }}.sh.j2"
 
+couchbase:
+  version: "5.5.3"
+  username: "admin"
+  password: "securepassword"
+  dev:
+    bucket: "platformdev"
+  test:
+    bucket: "testdev"
+  supportdev:
+    bucket: "SupportDev"
+
 sync_gateway:
   user: "sync_gateway"
   password: !vault |
@@ -25,14 +36,6 @@ sync_gateway:
           30306563373237346163333039343661376161313462623036373366313962373763366236396462
           3131656633303639330a313537343430626436343239383034316637366532663239633930623632
           64663135653631613666633535336338343234353531323038626533393062616133
-
-couchbase:
-  dev:
-    bucket: "platformdev"
-  test:
-    bucket: "testdev"
-  supportdev:
-    bucket: "SupportDev"
 
 openid:
   dev:
