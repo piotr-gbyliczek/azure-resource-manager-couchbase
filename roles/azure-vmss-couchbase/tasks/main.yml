@@ -1,46 +1,47 @@
 ---
 # tasks file for roles/azure-vmss
 
-- name: create the public IP address needed for the load balancer
+- name: create the public IP address needed for the couchbase load balancer
   azure_rm_publicipaddress:
     resource_group: "{{ resource_group }}"
-    allocation_method: "{{ loadbalancer.public_ip.allocation_method }}"
-    name: "{{ loadbalancer.public_ip.name }}"
+    allocation_method: "Static"
+    name: "{{ vmss_couchbase.name }}-pip"
     tags: "{{ common_tags }}"
 
-- name: create a load balancer using the public IP above
+- name: create a couchbase load balancer using the public IP above
   azure_rm_loadbalancer:
     resource_group: "{{ resource_group }}"
-    name: "{{ loadbalancer.name }}"
+    name: "{{ vmss_couchbase.name }}-lb"
     frontend_ip_configurations:
-      - name: "{{ loadbalancer.name }}-frontend-ip-config"
-        public_ip_address: "{{ loadbalancer.public_ip.name }}"
+      - name: "{{ vmss_couchbase.name }}-lb-frontend-ip-config"
+        public_ip_address: "{{ vmss_couchbase.name }}-pip"
     backend_address_pools:
-      - name: "{{ loadbalancer.name }}-backend-address-pool"
+      - name: "{{ vmss_couchbase.name }}-lb-backend-address-pool"
     probes:
-      - name: "{{ loadbalancer.name }}-probe"
-        port: "{{ loadbalancer.probe.port }}"
-        fail_count: "{{ loadbalancer.probe.fail_count }}"
-        protocol: "{{ loadbalancer.probe.protocol }}"
+      - name: "{{ vmss_couchbase.name }}-lb-probe"
+        port: "22"
+        fail_count: "3"
+        protocol: "Tcp"
     inbound_nat_pools:
-      - name: "{{ loadbalancer.name }}-nat-pool"
-        frontend_ip_configuration_name: "{{ loadbalancer.name }}-frontend-ip-config"
-        protocol: "{{ loadbalancer.nat.natpool_protocol }}"
-        frontend_port_range_start: "{{ loadbalancer.nat.natpool_start }}"
-        frontend_port_range_end: "{{ loadbalancer.nat.natpool_end }}"
-        backend_port: "{{ loadbalancer.nat.natpool_port }}"
-    load_balancing_rules:
-      - name: "{{ loadbalancer.name }}-loadbalancer-rule"
-        frontend_ip_configuration: "{{ loadbalancer.name }}-frontend-ip-config"
-        backend_address_pool: "{{ loadbalancer.name }}-backend-address-pool"
-        frontend_port: "{{ loadbalancer.front.port }}"
-        backend_port: "{{ loadbalancer.front.backend }}"
-        probe: "{{ loadbalancer.name }}-probe"
-        load_distribution: "{{ loadbalancer.front.distribution }}"
-        protocol: "{{ loadbalancer.front.protocol }}"
-        enable_floating_ip: false
+      - name: "{{ vmss_couchbase.name }}-nat-ssh"
+        frontend_ip_configuration_name: "{{ vmss_couchbase.name }}-lb-frontend-ip-config"
+        protocol: "Tcp"
+        frontend_port_range_start: "22000"
+        frontend_port_range_end: "22009"
+        backend_port: "22"
+      - name: "{{ vmss_couchbase.name }}-nat-admin-ui"
+        frontend_ip_configuration_name: "{{ vmss_couchbase.name }}-lb-frontend-ip-config"
+        protocol: "Tcp"
+        frontend_port_range_start: "18000"
+        frontend_port_range_end: "18009"
+        backend_port: "8091"
+      - name: "{{ vmss_couchbase.name }}-nat-admin-ui-ssl"
+        frontend_ip_configuration_name: "{{ vmss_couchbase.name }}-lb-frontend-ip-config"
+        protocol: "Tcp"
+        frontend_port_range_start: "18100"
+        frontend_port_range_end: "18109"
+        backend_port: "18091"
     tags: "{{ common_tags }}"
-  ignore_errors: True
 
 - name: check the user {{ ansible_user_id }} has a key, if not create one
   user:
@@ -48,40 +49,40 @@
     generate_ssh_key: yes
     ssh_key_file: "~/.ssh/id_rsa"
 
-- name: create the VMSS
+- name: create the couchbase VMSS
   azure_rm_virtualmachinescaleset:
     resource_group: "{{ resource_group }}"
-    name: "{{ vmss.name }}"
-    short_hostname: "{{ vmss.short_name }}"
-    vm_size: "{{ vmss.size }}"
-    capacity: "{{ vmss.capacity }}"
-    overprovision: "{{ vmss.overprovision }}"
-    virtual_network_name: "{{ vmss.vnet.name }}"
-    subnet_name: "{{ vmss.vnet.subnet_name }}"
-    load_balancer: "{{ vmss.vnet.load_balancer }}"
-    security_group: "{{ vmss.vnet.nsg }}"
-    admin_username: "{{ vmss.admin_username }}"
-    ssh_password_enabled: "{{ vmss.key.ssh_password_enabled }}"
+    name: "{{ vmss_couchbase.name }}"
+    short_hostname: "{{ vmss_couchbase.short_name }}"
+    vm_size: "{{ vmss_couchbase.size }}"
+    capacity: "{{ vmss_couchbase.capacity }}"
+    overprovision: "no"
+    virtual_network_name: "{{ network.name }}"
+    subnet_name: "{{ vmss_couchbase.subnet_name }}"
+    load_balancer: "{{ vmss_couchbase.name }}-lb"
+    security_group: "{{ vmss_couchbase.name }}-cb-nsg"
+    admin_username: "{{ vmss_couchbase.admin_username }}"
+    ssh_password_enabled: "{{ vmss_couchbase.key.ssh_password_enabled }}"
     ssh_public_keys:
-      - path: "{{ vmss.key.path }}"
-        key_data: "{{ vmss.key.data }}"
+      - path: "{{ vmss_couchbase.key.path }}"
+        key_data: "{{ vmss_couchbase.key.data }}"
     image:
-      offer: "{{ vmss.image.offer }}"
-      publisher: "{{ vmss.image.publisher }}"
-      sku: "{{ vmss.image.sku }}"
-      version: "{{ vmss.image.version }}"
-    managed_disk_type: "{{ vmss.disk.managed_disk_type }}"
-    data_disks: "{{ vmss.disk.data_disks }}"
-    upgrade_policy: "{{ vmss.upgrade_policy }}"
+      offer: "{{ vmss_couchbase.image.offer }}"
+      publisher: "{{ vmss_couchbase.image.publisher }}"
+      sku: "{{ vmss_couchbase.image.sku }}"
+      version: "{{ vmss_couchbase.image.version }}"
+    managed_disk_type: "{{ vmss_couchbase.disk.managed_disk_type }}"
+    data_disks: "{{ vmss_couchbase.disk.data_disks }}"
+    upgrade_policy: "{{ vmss_couchbase.upgrade_policy }}"
     tags: "{{ common_tags }}"
 
-- name: install VMSS extension
+- name: install couchbase VMSS extension
   azure_rm_virtualmachinescalesetextension:
-    name: "{{ vmss.name }}-ext"
+    name: "{{ vmss_couchbase.name }}-ext"
     resource_group: "{{ resource_group }}"
-    vmss_name: "{{ vmss.name }}"
+    vmss_name: "{{ vmss_couchbase.name }}"
     publisher: "Microsoft.Azure.Extensions"
     type: "CustomScript"
     type_handler_version: "2.0"
-    settings: '{ "fileUris": [ "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/server.sh", "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/util.sh" ], "commandToExecute": "hostname" }'
+    settings: '{ "fileUris": [ "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/server.sh", "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/util.sh" ], "commandToExecute": "bash server.sh {{ couchbase.version }} {{ couchbase.username }} {{ couchbase.password }} {{ couchbase.services }}" }'
     auto_upgrade_minor_version: true

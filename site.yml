@@ -6,17 +6,16 @@
   gather_facts: True
 
   vars_files:
-    - group_vars/dev-app.yml
-    - group_vars/dev-env.yml
+    - group_vars/sandbox-app.yml
+    - group_vars/sandbox-env.yml
 
   roles:
     - roles/azure-rg
     - roles/azure-virtualnetwork
-    - roles/azure-storeage    
+    - roles/azure-storeage
     - roles/azure-nsg
-    # - roles/azure-loadbalancer
     - roles/azure-vmss-couchbase
-
+    - roles/azure-vmss-syncgateway
 
 # - hosts: all
 #   gather_facts: true
@@ -26,7 +25,7 @@
 #   vars_files:
 #     - group_vars/sandbox.yml
 #     - group_vars/users.yml
-  
+
 #   roles:
 #     - roles/stack
 #     - roles/users
@@ -39,7 +38,7 @@
 #   vars_files:
 #     - group_vars/sandbox.yml
 #     - group_vars/users.yml
-  
+
 #   roles:
 #     - roles/nginx
 #     - roles/docker

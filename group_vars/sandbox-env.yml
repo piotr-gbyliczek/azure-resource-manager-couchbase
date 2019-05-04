@@ -26,10 +26,7 @@ network:
     - { name: 'app-sub',    subnet: '10.11.2.0/24' }
     - { name: 'appgw-sub',   subnet: '10.11.3.0/24' }
 
-# network security group
-nsg:
-  name: "{{ app.name }}-nsg"
-trusted_ssh:
+trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
   - "83.166.165.252/32"
 
@@ -43,47 +40,17 @@ storeage:
     - "syncGateway.sh"
     - "util.sh"
 
-# load balancer
-loadbalancer:
-  name: "{{ app.name }}-lb"
-  enable_floating_ip: false
-  public_ip:
-    name: "{{ app.name }}-lb-pip"
-    allocation_method: "Static"
-  front:
-    protocol: "Tcp"
-    port: "80"
-    backend: "80"
-    timeout: "4"
-    distribution: "Default"
-  probe:
-    protocol: "Tcp"
-    port: "80"
-    interval: "10"
-    fail_count: "3"
-  nat:
-    natpool_start: "50000"
-    natpool_end: "50040"
-    natpool_port: "22"
-    natpool_protocol: "Tcp"
-
-# virtual machine scale set
-vmss:
-  name: "{{ app.name }}-vmss"
-  short_name: "{{ app.shortname }}"
+vmss_couchbase:
+  name: "{{ app.name }}-cb"
+  short_name: "couch"
   size: "Standard_B2ms"
   capacity: "3"
-  overprovision: "no"
   admin_username: "node4"
   key:
     ssh_password_enabled: "no"
     path: "/home/node4/.ssh/authorized_keys"
     data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
-  vnet:
-    name: "{{ app.name }}-vnet"
-    subnet_name: "app-sub"
-    load_balancer: "{{ app.name }}-lb"
-    nsg: "{{ app.name }}-nsg"
+  subnet_name: "app-sub"
   image:
     offer: "CentOS"
     publisher: "OpenLogic"
@@ -96,4 +63,25 @@ vmss:
         disk_size_gb: "10"
         caching: "ReadWrite"
         managed_disk_type: "Standard_LRS"
+  upgrade_policy: "Automatic"
+
+vmss_syncgateway:
+  name: "{{ app.name }}-sg"
+  short_name: "sync"
+  size: "Standard_B2ms"
+  capacity: "2"
+  admin_username: "node4"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/node4/.ssh/authorized_keys"
+    data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
+  subnet_name: "appgw-sub"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks: ""
   upgrade_policy: "Automatic"
