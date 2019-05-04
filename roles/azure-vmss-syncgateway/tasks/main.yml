@@ -5,7 +5,7 @@
   azure_rm_publicipaddress:
     resource_group: "{{ resource_group }}"
     allocation_method: "Static"
-    name: "{{ vmss_syncgateway.name }}-pip"
+    name: "{{ vmss_syncgateway.name }}-lb-pip"
     tags: "{{ common_tags }}"
 
 - name: create a syncgateway load balancer using the public IP above
@@ -14,7 +14,7 @@
     name: "{{ vmss_syncgateway.name }}-lb"
     frontend_ip_configurations:
       - name: "{{ vmss_syncgateway.name }}-lb-frontend-ip-config"
-        public_ip_address: "{{ vmss_syncgateway.name }}-pip"
+        public_ip_address: "{{ vmss_syncgateway.name }}-lb-pip"
     backend_address_pools:
       - name: "{{ vmss_syncgateway.name }}-lb-backend-address-pool"
     probes:
@@ -52,7 +52,7 @@
 - name: create the syncgateway VMSS
   azure_rm_virtualmachinescaleset:
     resource_group: "{{ resource_group }}"
-    name: "{{ vmss_syncgateway.name }}"
+    name: "{{ vmss_syncgateway.name }}-vmss"
     short_hostname: "{{ vmss_syncgateway.short_name }}"
     vm_size: "{{ vmss_syncgateway.size }}"
     capacity: "{{ vmss_syncgateway.capacity }}"
@@ -77,9 +77,9 @@
 
 - name: install syncgateway VMSS extension
   azure_rm_virtualmachinescalesetextension:
-    name: "{{ vmss_syncgateway.name }}-ext"
+    name: "{{ vmss_syncgateway.name }}-syncgateway-vmss-ext"
     resource_group: "{{ resource_group }}"
-    vmss_name: "{{ vmss_syncgateway.name }}"
+    vmss_name: "{{ vmss_syncgateway.name }}-vmss"
     publisher: "Microsoft.Azure.Extensions"
     type: "CustomScript"
     type_handler_version: "2.0"
@@ -111,13 +111,10 @@
     resource_group: "{{ resource_group }}"
     provider: "compute"
     resource_type: "virtualmachinescalesets"
-    resource_name: "{{ vmss_syncgateway.name }}"
+    resource_name: "{{ vmss_couchbase.name }}-vmss"
     subresource:
       - type: "networkInterfaces"
   register: vmss_network_interfaces
-
-- debug:
-    msg: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }} and {{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress }}"
 
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:

@@ -4,7 +4,7 @@
 - name: gather some facts on the public IP address attached to the couchbase load balancer
   azure_rm_publicipaddress_facts:
     resource_group: "{{ resource_group }}"
-    name: "{{ vmss_couchbase.name }}-pip"
+    name: "{{ vmss_couchbase.name }}-lb-pip"
   register: cb_ip_address
 
 - name: gather some facts on the couchbase load balancer
@@ -26,7 +26,7 @@
 - name: gather some facts on the public IP address attached to the syncgateway load balancer
   azure_rm_publicipaddress_facts:
     resource_group: "{{ resource_group }}"
-    name: "{{ vmss_syncgateway.name }}-pip"
+    name: "{{ vmss_syncgateway.name }}-lb-pip"
   register: sg_ip_address
 
 - name: gather some facts on the syncgateway load balancer

@@ -5,7 +5,7 @@
   azure_rm_publicipaddress:
     resource_group: "{{ resource_group }}"
     allocation_method: "Static"
-    name: "{{ vmss_couchbase.name }}-pip"
+    name: "{{ vmss_couchbase.name }}-lb-pip"
     tags: "{{ common_tags }}"
 
 - name: create a couchbase load balancer using the public IP above
@@ -14,7 +14,7 @@
     name: "{{ vmss_couchbase.name }}-lb"
     frontend_ip_configurations:
       - name: "{{ vmss_couchbase.name }}-lb-frontend-ip-config"
-        public_ip_address: "{{ vmss_couchbase.name }}-pip"
+        public_ip_address: "{{ vmss_couchbase.name }}-lb-pip"
     backend_address_pools:
       - name: "{{ vmss_couchbase.name }}-lb-backend-address-pool"
     probes:
@@ -52,7 +52,7 @@
 - name: create the couchbase VMSS
   azure_rm_virtualmachinescaleset:
     resource_group: "{{ resource_group }}"
-    name: "{{ vmss_couchbase.name }}"
+    name: "{{ vmss_couchbase.name }}-vmss"
     short_hostname: "{{ vmss_couchbase.short_name }}"
     vm_size: "{{ vmss_couchbase.size }}"
     capacity: "{{ vmss_couchbase.capacity }}"
@@ -78,9 +78,9 @@
 
 - name: install couchbase VMSS extension
   azure_rm_virtualmachinescalesetextension:
-    name: "{{ vmss_couchbase.name }}-ext"
+    name: "{{ vmss_couchbase.name }}-couchbase-server-vmss-ext"
     resource_group: "{{ resource_group }}"
-    vmss_name: "{{ vmss_couchbase.name }}"
+    vmss_name: "{{ vmss_couchbase.name }}-vmss"
     publisher: "Microsoft.Azure.Extensions"
     type: "CustomScript"
     type_handler_version: "2.0"

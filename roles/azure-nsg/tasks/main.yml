@@ -5,40 +5,21 @@
   set_fact:
     local_path: "./group_vars/dynamic_rules_{{ resource_group }}.yml"
 
-- name: check if rules file exists
-  stat:
-    path: "{{ local_path }}"
-  register: already_rules
-
-- name: set some dummy data for the conent of the file
-  set_fact:
-    existing_rules: "you can ignore this"
-  when: "already_rules.stat.exists == false"
-
-- name: grab the conent of the dynamic_rules file
-  set_fact:
-    existing_rules: "{{ lookup('file', '{{ local_path }}') }}"
-  when: "already_rules.stat.exists == true"
-
 - name: find out your current public IP address using https://ipify.org/
   ipify_facts:
   register: public_ip
-  when: "'#Updated Rules' not in existing_rules"
 
 - name: register your public ip as a fact
   set_fact:
     your_public_ip: "{{ public_ip.ansible_facts.ipify_public_ip }}"
-  when: "'#Updated Rules' not in existing_rules"
 
 - name: create the dynamic network security group rules
   template:
     src: "rules.j2"
     dest: "{{ local_path }}"
-  when: "'#Updated Rules' not in existing_rules"
 
 - name: load dynamic security group rules
   include_vars: "{{ local_path }}"
-  when: "'#Updated Rules' not in existing_rules"
 
 - name: create network security group for couchbase
   azure_rm_securitygroup:
@@ -46,7 +27,6 @@
     name: "{{ vmss_couchbase.name }}-nsg"
     rules: "{{ cb_nsg_rules }}"
     tags: "{{ common_tags }}"
-  when: "'#Updated Rules' not in existing_rules"
 
 - name: create network security group for syncgateway
   azure_rm_securitygroup:
@@ -54,4 +34,8 @@
     name: "{{ vmss_syncgateway.name }}-nsg"
     rules: "{{ sg_nsg_rules }}"
     tags: "{{ common_tags }}"
-  when: "'#Updated Rules' not in existing_rules"
+
+- name: remove the dynamic rules
+  file:
+    path: "./group_vars/dynamic_rules_{{ resource_group }}.yml"
+    state: absent
