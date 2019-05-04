@@ -113,8 +113,7 @@
     resource_type: "virtualmachinescalesets"
     resource_name: "{{ vmss_syncgateway.name }}"
     subresource:
-      - type: "virtualMachines"
-        type: "networkInterfaces"
+      - type: "networkInterfaces"
   register: vmss_network_interfaces
 
 - debug:

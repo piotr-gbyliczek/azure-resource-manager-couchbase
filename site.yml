@@ -33,31 +33,31 @@
     - roles/server-all-stack
     - roles/server-all-users
 
-# - name: run the syncgateway tasks
-#   hosts: vmss_syncgateway
-#   gather_facts: true
-#   become: yes
-#   become_method: sudo
+- name: run the syncgateway tasks
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
 
-#   vars_files:
-    # - group_vars/sandbox-app.yml
-    # - group_vars/sandbox-env.yml
-    # - group_vars/users.yml
+  vars_files:
+    - group_vars/sandbox-app.yml
+    - group_vars/sandbox-env.yml
+    - group_vars/users.yml
 
-#   roles:
-#     - roles/nginx
-#     - roles/docker
+  roles:
+    - roles/server-sync-nginx
+    - roles/server-sync-docker
 
-# - name: run the docker tasks on the syncgateway instances
-#   hosts: vmss_syncgateway
-#   gather_facts: true
-#   become: yes
-#   become_method: sudo
+- name: run the docker tasks on the syncgateway instances
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
 
-#   vars_files:
-    # - group_vars/sandbox-app.yml
-    # - group_vars/sandbox-env.yml
-    # - group_vars/users.yml
+  vars_files:
+    - group_vars/sandbox-app.yml
+    - group_vars/sandbox-env.yml
+    - group_vars/users.yml
 
-#   roles:
-#     - roles/whitespace
+  roles:
+    - roles/server-sync-whitespace
