@@ -30,7 +30,7 @@ trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
   - "83.166.165.252/32"
 
-# storeage account and atomic_container
+# storeage account and container
 storeage:
   name: "{{ app.shortname }}sa"
   type: "Standard_LRS"
@@ -75,7 +75,8 @@ vmss_syncgateway:
     ssh_password_enabled: "no"
     path: "/home/node4/.ssh/authorized_keys"
     data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
-  subnet_name: "appgw-sub"
+  subnet_name: "app-sub"
+  subnet_name_agw: "appgw-sub"
   image:
     offer: "CentOS"
     publisher: "OpenLogic"
@@ -85,3 +86,7 @@ vmss_syncgateway:
     managed_disk_type: "Standard_LRS"
     data_disks: ""
   upgrade_policy: "Automatic"
+  application_gateway:
+    sku:
+      name: "standard_small"
+      tier: "standard"

@@ -85,3 +85,76 @@
     type_handler_version: "2.0"
     settings: '{ "fileUris": [ "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/syncGateway.sh", "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/util.sh" ], "commandToExecute": "bash syncGateway.sh {{ sync_gateway.version }}" }'
     auto_upgrade_minor_version: true
+
+- name: create the public IP address needed for the syncgateway application gateway
+  azure_rm_publicipaddress:
+    resource_group: "{{ resource_group }}"
+    allocation_method: "Dynamic"
+    name: "{{ vmss_syncgateway.name }}-agw-pip"
+    tags: "{{ common_tags }}"
+
+- name: get info about the subnet
+  azure_rm_resource_facts:
+    api_version: '2018-08-01'
+    resource_group: "{{ resource_group }}"
+    provider: network
+    resource_type: virtualnetworks
+    resource_name: "{{ network.name }}"
+    subresource:
+      - type: subnets
+        name: "{{ vmss_syncgateway.subnet_name_agw }}"
+  register: agw_subnet
+
+- name: gather some facts on the NICs attached to the VMs in the virtual machine scale set
+  azure_rm_resource_facts:
+    api_version: '2017-03-30'
+    resource_group: "{{ resource_group }}"
+    provider: Compute
+    resource_type: virtualMachineScaleSets
+    resource_name: "{{ vmss_syncgateway.name }}"
+    subresource:
+      - type: "virtualMachines"
+        type: "networkInterfaces"
+  register: vmss_network_interfaces
+
+- debug:
+    msg: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }} and {{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress }}"
+
+- name: create a syncgateway application gateway using the public IP above
+  azure_rm_appgateway:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_syncgateway.name }}-agw"
+    sku:
+      name: "{{ vmss_syncgateway.application_gateway.sku.name }}"
+      tier: "{{ vmss_syncgateway.application_gateway.sku.tier }}"
+      capacity: "{{ vmss_syncgateway.capacity }}"
+    gateway_ip_configurations:
+      - subnet:
+          id: "{{ agw_subnet.response[0].id }}"
+        name:
+    frontend_ip_configurations:
+      - public_ip_address: "{{ vmss_syncgateway.name }}-agw-pip"
+        name:  "{{ vmss_syncgateway.name }}-agw-frontend-ip"
+    frontend_ports:
+      - port: "80"
+        name: "{{ vmss_syncgateway.name }}-agw-frontend-80"
+    backend_address_pools:
+      - backend_addresses:
+          - ip_address: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+          - ip_address: "{{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress }}"
+        name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+    backend_http_settings_collection:
+      - port: "80"
+        protocol: http
+        cookie_based_affinity: "disabled"
+        name: "{{ vmss_syncgateway.name }}-agw-backend-settings-80"
+    http_listeners:
+      - frontend_ip_configuration: "{{ vmss_syncgateway.name }}-agw-frontend-ip"
+        frontend_port: "{{ vmss_syncgateway.name }}-agw-frontend-80"
+        name: "{{ vmss_syncgateway.name }}-agw-listener-80"
+    request_routing_rules:
+      - rule_type: "Basic"
+        backend_address_pool: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+        backend_http_settings: "{{ vmss_syncgateway.name }}-agw-backend-settings-80"
+        http_listener: "{{ vmss_syncgateway.name }}-agw-listener-80"
+        name: "{{ vmss_syncgateway.name }}-agw-rule-80"

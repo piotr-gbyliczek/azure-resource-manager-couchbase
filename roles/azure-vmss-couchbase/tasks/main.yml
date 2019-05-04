@@ -60,7 +60,7 @@
     virtual_network_name: "{{ network.name }}"
     subnet_name: "{{ vmss_couchbase.subnet_name }}"
     load_balancer: "{{ vmss_couchbase.name }}-lb"
-    security_group: "{{ vmss_couchbase.name }}-cb-nsg"
+    security_group: "{{ vmss_couchbase.name }}-nsg"
     admin_username: "{{ vmss_couchbase.admin_username }}"
     ssh_password_enabled: "{{ vmss_couchbase.key.ssh_password_enabled }}"
     ssh_public_keys:
