@@ -26,8 +26,8 @@
       - name: "{{ vmss_syncgateway.name }}-nat-ssh"
         frontend_ip_configuration_name: "{{ vmss_syncgateway.name }}-lb-frontend-ip-config"
         protocol: "Tcp"
-        frontend_port_range_start: "22000"
-        frontend_port_range_end: "22009"
+        frontend_port_range_start: "2220"
+        frontend_port_range_end: "2229"
         backend_port: "22"
       - name: "{{ vmss_syncgateway.name }}-nat-admin-ui"
         frontend_ip_configuration_name: "{{ vmss_syncgateway.name }}-lb-frontend-ip-config"
@@ -95,10 +95,10 @@
 
 - name: get info about the subnet
   azure_rm_resource_facts:
-    api_version: '2018-08-01'
+    api_version: '2019-04-01'
     resource_group: "{{ resource_group }}"
-    provider: network
-    resource_type: virtualnetworks
+    provider: "network"
+    resource_type: "virtualnetworks"
     resource_name: "{{ network.name }}"
     subresource:
       - type: subnets
@@ -107,10 +107,10 @@
 
 - name: gather some facts on the NICs attached to the VMs in the virtual machine scale set
   azure_rm_resource_facts:
-    api_version: '2017-03-30'
+    api_version: '2018-04-01'
     resource_group: "{{ resource_group }}"
-    provider: Compute
-    resource_type: virtualMachineScaleSets
+    provider: "compute"
+    resource_type: "virtualmachinescalesets"
     resource_name: "{{ vmss_syncgateway.name }}"
     subresource:
       - type: "virtualMachines"
@@ -131,7 +131,7 @@
     gateway_ip_configurations:
       - subnet:
           id: "{{ agw_subnet.response[0].id }}"
-        name:
+        name: "{{ vmss_syncgateway.name }}-agw-ip-config"
     frontend_ip_configurations:
       - public_ip_address: "{{ vmss_syncgateway.name }}-agw-pip"
         name:  "{{ vmss_syncgateway.name }}-agw-frontend-ip"

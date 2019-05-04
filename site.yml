@@ -1,6 +1,6 @@
 ---
 
-- name: Create, launch and configure our basic Azure environment
+- name: create, launch and configure our azure environment
   hosts: localhost
   connection: local
   gather_facts: True
@@ -16,30 +16,48 @@
     - roles/azure-nsg
     - roles/azure-vmss-couchbase
     - roles/azure-vmss-syncgateway
+    - roles/azure-getinstances
 
-# - hosts: all
+- name: run the tasks common across all instances
+  hosts: azure_vms
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/sandbox-app.yml
+    - group_vars/sandbox-env.yml
+    - group_vars/users.yml
+
+  roles:
+    - roles/server-all-stack
+    - roles/server-all-users
+
+# - name: run the syncgateway tasks
+#   hosts: vmss_syncgateway
 #   gather_facts: true
 #   become: yes
 #   become_method: sudo
 
 #   vars_files:
-#     - group_vars/sandbox-app.yml
-#     - group_vars/users.yml
-
-#   roles:
-#     - roles/stack
-#     - roles/users
-
-# - hosts: syncgateways
-#   gather_facts: true
-#   become: yes
-#   become_method: sudo
-
-#   vars_files:
-#     - group_vars/sandbox.yml
-#     - group_vars/users.yml
+    # - group_vars/sandbox-app.yml
+    # - group_vars/sandbox-env.yml
+    # - group_vars/users.yml
 
 #   roles:
 #     - roles/nginx
 #     - roles/docker
+
+# - name: run the docker tasks on the syncgateway instances
+#   hosts: vmss_syncgateway
+#   gather_facts: true
+#   become: yes
+#   become_method: sudo
+
+#   vars_files:
+    # - group_vars/sandbox-app.yml
+    # - group_vars/sandbox-env.yml
+    # - group_vars/users.yml
+
+#   roles:
 #     - roles/whitespace

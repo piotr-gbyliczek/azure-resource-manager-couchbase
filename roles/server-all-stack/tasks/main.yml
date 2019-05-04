@@ -16,7 +16,7 @@
     gpgcheck: "yes"
     gpgkey: "https://packages.microsoft.com/keys/microsoft.asc"
     file: "azure-cli.repo"
-  
+
 - name: install packages
   yum:
     name: "{{ stack_packages }}"
@@ -27,12 +27,12 @@
     policy: "targeted"
     state: "permissive"
 
-- name: add hostnames to hosts file
-  debugger: on_failed
-  template:
-    src: hosts
-    dest: /etc/hosts
-    backup: yes
-    owner: root
-    group: root
-    mode: 0644
+# - name: add hostnames to hosts file
+#   debugger: on_failed
+#   template:
+#     src: "hosts"
+#     dest: "/etc/hosts"
+#     backup: "yes"
+#     owner: "root"
+#     group: "root"
+#     mode: "0644"
