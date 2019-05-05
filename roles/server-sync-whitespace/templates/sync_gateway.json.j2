@@ -16,7 +16,7 @@
                 }
             },
             "password": "{{ sync_gateway.password }}",
-            "server": "{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }},{{ hostvars[groups['servers'][1]]["ansible_eth0"]["ipv4"]["address"] }},{{ hostvars[groups['servers'][2]]["ansible_eth0"]["ipv4"]["address"] }}",
+            "server": "{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }},{{ hostvars[groups['vmss_couchbase'][1]]["ansible_eth0"]["ipv4"]["address"] }},{{ hostvars[groups['vmss_couchbase'][2]]["ansible_eth0"]["ipv4"]["address"] }}",
             "oidc": {
                 "default_provider": "microsoft",
                 "providers": {

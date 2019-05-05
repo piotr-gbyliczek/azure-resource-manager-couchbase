@@ -9,10 +9,10 @@ services:
     environment:
       - ENVCONFIG=api{{ app.env }}
     extra_hosts:
-    - "localN1QL:{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
-    - "localN1QL0:{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
-    - "localN1QL1:{{ hostvars[groups['servers'][1]]["ansible_eth0"]["ipv4"]["address"] }}"
-    - "localN1QL2:{{ hostvars[groups['servers'][2]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL0:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL1:{{ hostvars[groups['vmss_couchbase'][1]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localN1QL2:{{ hostvars[groups['vmss_couchbase'][2]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localSG:{{ ansible_default_ipv4.address }}"
     - "localAV:{{ ansible_default_ipv4.address }}"
   pdf-fragment-service:
@@ -37,7 +37,7 @@ services:
     restart: always
     extra_hosts:
       - "localSG:{{ ansible_default_ipv4.address }}"
-      - "localN1QL:{{ hostvars[groups['servers'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+      - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
   clamav:
     image: mkodockx/docker-clamav:latest
     ports:
