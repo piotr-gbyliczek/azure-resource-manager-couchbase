@@ -34,8 +34,3 @@
     name: "{{ vmss_syncgateway.name }}-nsg"
     rules: "{{ sg_nsg_rules }}"
     tags: "{{ common_tags }}"
-
-- name: remove the dynamic rules
-  file:
-    path: "./group_vars/dynamic_rules_{{ resource_group }}.yml"
-    state: absent
