@@ -3,7 +3,7 @@
 - name: create, launch and configure our azure environment
   hosts: localhost
   connection: local
-  gather_facts: True
+  gather_facts: true
 
   vars_files:
     - group_vars/sandbox-app.yml
