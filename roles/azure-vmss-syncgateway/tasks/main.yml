@@ -83,7 +83,7 @@
     publisher: "Microsoft.Azure.Extensions"
     type: "CustomScript"
     type_handler_version: "2.0"
-    settings: '{ "fileUris": [ "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/syncGateway.sh", "https://{{ storeage.name }}{{ the_hash }}.blob.core.windows.net/{{ storeage.container }}/util.sh" ], "commandToExecute": "bash syncGateway.sh {{ sync_gateway.version }}" }'
+    settings: '{ "fileUris": [ "https://{{ storage.name }}{{ the_hash }}.blob.core.windows.net/{{ storage.container }}/syncGateway.sh", "https://{{ storage.name }}{{ the_hash }}.blob.core.windows.net/{{ storage.container }}/util.sh" ], "commandToExecute": "bash syncGateway.sh {{ sync_gateway.version }}" }'
     auto_upgrade_minor_version: true
 
 - name: create the public IP address needed for the syncgateway application gateway

@@ -30,8 +30,8 @@ trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
   - "83.166.165.252/32"
 
-# storeage account and container
-storeage:
+# storage account and container
+storage:
   name: "{{ app.shortname }}sa"
   type: "Standard_LRS"
   container: "extentions"

@@ -12,7 +12,7 @@
   roles:
     - roles/azure-rg
     - roles/azure-virtualnetwork
-    - roles/azure-storeage
+    - roles/azure-storage
     - roles/azure-nsg
     - roles/azure-vmss-couchbase
     - roles/azure-vmss-syncgateway
