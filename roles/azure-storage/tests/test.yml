@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - roles/azure-storeage
+    - roles/azure-storage
