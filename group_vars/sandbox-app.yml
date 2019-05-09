@@ -8,8 +8,9 @@ app:
   env: "sandbox"
   working_folder: "/wsdocker"
 
-raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
-the_hash: "{{ raw_hash[:5] }}" # lets shorten it down
+nginx:
+  user: "nginx"
+  default_page: "/usr/share/nginx/html/index.html"
 
 templates:
   docker_compose: "docker-compose.yml.j2"
@@ -22,7 +23,7 @@ couchbase:
   username: "admin"  # admin username
   password: "securepassword" # admin password
   services: "data,index,query,fts,eventing" # these are used to enable services
-  bucket: "sandboxbucket" #
+  bucket: "sandboxbucket" # name of the bucket to create / use
 
 sync_gateway:
   version: "2.1.2" # version of the sync gateway to install

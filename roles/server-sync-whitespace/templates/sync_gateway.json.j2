@@ -4,7 +4,7 @@
     ],
     "maxFileDescriptors": 250000,
     "databases": {
-        "platformdev": {
+        "{{ couchbase.bucket }}": {
             "username": "{{ sync_gateway.user }}",
             "bucket": "{{ couchbase.bucket }}",
             "users": {
