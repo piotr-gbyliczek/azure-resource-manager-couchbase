@@ -1,0 +1,92 @@
+---
+
+# Some defaults for Azure
+##################################################
+resource_group: "{{ app.name }}-rg"
+location: "uksouth"
+
+# Tags
+##################################################
+common_tags:
+  "Name": "{{ app.name }}"
+  "Application": "{{  app.name }}"
+  "Environment": "Demo"
+  "Costcenter": "mpn"
+  "Division": "n4stack"
+  "Consumer": "r.mckendrick@node4.co.uk"
+
+# Environmentment Details
+##################################################
+
+# virtual network
+network:
+  name: "{{ app.name }}-vnet"
+  cidr_block: "10.11.0.0/16"
+  subnets:
+    - { name: 'app-sub',    subnet: '10.11.2.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.11.3.0/24' }
+
+trusted_ips:
+  - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
+  - "83.166.165.252/32"
+
+# storeage account and container
+storeage:
+  name: "{{ app.shortname }}sa"
+  type: "Standard_LRS"
+  container: "extentions"
+  files:
+    - "server.sh"
+    - "syncGateway.sh"
+    - "util.sh"
+
+vmss_couchbase:
+  name: "{{ app.name }}-cb"
+  short_name: "couch"
+  size: "Standard_B2ms"
+  capacity: "3"
+  admin_username: "node4"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/node4/.ssh/authorized_keys"
+    data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
+  subnet_name: "app-sub"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks:
+      - lun: "0"
+        disk_size_gb: "10"
+        caching: "ReadWrite"
+        managed_disk_type: "Standard_LRS"
+  upgrade_policy: "Automatic"
+
+vmss_syncgateway:
+  name: "{{ app.name }}-sg"
+  short_name: "sync"
+  size: "Standard_B2ms"
+  capacity: "2"
+  admin_username: "node4"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/node4/.ssh/authorized_keys"
+    data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
+  subnet_name: "app-sub"
+  subnet_name_agw: "appgw-sub"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks: ""
+  upgrade_policy: "Automatic"
+  application_gateway:
+    sku:
+      name: "standard_small"
+      tier: "standard"

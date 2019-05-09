@@ -1,0 +1,17 @@
+---
+# tasks file for roles/azure-virtualnetwork
+
+- name: create virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ resource_group }}"
+    name: "{{ network.name }}"
+    address_prefixes: "{{ network.cidr_block }}"
+    tags: "{{ common_tags }}"
+
+- name: add the subnets
+  azure_rm_subnet:
+    resource_group: "{{ resource_group }}"
+    name: "{{ item.name }}"
+    address_prefix: "{{ item.subnet }}"
+    virtual_network: "{{ network.name }}"
+  with_items: "{{ network.subnets }}"

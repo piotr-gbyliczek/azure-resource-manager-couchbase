@@ -1,0 +1,79 @@
+---
+
+# Application vars
+
+app:
+  name: "ws-sandbox" # this can contain characters such as -, don't get too creative though
+  shortname: "wssand" # all lower-case, all one word
+  env: "sandbox"
+  working_folder: "/wsdocker"
+
+nginx:
+  user: "nginx"
+  default_page: "/usr/share/nginx/html/index.html"
+
+templates:
+  docker_compose: "docker-compose.yml.j2"
+  sync_gateway: "sync_gateway.json.j2"
+  update_script: "update.sh.j2"
+  index_html: "index.html.j2"
+
+couchbase:
+  version: "5.5.3" # version of couchbase to install
+  username: "admin"  # admin username
+  password: "securepassword" # admin password
+  services: "data,index,query,fts,eventing" # these are used to enable services
+  bucket: "sandboxbucket" # name of the bucket to create / use
+
+sync_gateway:
+  version: "2.1.2" # version of the sync gateway to install
+  user: "sync_gateway" # username for the sync gatway, this is the default so should be left as is
+  password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61613966386663393639646136383936633137633432666662666138356337346434353864626335
+          6230653238396466643434623663663832363663396666320a623839666238366666653035306236
+          30306563373237346163333039343661376161313462623036373366313962373763366236396462
+          3131656633303639330a313537343430626436343239383034316637366532663239633930623632
+          64663135653631613666633535336338343234353531323038626533393062616133
+
+openid:
+  url: "https://sandbox.whitespace.co.uk/browser/login"
+  user_prefix: "wssandbox"
+  client_id: "b2e36937-9a2f-4de1-8def-0c89cfa7334b"
+  issuer: "https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0"
+  valkey: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          30643035343933343161343964333965343039356465396331306333346334663961656664623336
+          3663326566326364316561613264353534666564393332390a376664343961336465633662306433
+          64656133616430393365656333643165356434303861623931363239316133333263616462336535
+          3138326337326539350a333164666437333963343633643335646566353661353837306231383966
+          38633234386439386364353530356337616338353763383832656262333330323637656365656431
+          6463616537313563643565323435333032333031373130386333
+
+containers:
+  - "{{ docker.registry_url }}/revapi:{{ app.env }}"
+  - "{{ docker.registry_url }}/rebrowse:{{ app.env }}"
+  - "{{ docker.registry_url }}/pdf-fragment-service:{{ app.env }}"
+  - "{{ docker.registry_url }}/wsnotif:{{ app.env }}"
+  - "{{ docker.registry_url }}/doc-router:{{ app.env }}"
+  - "mkodockx/docker-clamav:latest"
+
+docker:
+  compose_version: "1.24.0"
+  user: "admin-user"
+  registry_url: "wsinternalcontainerregistry.azurecr.io"
+  registry_user: "79b9cf91-8e83-4ac3-a24e-4fc74f791510"
+  registry_password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      36303566303261313137363632303432363263623364353631303863616530303234343036386366
+      6661323437343032323633326338363630653434323235350a376464346262653333656331343766
+      32366430623933336632353334363061353966326630313937363464316336366235613338626161
+      3433333334316563340a663838303965383564393939323230326565353639353166646532333333
+      39646661326437333234626336646530333464653138613833373338336431643566623634393265
+      3637313762613362326339356231326165656435643561616566
+  compose_command: "/usr/local/bin/docker-compose up -d --no-deps"
+  prune_command: "docker image prune -af"
+  compose_path: "/usr/local/bin/docker-compose"
+
+nginx_configs:
+  - "default.conf"

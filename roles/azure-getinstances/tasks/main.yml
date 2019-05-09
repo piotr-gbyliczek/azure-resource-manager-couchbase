@@ -1,0 +1,46 @@
+---
+# tasks file for roles/azure-getinstances
+
+- name: gather some facts on the public IP address attached to the couchbase load balancer
+  azure_rm_publicipaddress_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_couchbase.name }}-lb-pip"
+  register: cb_ip_address
+
+- name: gather some facts on the couchbase load balancer
+  azure_rm_loadbalancer_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_couchbase.name }}-lb"
+  register: cb_load_balancer
+
+- name: add the couchbase vms to the vmss_couchbase group
+  add_host:
+    groups: "vmss_couchbase"
+    hostname: "{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}_{{ item.properties.frontendPort }}"
+    ansible_host: "{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}"
+    ansible_port: "{{ item.properties.frontendPort }}"
+  with_items:
+    - "{{ cb_load_balancer.ansible_facts.azure_loadbalancers[0].properties.inboundNatRules }}"
+  when: "item.properties.frontendPort < 2230"
+
+- name: gather some facts on the public IP address attached to the syncgateway load balancer
+  azure_rm_publicipaddress_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_syncgateway.name }}-lb-pip"
+  register: sg_ip_address
+
+- name: gather some facts on the syncgateway load balancer
+  azure_rm_loadbalancer_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_syncgateway.name }}-lb"
+  register: sg_load_balancer
+
+- name: add the syncgateway vms to the vmss_syncgateway group
+  add_host:
+    groups: "vmss_syncgateway"
+    hostname: "{{ sg_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}_{{ item.properties.frontendPort }}"
+    ansible_host: "{{ sg_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}"
+    ansible_port: "{{ item.properties.frontendPort }}"
+  with_items:
+    - "{{ sg_load_balancer.ansible_facts.azure_loadbalancers[0].properties.inboundNatRules }}"
+  when: "item.properties.frontendPort < 2230"

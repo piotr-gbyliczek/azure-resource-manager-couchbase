@@ -1,0 +1,43 @@
+---
+# tasks file for roles/azure-loadbalancer
+
+- name: create the public IP address needed for the load balancer
+  azure_rm_publicipaddress:
+    resource_group: "{{ resource_group }}"
+    allocation_method: "{{ loadbalancer.public_ip.allocation_method }}"
+    name: "{{ loadbalancer.public_ip.name }}"
+    tags: "{{ common_tags }}"
+
+- name: create a load balancer using the public IP above
+  azure_rm_loadbalancer:
+    resource_group: "{{ resource_group }}"
+    name: "{{ loadbalancer.name }}"
+    frontend_ip_configurations:
+      - name: "{{ loadbalancer.name }}-frontend-ip-config"
+        public_ip_address: "{{ loadbalancer.public_ip.name }}"
+    backend_address_pools:
+      - name: "{{ loadbalancer.name }}-backend-address-pool"
+    probes:
+      - name: "{{ loadbalancer.name }}-probe"
+        port: "{{ loadbalancer.probe.port }}"
+        fail_count: "{{ loadbalancer.probe.fail_count }}"
+        protocol: "{{ loadbalancer.probe.protocol }}"
+    inbound_nat_pools:
+      - name: "{{ loadbalancer.name }}-nat-pool"
+        frontend_ip_configuration_name: "{{ loadbalancer.name }}-frontend-ip-config"
+        protocol: "{{ loadbalancer.nat.natpool_protocol }}"
+        frontend_port_range_start: "{{ loadbalancer.nat.natpool_start }}"
+        frontend_port_range_end: "{{ loadbalancer.nat.natpool_end }}"
+        backend_port: "{{ loadbalancer.nat.natpool_port }}"
+    load_balancing_rules:
+      - name: "{{ loadbalancer.name }}-loadbalancer-rule"
+        frontend_ip_configuration: "{{ loadbalancer.name }}-frontend-ip-config"
+        backend_address_pool: "{{ loadbalancer.name }}-backend-address-pool"
+        frontend_port: "{{ loadbalancer.front.port }}"
+        backend_port: "{{ loadbalancer.front.backend }}"
+        probe: "{{ loadbalancer.name }}-probe"
+        load_distribution: "{{ loadbalancer.front.distribution }}"
+        protocol: "{{ loadbalancer.front.protocol }}"
+        enable_floating_ip: false
+    tags: "{{ common_tags }}"
+  ignore_errors: True

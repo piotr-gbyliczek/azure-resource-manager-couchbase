@@ -1,0 +1,37 @@
+---
+# defaults file for roles/azure-vmss
+
+resource_group: "default-ansible-rg"
+location: "uksouth"
+
+common_tags:
+  Name: "{{ resource_group }}"
+  Application: "{{ resource_group }}"
+
+vmss:
+  name: "ansible-default-vmss"
+  short_name: "vm"
+  size: "Standard_B1s"
+  capacity: "2"
+  admin_username: "node4"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/node4/.ssh/authorized_keys"
+    data: "{{lookup('file', '~/.ssh/id_rsa') }}"
+  vnet:
+    name: "ansible-default-vnet"
+    subnet_name: "public-sub"
+    load_balancer: "{{ resource_group }}-lb"
+    nsg: "{{ resource_group }}-nsg"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks:
+      - lun: "0"
+        disk_size_gb: "10"
+        caching: "ReadWrite"
+        managed_disk_type: "Standard_LRS"

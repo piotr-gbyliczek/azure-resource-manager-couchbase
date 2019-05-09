@@ -1,0 +1,80 @@
+
+---
+
+cb_nsg_rules:
+    - name: "AllowSSH"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ips | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "22"
+      access: "Allow"
+      priority: "200"
+      direction: "Inbound"
+    - name: "AllowCouchBaseUI"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ips | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "8091"
+      access: "Allow"
+      priority: "300"
+      direction: "Inbound"
+    - name: "AllowCouchBaseUISSL"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ips | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "18091"
+      access: "Allow"
+      priority: "301"
+      direction: "Inbound"
+
+sg_nsg_rules:
+    - name: "AllowHTTP"
+      protocol: "Tcp"
+      source_address_prefix: "*"
+      destination_port_range: "80"
+      access: "Allow"
+      priority: "101"
+      direction: "Inbound"
+    - name: "AllowHTTPS"
+      protocol: "Tcp"
+      source_address_prefix: "*"
+      destination_port_range: "443"
+      access: "Allow"
+      priority: "102"
+      direction: Inbound
+    - name: "AllowSSH"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ips | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "22"
+      access: "Allow"
+      priority: "200"
+      direction: "Inbound"
+    - name: "AllowSyncGateway"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ips | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "4984"
+      access: "Allow"
+      priority: "300"
+      direction: "Inbound"
+    - name: "AllowSyncGatewaySSL"
+      protocol: "Tcp"
+      source_address_prefix:
+{% for item in trusted_ips | unique %}
+            - "{{ item }}"
+{% endfor %}
+      destination_port_range: "4985"
+      access: "Allow"
+      priority: "301"
+      direction: "Inbound"
