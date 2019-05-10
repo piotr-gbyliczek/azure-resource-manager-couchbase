@@ -8,13 +8,14 @@
   vars_files:
     - group_vars/sandbox-app.yml
     - group_vars/sandbox-env.yml
+    - vault.yml
 
   roles:
     - roles/azure-rg
     - roles/azure-virtualnetwork
     - roles/azure-storage
     - roles/azure-nsg
- #   - roles/azure-vmss-couchbase
+    - roles/azure-vmss-couchbase
     - roles/azure-vmss-syncgateway
     - roles/azure-getinstances
 
