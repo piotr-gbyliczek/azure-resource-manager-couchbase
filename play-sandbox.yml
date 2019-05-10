@@ -8,7 +8,7 @@
   vars_files:
     - group_vars/sandbox-app.yml
     - group_vars/sandbox-env.yml
-    - vault.yml
+    - group_vars/cert-whitespace.yml
 
   roles:
     - roles/azure-rg
@@ -47,18 +47,18 @@
 
   roles:
     - roles/server-sync-nginx
-#    - roles/server-sync-docker
+    - roles/server-sync-docker
 
-#- name: run the docker tasks on the syncgateway instances
-#  hosts: vmss_syncgateway
-#  gather_facts: true
-#  become: yes
-#  become_method: sudo
-#
-#  vars_files:
-#    - group_vars/sandbox-app.yml
-#    - group_vars/sandbox-env.yml
-#    - group_vars/users.yml
-#
-#  roles:
-#    - roles/server-sync-whitespace
+- name: run the docker tasks on the syncgateway instances
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/sandbox-app.yml
+    - group_vars/sandbox-env.yml
+    - group_vars/users.yml
+
+  roles:
+    - roles/server-sync-whitespace

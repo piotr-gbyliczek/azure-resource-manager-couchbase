@@ -1,5 +1,5 @@
 # WhiteSpace Couchbase Deployment
 
 ```
-ansible-playbook -i inv --vault-id @prompt site.yml
+ansible-playbook -i inv --vault-id @prompt play-sandbox.yml
 ```
