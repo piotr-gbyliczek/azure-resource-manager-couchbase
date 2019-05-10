@@ -14,6 +14,8 @@ services:
     - "localN1QL1:{{ hostvars[groups['vmss_couchbase'][1]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL2:{{ hostvars[groups['vmss_couchbase'][2]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localSG:{{ ansible_default_ipv4.address }}"
+    - "localSG0:{{ hostvars[groups['vmss_syncgateway'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+    - "localSG1:{{ hostvars[groups['vmss_syncgateway'][1]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localAV:{{ ansible_default_ipv4.address }}"
   pdf-fragment-service:
     image: wsinternalcontainerregistry.azurecr.io/pdf-fragment-service:{{ app.env }}
