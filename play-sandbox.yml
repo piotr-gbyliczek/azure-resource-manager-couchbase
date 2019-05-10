@@ -8,11 +8,12 @@
   vars_files:
     - group_vars/sandbox-app.yml
     - group_vars/sandbox-env.yml
+    - group_vars/cert-whitespace.yml
 
   roles:
     - roles/azure-rg
     - roles/azure-virtualnetwork
-    - roles/azure-storeage
+    - roles/azure-storage
     - roles/azure-nsg
     - roles/azure-vmss-couchbase
     - roles/azure-vmss-syncgateway

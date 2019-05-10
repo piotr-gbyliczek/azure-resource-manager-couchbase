@@ -1,12 +1,12 @@
 ---
-# tasks file for roles/azure-storeage
+# tasks file for roles/azure-storage
 
-- name: create a storeage account
+- name: create a storage account
   azure_rm_storageaccount:
     resource_group: "{{ resource_group }}"
     location: "{{ location }}"
-    name: "{{ storeage.name }}{{ the_hash }}"
-    type: "{{ storeage.type }}"
+    name: "{{ storage.name }}{{ the_hash }}"
+    type: "{{ storage.type }}"
     tags: "{{ common_tags }}"
 
 - name: prepare the files for upload
@@ -14,15 +14,15 @@
     src: "{{ item }}"
     dest: "/tmp/{{ item }}"
     remote_src: "no"
-  with_items: "{{ storeage.files }}"
+  with_items: "{{ storage.files }}"
 
 - name: create a container and upload the scripts
   azure_rm_storageblob:
     resource_group: "{{ resource_group }}"
-    storage_account_name: "{{ storeage.name }}{{ the_hash }}"
-    container: "{{ storeage.container }}"
+    storage_account_name: "{{ storage.name }}{{ the_hash }}"
+    container: "{{ storage.container }}"
     blob: "{{ item }}"
     src: "/tmp/{{ item }}"
     public_access: "container"
     content_type: "application/text"
-  with_items: "{{ storeage.files }}"
+  with_items: "{{ storage.files }}"
