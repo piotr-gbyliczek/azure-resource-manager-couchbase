@@ -3,7 +3,7 @@
 # Application vars
 
 app:
-  name: "ws-sandbox-rm" # this can contain characters such as -, don't get too creative though
+  name: "ws-sandbox" # this can contain characters such as -, don't get too creative though
   shortname: "wssand" # all lower-case, all one word
   env: "sandbox"
   working_folder: "/wsdocker"
@@ -20,7 +20,13 @@ templates:
 couchbase:
   version: "5.5.3" # version of couchbase to install
   username: "admin"  # admin username
-  password: "securepassword" # admin password
+  password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          32393439356539663338663266323162323535356164656638663861623162613164636439653763
+          3135346165343731333632373062383736323534316332330a316532343031383364376265656533
+          65666139623936353036393534306266333139636139393638373764346363376233333936323462
+          3236653637346162350a633136326539626238333032653931353366393033623934363962343434
+          30336233373230383236366233396239636166386233653934383338303763613636
   services: "data,index,query,fts,eventing" # these are used to enable services
   bucket: "sandboxbucket" #
 
@@ -42,7 +48,7 @@ ssl_cert_pass: !vault |
           64636336336661666433646139393638633264623238623131623836383439393832663561366463
           3939653631346332330a373432346639666537663535366138643963323363386437303037346432
           61326264633365323939336431653465343162613938643134616638643938303361
-ssl_cert_name: "whitehouse_ssl_cert"
+ssl_cert_name: "whitespace_ssl_cert"
 
 openid:
   url: "https://sandbox.whitespace.co.uk/browser/login"
@@ -82,6 +88,10 @@ docker:
   compose_command: "/usr/local/bin/docker-compose up -d --no-deps"
   prune_command: "docker image prune -af"
   compose_path: "/usr/local/bin/docker-compose"
+
+nginx:
+  user: "nginx"
+  default_page: "/usr/share/nginx/html/index.html"
 
 nginx_configs:
   - "default.conf"

@@ -10,9 +10,9 @@ location: "uksouth"
 common_tags:
   "Name": "{{ app.name }}"
   "Application": "{{  app.name }}"
-  "Environment": "Demo"
-  "Costcenter": "mpn"
-  "Division": "n4stack"
+  "Environment": "sandbox"
+  "Costcenter": "sandbox"
+  "Division": "whitespace"
   "Consumer": "r.mckendrick@node4.co.uk"
 
 # Environmentment Details
@@ -48,10 +48,10 @@ vmss_couchbase:
   short_name: "couch"
   size: "Standard_B2ms"
   capacity: "3"
-  admin_username: "node4"
+  admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"
-    path: "/home/node4/.ssh/authorized_keys"
+    path: "/home/adminuser/.ssh/authorized_keys"
     data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
   subnet_name: "app-sub"
   image:
@@ -73,10 +73,10 @@ vmss_syncgateway:
   short_name: "sync"
   size: "Standard_B2ms"
   capacity: "2"
-  admin_username: "node4"
+  admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"
-    path: "/home/node4/.ssh/authorized_keys"
+    path: "/home/adminuser/.ssh/authorized_keys"
     data: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
   subnet_name: "app-sub"
   subnet_name_agw: "appgw-sub"
