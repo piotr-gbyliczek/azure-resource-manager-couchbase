@@ -28,7 +28,10 @@ network:
 
 trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
-  - "83.166.165.252/32"
+  - "83.166.165.252/32" # node4 (office ip)
+  - "83.244.243.48/28" # whitespace (offices)
+  - "77.111.217.132/32" # n4stack (app manager)
+  - "77.111.217.129/32" # n4stack (asa gateway)
 
 # storage account and container
 storage:

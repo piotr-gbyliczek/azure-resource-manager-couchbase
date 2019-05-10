@@ -3,7 +3,7 @@
 # Application vars
 
 app:
-  name: "ws-sandbox-pg" # this can contain characters such as -, don't get too creative though
+  name: "ws-sandbox-rm" # this can contain characters such as -, don't get too creative though
   shortname: "wssand" # all lower-case, all one word
   env: "sandbox"
   working_folder: "/wsdocker"
