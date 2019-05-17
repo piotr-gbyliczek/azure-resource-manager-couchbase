@@ -1,2 +1,16 @@
 ---
 # defaults file for roles/azure-vmss-syncgateway
+ssl_policy_type: 'custom'
+ssl_policy_name: 'ssl_policy20170401_s'
+ssl_policy_min_protocol: 'tls_v1_2'
+ssl_policy_disabled_protocols:
+  - 'tls_v1_0'
+  - 'tls_v1_1'
+ssl_policy_cypher_suites:
+  - tls_ecdhe_rsa_with_aes_256_gcm_sha384
+  - tls_ecdhe_rsa_with_aes_256_cbc_sha384
+  - tls_ecdhe_rsa_with_aes_256_cbc_sha
+
+ssl_cert_body: 'body'
+ssl_cert_pass: 'pass'
+ssl_cert_name: 'ssl_cert'

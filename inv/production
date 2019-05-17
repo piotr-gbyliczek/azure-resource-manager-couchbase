@@ -9,6 +9,6 @@ vmss_syncgateway
 
 # Finally, configure some bits to allow us access to the instances before we deploy our credentials using Ansible
 [azure_vms:vars]
-ansible_ssh_user=node4
+ansible_ssh_user=adminuser
 ansible_ssh_private_key_file=~/.ssh/id_rsa
 host_key_checking=False
