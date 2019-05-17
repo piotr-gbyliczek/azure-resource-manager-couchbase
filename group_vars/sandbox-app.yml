@@ -91,7 +91,9 @@ docker:
 
 nginx:
   user: "nginx"
-  default_page: "/usr/share/nginx/html/index.html"
+  default_page_dir: "/usr/share/nginx/html/"
+  default_whereami_page_dir: "/usr/share/nginx/html/whereami/"
+  default_page_file: "index.html"
 
 nginx_configs:
   - "default.conf"
