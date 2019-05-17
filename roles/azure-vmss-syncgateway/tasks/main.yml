@@ -145,10 +145,12 @@
       - port: "80"
         protocol: http
         cookie_based_affinity: "enabled"
+        request_timeout: 300
         name: "{{ vmss_syncgateway.name }}-agw-backend-settings-80"
       - port: "443"
         protocol: https
         cookie_based_affinity: "disabled"
+        request_timeout: 300
         name: "{{ vmss_syncgateway.name }}-agw-backend-settings-443"
     http_listeners:
       - frontend_ip_configuration: "{{ vmss_syncgateway.name }}-agw-frontend-ip"
