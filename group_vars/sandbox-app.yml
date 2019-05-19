@@ -51,7 +51,7 @@ ssl_cert_pass: !vault |
 ssl_cert_name: "whitespace_ssl_cert"
 
 openid:
-  url: "https://sandbox.whitespace.co.uk/browser/login"
+  url: "https://sandbox.whitespace.co.uk/login"
   user_prefix: "wssandbox"
   client_id: "b2e36937-9a2f-4de1-8def-0c89cfa7334b"
   issuer: "https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0"
