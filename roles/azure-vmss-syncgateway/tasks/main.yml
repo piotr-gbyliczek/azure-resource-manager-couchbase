@@ -111,7 +111,7 @@
     resource_group: "{{ resource_group }}"
     provider: "compute"
     resource_type: "virtualmachinescalesets"
-    resource_name: "{{ vmss_couchbase.name }}-vmss"
+    resource_name: "{{ vmss_syncgateway.name }}-vmss"
     subresource:
       - type: "networkInterfaces"
   register: vmss_network_interfaces
