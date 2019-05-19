@@ -117,13 +117,26 @@
   tags:
       - "application"
 
-- name: copy the updated index.html
-  template:
-    src: "{{ templates.index_html }}"
-    dest: "{{ nginx.default_page }}"
+- name: create whereami directory
+  file:
+    dest:  "{{ nginx.default_whereami_page_dir }}"
     owner: "{{ nginx.user }}"
     group: "{{ nginx.user }}"
     mode: "755"
+    state: directory
+  tags:
+    - "application"
+
+- name: copy the updated index.html to directories
+  template:
+    src: "{{ templates.index_html }}"
+    dest: "{{ item }}/{{ nginx.default_page_file }}"
+    owner: "{{ nginx.user }}"
+    group: "{{ nginx.user }}"
+    mode: "755"
+  with_items:
+   - "{{ nginx.default_page_dir }}"
+   - "{{ nginx.default_whereami_page_dir }}"
   tags:
     - "application"
 
