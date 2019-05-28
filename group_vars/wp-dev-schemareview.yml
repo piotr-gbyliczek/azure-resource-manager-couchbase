@@ -120,10 +120,10 @@ common_tags:
 # virtual network
 network:
   name: "{{ app.name }}-vnet"
-  cidr_block: "10.11.0.0/16"
+  cidr_block: "10.10.0.0/23"
   subnets:
-    - { name: 'app-sub',    subnet: '10.11.2.0/24' }
-    - { name: 'appgw-sub',   subnet: '10.11.3.0/24' }
+    - { name: 'app-sub',    subnet: '10.10.0.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.10.1.0/24' }
 
 trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
