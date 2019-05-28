@@ -6,8 +6,7 @@
   gather_facts: true
 
   vars_files:
-    - group_vars/sandbox-app.yml
-    - group_vars/sandbox-env.yml
+    - group_vars/sandbox-ws-sandbox.yml
     - group_vars/cert-whitespace.yml
 
   roles:
@@ -26,8 +25,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/sandbox-app.yml
-    - group_vars/sandbox-env.yml
+    - group_vars/sandbox-ws-sandbox.yml
     - group_vars/users.yml
 
   roles:
@@ -41,9 +39,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/sandbox-app.yml
-    - group_vars/sandbox-env.yml
-    - group_vars/users.yml
+    - group_vars/sandbox-ws-sandbox.yml
 
   roles:
     - roles/server-sync-nginx
@@ -56,9 +52,8 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/sandbox-app.yml
-    - group_vars/sandbox-env.yml
-    - group_vars/users.yml
+    - group_vars/sandbox-ws-sandbox.yml
+    - group_vars/openid-sandbox.yml
 
   roles:
     - roles/server-sync-whitespace

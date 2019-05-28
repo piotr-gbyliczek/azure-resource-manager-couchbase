@@ -50,20 +50,6 @@ ssl_cert_pass: !vault |
           61326264633365323939336431653465343162613938643134616638643938303361
 ssl_cert_name: "whitespace_ssl_cert"
 
-openid:
-  url: "https://sandbox.whitespace.co.uk/login"
-  user_prefix: "wssandbox"
-  client_id: "b2e36937-9a2f-4de1-8def-0c89cfa7334b"
-  issuer: "https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0"
-  valkey: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          30643035343933343161343964333965343039356465396331306333346334663961656664623336
-          3663326566326364316561613264353534666564393332390a376664343961336465633662306433
-          64656133616430393365656333643165356434303861623931363239316133333263616462336535
-          3138326337326539350a333164666437333963343633643335646566353661353837306231383966
-          38633234386439386364353530356337616338353763383832656262333330323637656365656431
-          6463616537313563643565323435333032333031373130386333
-
 containers:
   - "{{ docker.registry_url }}/revapi:{{ app.env }}"
   - "{{ docker.registry_url }}/rebrowse:{{ app.env }}"
@@ -97,3 +83,102 @@ nginx:
 
 nginx_configs:
   - "default.conf"
+
+
+# Some defaults for Azure
+##################################################
+resource_group: "{{ app.name }}-rg"
+location: "uksouth"
+
+# Tags
+##################################################
+common_tags:
+  "Name": "{{ app.name }}"
+  "Application": "{{  app.name }}"
+  "Environment": "sandbox"
+  "Costcenter": "sandbox"
+  "Division": "whitespace"
+  "Consumer": "r.mckendrick@node4.co.uk"
+
+# Environmentment Details
+##################################################
+
+# virtual network
+network:
+  name: "{{ app.name }}-vnet"
+  cidr_block: "10.11.0.0/16"
+  subnets:
+    - { name: 'app-sub',    subnet: '10.11.2.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.11.3.0/24' }
+
+trusted_ips:
+  - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
+  - "83.166.165.252/32" # node4 (office ip)
+  - "83.244.243.48/28" # whitespace (offices)
+  - "77.111.217.132/32" # n4stack (app manager)
+  - "77.111.217.129/32" # n4stack (asa gateway)
+
+# storage account and container
+storage:
+  name: "{{ app.shortname }}sa"
+  type: "Standard_LRS"
+  container: "extentions"
+  files:
+    - "server.sh"
+    - "syncGateway.sh"
+    - "util.sh"
+
+vmss_couchbase:
+  name: "{{ app.name }}-cb"
+  short_name: "couch"
+  size: "Standard_B2ms"
+  capacity: "3"
+  admin_username: "adminuser"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/adminuser/.ssh/authorized_keys"
+    data: "{{ ssh_key }}"
+  subnet_name: "app-sub"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks:
+      - lun: "0"
+        disk_size_gb: "10"
+        caching: "ReadWrite"
+        managed_disk_type: "Standard_LRS"
+  upgrade_policy: "Automatic"
+
+vmss_syncgateway:
+  name: "{{ app.name }}-sg"
+  short_name: "sync"
+  size: "Standard_B2ms"
+  capacity: "2"
+  admin_username: "adminuser"
+  key:
+    ssh_password_enabled: "no"
+    path: "/home/adminuser/.ssh/authorized_keys"
+    data: "{{ ssh_key }}"
+  subnet_name: "app-sub"
+  subnet_name_agw: "appgw-sub"
+  image:
+    offer: "CentOS"
+    publisher: "OpenLogic"
+    sku: "7.6"
+    version: "latest"
+  disk:
+    managed_disk_type: "Standard_LRS"
+    data_disks: ""
+  upgrade_policy: "Automatic"
+  application_gateway:
+    sku:
+      name: "standard_small"
+      tier: "standard"
+
+# Which SSH Key to use? The default should be the one used by AWX
+# ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2c5jDHGDdEGGIUC7dX9y1iyX2F/csqpvYYnWEZ2knA1whUBMwiAR+XxXTW1zInd3I4R6z/8zv4rXLDPn8LeTc5cV0zFY5BxVmvyeObEojOHC9l+yiHUaATs99eJIMd4ph+bNnfFV0uN0FusWjR1d6yDkhCizMhYcGo9g4QSx+qyi85BMuXelwmM57DTRZRgs6JnvcgkLXHUQD0cFuvGFMMDLrIVR5CUVUb76EULSQ+gSSkMVlyoF0h1M9PxhJR6VTtb3QXQ7EB6w8oO9Ke831YMSoU44BIEeImbDSXkEQdZPck+l4LmWF2Om6qLSsNsIGsexMRMH7qJNTRfFleTboOZf9YeJrvyDJg1j7075oCKEHXYO83ZpBZ5mU4dpJYeClVwMtGUNwK7lyRH0zNXipWS7Pm9WAYX0sdk/zwIdUV4U9eK7BkDLXQorHf5vBey/2W5nadjqbA7krlDUUbIR5l3LANI/vA5w5VGqdMlPsNOGftzjkgWci757km4sAHUj1b819ckrnHIeCTNSbYuAKREiLUAo5B2b8vjyHU1EXP1rLvIXwMtor8c6TJWGxiouDL3fbmLLZ8SmHOVaYEzduJMaFZ/8dSr1yEk35kG40ZBnhPEyUCEJ+MMjmhy/EvCPihoC6iM/xqHBKp+45nvhcZoP/prTQHRqey9Bjc8HweQ== whitespace-awx"
+ssh_key: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
