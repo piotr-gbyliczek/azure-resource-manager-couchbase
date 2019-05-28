@@ -11,49 +11,49 @@
 
   roles:
     - roles/azure-rg
-#     - roles/azure-virtualnetwork
-#     - roles/azure-storage
-#     - roles/azure-nsg
-#     - roles/azure-vmss-couchbase
-#     - roles/azure-vmss-syncgateway
-#     - roles/azure-getinstances
+    - roles/azure-virtualnetwork
+    - roles/azure-storage
+    - roles/azure-nsg
+    - roles/azure-vmss-couchbase
+    - roles/azure-vmss-syncgateway
+    - roles/azure-getinstances
 
-# - name: run the tasks common across all instances
-#   hosts: azure_vms
-#   gather_facts: true
-#   become: yes
-#   become_method: sudo
+- name: run the tasks common across all instances
+  hosts: azure_vms
+  gather_facts: true
+  become: yes
+  become_method: sudo
 
-#   vars_files:
-#     - group_vars/wp-dev-schemareview.yml
-#     - group_vars/users.yml
+  vars_files:
+    - group_vars/wp-dev-schemareview.yml
+    - group_vars/users.yml
 
-#   roles:
-#     - roles/server-all-stack
-#     - roles/server-all-users
+  roles:
+    - roles/server-all-stack
+    - roles/server-all-users
 
-# - name: run the syncgateway tasks
-#   hosts: vmss_syncgateway
-#   gather_facts: true
-#   become: yes
-#   become_method: sudo
+- name: run the syncgateway tasks
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
 
-#   vars_files:
-#     - group_vars/wp-dev-schemareview.yml
+  vars_files:
+    - group_vars/wp-dev-schemareview.yml
 
-#   roles:
-#     - roles/server-sync-nginx
-#     - roles/server-sync-docker
+  roles:
+    - roles/server-sync-nginx
+    - roles/server-sync-docker
 
-# - name: run the docker tasks on the syncgateway instances
-#   hosts: vmss_syncgateway
-#   gather_facts: true
-#   become: yes
-#   become_method: sudo
+- name: run the docker tasks on the syncgateway instances
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
 
-#   vars_files:
-#     - group_vars/wp-dev-schemareview.yml
-#     - group_vars/openid-sandbox.yml
+  vars_files:
+    - group_vars/wp-dev-schemareview.yml
+    - group_vars/openid-dev.yml
 
-#   roles:
-#     - roles/server-sync-whitespace
+  roles:
+    - roles/server-sync-whitespace
