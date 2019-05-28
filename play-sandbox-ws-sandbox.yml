@@ -26,7 +26,7 @@
 
   vars_files:
     - group_vars/sandbox-ws-sandbox.yml
-    - group_vars/users.yml
+    - group_vars/users-all.yml
 
   roles:
     - roles/server-all-stack

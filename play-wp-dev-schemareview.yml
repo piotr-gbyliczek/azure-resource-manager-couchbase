@@ -26,7 +26,8 @@
 
   vars_files:
     - group_vars/wp-dev-schemareview.yml
-    - group_vars/users.yml
+    - group_vars/users-all.yml
+    - group_vars/users-dev.yml
 
   roles:
     - roles/server-all-stack
