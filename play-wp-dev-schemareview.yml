@@ -8,6 +8,7 @@
   vars_files:
     - group_vars/wp-dev-schemareview.yml
     - group_vars/cert-whitespace.yml
+    - group_vars/cert-selfsigned.yml
 
   roles:
     - roles/azure-rg

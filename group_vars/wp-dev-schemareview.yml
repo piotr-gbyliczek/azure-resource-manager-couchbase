@@ -5,7 +5,7 @@
 app:
   name: "wp-dev-schemareview" # this can contain characters such as -, don't get too creative though
   shortname: "wpdevschem" # all lower-case, all one word
-  env: "sandbox"
+  env: "dev"
   working_folder: "/wsdocker"
 
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
@@ -49,6 +49,8 @@ ssl_cert_pass: !vault |
           3939653631346332330a373432346639666537663535366138643963323363386437303037346432
           61326264633365323939336431653465343162613938643134616638643938303361
 ssl_cert_name: "whitespace_ssl_cert"
+
+self_signed_cert_name: "self-signed-cert"
 
 containers:
   - "{{ docker.registry_url }}/revapi:{{ app.env }}"

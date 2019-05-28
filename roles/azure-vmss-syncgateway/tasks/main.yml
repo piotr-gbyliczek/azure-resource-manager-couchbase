@@ -145,12 +145,10 @@
       - port: "80"
         protocol: http
         cookie_based_affinity: "enabled"
-        request_timeout: 300
         name: "{{ vmss_syncgateway.name }}-agw-backend-settings-80"
       - port: "443"
         protocol: https
-        cookie_based_affinity: "disabled"
-        request_timeout: 300
+        cookie_based_affinity: "enabled"
         name: "{{ vmss_syncgateway.name }}-agw-backend-settings-443"
     http_listeners:
       - frontend_ip_configuration: "{{ vmss_syncgateway.name }}-agw-frontend-ip"
@@ -173,7 +171,7 @@
         http_listener: "{{ vmss_syncgateway.name }}-agw-listener-443"
         name: "{{ vmss_syncgateway.name }}-agw-rule-443"
     ssl_policy:
-      policy_type: "{{ ssl_policy_type }}" 
+      policy_type: "{{ ssl_policy_type }}"
       policy_name: "{{ ssl_policy_name }}"
       cipher_suites: "{{ ssl_policy_cypher_suites }}"
       disabled_ssl_protocols: "{{ ssl_policy_disabled_protocols }}"
@@ -182,6 +180,9 @@
       - data: "{{ ssl_cert_body }}"
         name: "{{ ssl_cert_name }}"
         password: "{{ ssl_cert_pass }}"
+    authentication_certificates:
+      - data: "{{ self_signed_cert_data }}"
+        name: "{{ self_signed_cert_name }}"
     probes:
       - name: "{{ vmss_syncgateway.name }}-hp-1"
         protocol: 'https'
@@ -194,4 +195,92 @@
         path: '/sync/'
         timeout: 30
 
-    
+
+- name: gather facts about resource
+  azure_rm_resource_facts:
+    resource_group: "{{ resource_group }}"
+    resource_name: "{{ vmss_couchbase.name }}-awg"
+    resource_type: "applicationgateway"
+  register: agw_facts
+
+- name: create a syncgateway application gateway using the public IP above
+  azure_rm_appgateway:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_syncgateway.name }}-agw"
+    sku:
+      name: "{{ vmss_syncgateway.application_gateway.sku.name }}"
+      tier: "{{ vmss_syncgateway.application_gateway.sku.tier }}"
+      capacity: "{{ vmss_syncgateway.capacity }}"
+    gateway_ip_configurations:
+      - subnet:
+          id: "{{ agw_subnet.response[0].id }}"
+        name: "{{ vmss_syncgateway.name }}-agw-ip-config"
+    frontend_ip_configurations:
+      - public_ip_address: "{{ vmss_syncgateway.name }}-agw-pip"
+        name:  "{{ vmss_syncgateway.name }}-agw-frontend-ip"
+    frontend_ports:
+      - port: "80"
+        name: "{{ vmss_syncgateway.name }}-agw-frontend-80"
+      - port: "443"
+        name: "{{ vmss_syncgateway.name }}-agw-frontend-443"
+    backend_address_pools:
+      - backend_addresses:
+          - ip_address: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
+          - ip_address: "{{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress }}"
+        name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+    backend_http_settings_collection:
+      - port: "80"
+        protocol: http
+        cookie_based_affinity: "enabled"
+        name: "{{ vmss_syncgateway.name }}-agw-backend-settings-80"
+      - port: "443"
+        protocol: https
+        cookie_based_affinity: "enabled"
+        name: "{{ vmss_syncgateway.name }}-agw-backend-settings-443"
+        authentication_certificates:
+          - name: "{{ self_signed_cert_name }}"
+            id: "{{ agw_facts.url }}/providers/Microsoft.Network/applicationGateways/{{ vmss_syncgateway.name }}-agw/authenticationCertificates/{{ self_signed_cert_name }}"
+    http_listeners:
+      - frontend_ip_configuration: "{{ vmss_syncgateway.name }}-agw-frontend-ip"
+        frontend_port: "{{ vmss_syncgateway.name }}-agw-frontend-80"
+        name: "{{ vmss_syncgateway.name }}-agw-listener-80"
+      - frontend_ip_configuration: "{{ vmss_syncgateway.name }}-agw-frontend-ip"
+        frontend_port: "{{ vmss_syncgateway.name }}-agw-frontend-443"
+        name: "{{ vmss_syncgateway.name }}-agw-listener-443"
+        protocol: https
+        ssl_certificate: "{{ ssl_cert_name }}"
+    request_routing_rules:
+      - rule_type: "Basic"
+        backend_address_pool: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+        backend_http_settings: "{{ vmss_syncgateway.name }}-agw-backend-settings-80"
+        http_listener: "{{ vmss_syncgateway.name }}-agw-listener-80"
+        name: "{{ vmss_syncgateway.name }}-agw-rule-80"
+      - rule_type: "Basic"
+        backend_address_pool: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+        backend_http_settings: "{{ vmss_syncgateway.name }}-agw-backend-settings-443"
+        http_listener: "{{ vmss_syncgateway.name }}-agw-listener-443"
+        name: "{{ vmss_syncgateway.name }}-agw-rule-443"
+    ssl_policy:
+      policy_type: "{{ ssl_policy_type }}"
+      policy_name: "{{ ssl_policy_name }}"
+      cipher_suites: "{{ ssl_policy_cypher_suites }}"
+      disabled_ssl_protocols: "{{ ssl_policy_disabled_protocols }}"
+      min_protocol_version: "{{ ssl_policy_min_protocol }}"
+    ssl_certificates:
+      - data: "{{ ssl_cert_body }}"
+        name: "{{ ssl_cert_name }}"
+        password: "{{ ssl_cert_pass }}"
+    authentication_certificates:
+      - data: "{{ self_signed_cert_data }}"
+        name: "{{ self_signed_cert_name }}"
+    probes:
+      - name: "{{ vmss_syncgateway.name }}-hp-1"
+        protocol: 'https'
+        host: 'whitespace.co.uk'
+        path: '/api/test'
+        timeout: 30
+      - name: "{{ vmss_syncgateway.name }}-hp-2"
+        protocol: 'https'
+        host: 'whitespace.co.uk'
+        path: '/sync/'
+        timeout: 30

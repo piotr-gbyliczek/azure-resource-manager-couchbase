@@ -4,3 +4,4 @@ host_usrs:
 # Dev users to create or remove
 ################################################################################
   # - { name: 'dev.user',         comment: 'WP Dev user', uid: '3201', gid: '3001', action: 'create', sudo: 1, nopasswd: 1, noexpire: 1, key: '<users public key>' }
+    - { name: 'alex.baines',      comment: 'WP Dev user', uid: '3201', gid: '3001', action: 'create', sudo: 1, nopasswd: 1, noexpire: 1, key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIcNXZRMXhpd1XttiA8QBt+qjEMvEiqTZoMhtAK2Ci+ alex@webdev-vm' }
