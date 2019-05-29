@@ -179,6 +179,8 @@ vmss_syncgateway:
       name: "standard_small"
       tier: "standard"
 
+configure_application_gateway: "true"
+
 # Which SSH Key to use? The default should be the one used by AWX
 # ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2c5jDHGDdEGGIUC7dX9y1iyX2F/csqpvYYnWEZ2knA1whUBMwiAR+XxXTW1zInd3I4R6z/8zv4rXLDPn8LeTc5cV0zFY5BxVmvyeObEojOHC9l+yiHUaATs99eJIMd4ph+bNnfFV0uN0FusWjR1d6yDkhCizMhYcGo9g4QSx+qyi85BMuXelwmM57DTRZRgs6JnvcgkLXHUQD0cFuvGFMMDLrIVR5CUVUb76EULSQ+gSSkMVlyoF0h1M9PxhJR6VTtb3QXQ7EB6w8oO9Ke831YMSoU44BIEeImbDSXkEQdZPck+l4LmWF2Om6qLSsNsIGsexMRMH7qJNTRfFleTboOZf9YeJrvyDJg1j7075oCKEHXYO83ZpBZ5mU4dpJYeClVwMtGUNwK7lyRH0zNXipWS7Pm9WAYX0sdk/zwIdUV4U9eK7BkDLXQorHf5vBey/2W5nadjqbA7krlDUUbIR5l3LANI/vA5w5VGqdMlPsNOGftzjkgWci757km4sAHUj1b819ckrnHIeCTNSbYuAKREiLUAo5B2b8vjyHU1EXP1rLvIXwMtor8c6TJWGxiouDL3fbmLLZ8SmHOVaYEzduJMaFZ/8dSr1yEk35kG40ZBnhPEyUCEJ+MMjmhy/EvCPihoC6iM/xqHBKp+45nvhcZoP/prTQHRqey9Bjc8HweQ== whitespace-awx"
 ssh_key: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"

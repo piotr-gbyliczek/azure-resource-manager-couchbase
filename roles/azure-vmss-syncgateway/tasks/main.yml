@@ -188,7 +188,8 @@
         host: 'whitespace.co.uk'
         path: '/sync/'
         timeout: 30
-
+    tags: "{{ common_tags }}"
+  when: configure_application_gateway == true
 
 - name: gather facts about resource
   azure_rm_resource_facts:
@@ -278,3 +279,5 @@
         host: 'whitespace.co.uk'
         path: '/sync/'
         timeout: 30
+    tags: "{{ common_tags }}"
+  when: configure_application_gateway == true
