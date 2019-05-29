@@ -58,23 +58,13 @@ sg_nsg_rules:
       access: "Allow"
       priority: "200"
       direction: "Inbound"
-    - name: "AllowSyncGateway"
-      protocol: "Tcp"
-      source_address_prefix:
-{% for item in trusted_ips | unique %}
-            - "{{ item }}"
-{% endfor %}
-      destination_port_range: "4984"
-      access: "Allow"
-      priority: "300"
-      direction: "Inbound"
     - name: "AllowSyncGatewaySSL"
       protocol: "Tcp"
       source_address_prefix:
 {% for item in trusted_ips | unique %}
             - "{{ item }}"
 {% endfor %}
-      destination_port_range: "4985"
+      destination_port_range: "18100"
       access: "Allow"
-      priority: "301"
+      priority: "300"
       direction: "Inbound"
