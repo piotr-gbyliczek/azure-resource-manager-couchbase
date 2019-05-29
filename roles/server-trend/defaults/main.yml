@@ -1,0 +1,8 @@
+---
+# defaults file for roles/server-trend
+
+trend:
+  agent_url: "https://tds.node4.co.uk:4119/software/agent/RedHat_EL7/x86_64/agent.rpm"
+  agent_path: "/opt/ds_agent/dsa_control"
+  flag_reset: "-r"
+  flag_add: '-a dsm://tds.node4.co.uk:4120/ "tenantID:489439FC-0BB5-93DC-702C-AF0DA936DCBC" "token:F49450C6-9827-0253-BDA8-A4FCA2438258" "policyid:15" "groupid:5"'

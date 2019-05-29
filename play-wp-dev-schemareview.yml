@@ -33,6 +33,7 @@
   roles:
     - roles/server-all-stack
     - roles/server-all-users
+    - roles/server-trend
 
 - name: run the syncgateway tasks
   hosts: vmss_syncgateway
