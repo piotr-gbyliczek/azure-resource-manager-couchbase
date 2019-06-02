@@ -1,0 +1,35 @@
+{
+  "Information": [
+    "Information Section",
+    "2 Information",
+    "2 Information Section"
+  ],
+  "FiscalAndRegulatory": [
+    "Fiscal and Regulatory Section",
+    "5 Fiscal and Regulatory"
+  ],
+  "SubscriptionAgreement": [
+    "Subscription Agreement Section",
+    "4 Subscription Agreement"
+  ],
+  "RiskDetails": [
+    "Risk Details Section",
+    "1 Risk Details Section",
+    "1 Risk Details"
+  ],
+  "SecurityDetails": [
+    "Security Details Section",
+    "3 Security Details"
+  ],
+  "channels": [
+    "shared"
+  ],
+  "type": "ContractDrafterSetting",
+  "BrokerRemunerationAndDeductions": [
+    "Broker Remuneration and Deductions Section",
+    "6 Broker Remuneration and Deductions",
+    "Broker Remuneration",
+    "Broker Remuneration and Other deductions from premium"
+  ],
+  "createdAt": "2017-04-03 10:36:00"
+}

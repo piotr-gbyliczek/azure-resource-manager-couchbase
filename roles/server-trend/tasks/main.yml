@@ -5,9 +5,11 @@
   yum:
     name: "{{ trend.agent_url }}"
     state: "present"
+  when: options.install_trend == true
 
 # - name: reset trend agent
 #   command: '{{ trend.agent_path }} {{ trend.flag_reset }}'
 
 - name: add the agent to the server
   command: '{{ trend.agent_path }} {{ trend.flag_add }}'
+  when: options.install_trend == true

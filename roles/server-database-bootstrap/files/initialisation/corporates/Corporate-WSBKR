@@ -1,0 +1,45 @@
+{
+  "_attachments": {},
+  "_id": "Corporate-WSBKR",
+  "admins": [
+    "wsadmin.wsbkr@wspt.co.uk"
+  ],
+  "channelPrefix": "wsbkr",
+  "channels": [
+    "shared"
+  ],
+  "companyId": "WSBKR",
+  "createdAt": "2019-05-23 10:18:00",
+  "members": [
+    {
+      "currentState": "",
+      "email": "broker.wsbkr@wspt.co.uk",
+      "name": "Jody Wilkinson",
+      "teams": [
+        "ALL"
+      ],
+      "uniqueID": "MU8A0F9072-3EAC-4864-AFEE-7668BE563060"
+    },
+    {
+      "currentState": "",
+      "email": "r.mckendrick@node4.co.uk",
+      "name": "Russ McKendrick",
+      "teams": [
+        "ALL"
+      ],
+      "uniqueID": "MU8A0F9072-3EAC-4864-AFEE-7668BE563061"
+    }
+  ],
+  "name": "Whitespace Broking",
+  "role": "broker",
+  "stamps": [],
+  "teams": [
+    {
+      "channel": "wsbkr_ALL",
+      "name": "All Risks",
+      "teamId": "ALL"
+    }
+  ],
+  "type": "CorporateDetail",
+  "updatedAt": "2019-05-23 10:18:00"
+}

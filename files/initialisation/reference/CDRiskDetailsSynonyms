@@ -1,0 +1,201 @@
+{
+  "Arbitration": [
+    "Seat of Arbitration"
+  ],
+  "UMR": [
+    "UNIQUE MARKET REFERENCE",
+    "UNIQUE MARKET REFERENCE UMR",
+    "Policy No"
+  ],
+  "TaxesPayableByInsurersAndAdministeredByInsuredOrTheirAgent": [
+    "Taxes Payable By Reinsurers And Administered By Reinsured Or Their Agent",
+    "Taxes Payable By The Reinsurers And Administered By Reinsured Or Their Agent",
+    "Taxes Payable By Insurers And Administered By The Insured Or Their Agent",
+    "Taxes Payable By The Insurers And Administered By Insured Or Their Agent",
+    "Taxes Payable By Insurers And Administered By Named Insured Or Their Agent",
+    "Taxes Payable By Insurers And Administered By The Policyholder Or Their Agent",
+    "Taxes Payable By ReInsurers And Administered By The Policyholder Or Their Agent",
+    "TAXES PAYABLE BY (RE)INSURERS AND ADMINISTERED BY THE NAMED (RE)INSURED OR THEIR AGENT"
+  ],
+  "AttachingToLineslipContractOrBindingAuthorityAgreementNumber": [
+    "Attaching to delegated Authority Number",
+    "ATTACHING TO LINESLIP REFERENCE"
+  ],
+  "ReinsuredAddress": [
+    "Reinsureds Address"
+  ],
+  "PrincipalAddress": [
+    "INSUREDS ADDRESS",
+    "INSURED ADDRESS",
+    "OriginalAssuredAddress",
+    "Address of the Insured",
+    "Original Insured Address",
+    "Mailing Address"
+  ],
+  "channels": [
+    "shared"
+  ],
+  "Application": [
+    "Application Form"
+  ],
+  "Interest": [
+    "Interests",
+    "ORIGINAL INTEREST"
+  ],
+  "UnderlyingPolicyLimits": [
+    "Underlying Policy ies Limits"
+  ],
+  "createdAt": "2017-02-20 14:56:00",
+  "InsurerContractDocumentation": [
+    "Insurer Documentation",
+    "Contract Documentation",
+    "Reinsurer Contract Documentation",
+    "REINSURERS CONTRACT DOCUMENTATION",
+    "Insurers Contract Documentation"
+  ],
+  "Premium": [
+    "Rate",
+    "Rates",
+    "Premium Basis",
+    "Premium / Rate",
+    "Deposit Premium",
+    "Annual Rates",
+    "Premium for the period",
+    "Annual Premium"
+  ],
+  "Assured": [
+    "Coassured"
+  ],
+  "Retrocedent": [
+    "Retrocedant"
+  ],
+  "Insured": [
+    "Insured and location",
+    "Named Assured",
+    "Life assured",
+    "Insured person",
+    "Policyholder",
+    "Item 1 Policyholder",
+    "Named insured",
+    "Name of firm",
+    "Name of practice",
+    "Company",
+    "Sponsoring employer company",
+    "Name and Address of the taker of Insurance",
+    "Name(s) and Address(es) of Assured(s) if other than the taker of Insurance",
+    "The practice"
+  ],
+  "RecordingTransmittingAndStoringInformation": [
+    "Recording Transmitting And Storing Of Information",
+    "RECORDING TRANSMITTING & STORING INFORMATION"
+  ],
+  "Excess": [
+    "Primary and Underlying Excess Limit(s)",
+    "EXCESS OF",
+    "Excess Limit Hereon",
+    "Deductible(s) / Excess(es) (100%)"
+  ],
+  "ConditionsPrecedent": [
+    "Special Conditions",
+    "ConditionPrecedentToLiability",
+    "ConditionsPrecedentToLiability"
+  ],
+  "type": "ContractDrafterSetting",
+  "TaxesPayableByInsuredAndAdministeredByInsurers": [
+    "Taxes Administered by Insurers",
+    "Taxes Payable By The Reinsured And Administered By Insurers",
+    "Taxes Payable By The Reinsured and Administered by Reinsurers",
+    "Taxes Payable By Reinsured and Administered by Reinsurers",
+    "Taxes Payable by the Insured and administered by insurers",
+    "Taxes Payable by the Insured which are administered by Reinsurers",
+    "Taxes Payable by Insured/Reinsured and Administered by Insurers/Reinsurers",
+    "Taxes Payable By Named Insured And Administered By Insurers",
+    "Taxes Payable By The Policyholder And Administered By (Re)Insurers",
+    "Taxes Payable By The Policyholder And Administered By Insurers",
+    "TAX(ES) PAYABLE BY THE NAMED INSURED AND ADMINISTERED BY (RE)INSURERS",
+    "TAXES PAYABLE BY (RE)INSURED AND ADMINISTERED BY INSURERS",
+    "TAXES PAYABLE BY (RE)ASSURED AND ADMINISTERED BY (RE)INSURERS",
+    "Taxes Payable By Insured And Administered By Insured Or Their Agent"
+  ],
+  "Deductibles": [
+    "Original Policy Deductibles",
+    "Deductible Retention Wait period as applicable"
+  ],
+  "ChoiceOfLawAndJurisdiction": [
+    "Law and Jurisdiction"
+  ],
+  "LimitOfLiability": [
+    "Limits 100",
+    "This Policy Amount of Liability",
+    "Excess Limit Hereon",
+    "Sum Insured",
+    "Sum Insured hereunder",
+    "Limits of Liability",
+    "Limits of Inemnity",
+    "ReinsuredLimitOfLiability",
+    "OriginalInsuredLimitOfLiability",
+    "Sum(s) Insured Limit(s) of Liability (100%)",
+    "Sum Insured/Limit as applicable",
+    "Total Sum Insured"
+  ],
+  "ReInsuredsRetention": [
+    "Insureds Retention",
+    "Retentions",
+    "Reassureds Retention",
+    "Reinsured Retention"
+  ],
+  "OriginalReinsured": [],
+  "Situation": [
+    "Territorial Limits",
+    "Geographical limits",
+    "Geographical areas",
+    "Named Risk Location",
+    "Situation/Territorial Limits",
+    "Territorial Limits and Jurisdictional Limits",
+    "Risk location",
+    "Situation / Voyages"
+  ],
+  "Sublimits": [
+    "Sublimits of Liability"
+  ],
+  "OriginalInsured": [
+    "Original assured",
+    "Original name insured",
+    "Original Named Insured"
+  ],
+  "Subjectivities": [
+    "Subjectivity"
+  ],
+  "SumReinsured": [
+    "Sums Reinsured"
+  ],
+  "Reinsured": [
+    "Cedent",
+    "Cedant"
+  ],
+  "NoticeOfCancellationProvisions": [
+    "Notice of Cancellation Provisions Authority Provisions",
+    "Notice of Cancellation",
+    "Notice Of Cancellation Delivery Provisions",
+    "Notice Of Cancellation Provisions Format and Delivery Provisions"
+  ],
+  "Period": [
+    "Period and cancellation provisions",
+    "Policy period",
+    "Voyage",
+    "Term",
+    "Term and cancellation provisions",
+    "Period of Insurance",
+    "The Period of Insurance",
+    "Period Of Liability",
+    "Period of Reinsurance",
+    "Bookmark PERIOD OF INSURANCE"
+  ],
+  "Portfolio": [
+    "PORTFOLIO TRANSFER"
+  ],
+  "ContractType": [
+    "Type",
+    "Type of Risk"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "SurplusLinesBroker": [
+    "Surplus line broker"
+  ],
+  "CountryOfOrigin": [],
+  "type": "ContractDrafterSetting",
+  "AllocationOfPremiumToCoding": [
+    "Allocation Of Premium Coding"
+  ],
+  "channels": [
+    "shared"
+  ],
+  "AllocationOfPremiumToYearsOfAccount": [
+    "Allocation of premium to year",
+    "Allocation of Premium to year of Account"
+  ],
+  "TaxPayableByInsurers": [
+    "Tax Payable by Underwriter(s)",
+    "TAX PAYABLE BY REINSURER(S)",
+    "Taxes Payable by Insurers(s)",
+    "Taxes Payable by Insurer(s)",
+    "TAXES PAYABLE BY REINSURERS"
+  ],
+  "IsTheBusinessSubjectToDistanceMarketingDirective": [
+    "Is Business Subject To Distance Marketing Directive Rules"
+  ],
+  "USClassification": [
+    "US Classification:(for Lloyd’s use only)"
+  ],
+  "createdAt": "2017-02-24 12:37:00"
+}
