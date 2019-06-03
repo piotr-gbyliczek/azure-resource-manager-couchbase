@@ -1,0 +1,1 @@
+curl -k $AURL/$BUCKET/_user/public -X PUT -H $CTAJ -T publicuser.json

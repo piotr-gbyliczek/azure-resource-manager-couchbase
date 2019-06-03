@@ -1,0 +1,21 @@
+{
+  "EndorsementReference": [
+    "Broker Endorsement Reference"
+  ],
+  "EndorsementName": [
+    "Broker Endorsement Name"
+  ],
+  "EndorsementEffectiveDate": [
+    "Effective Date",
+    "Broker Endorsement Effective Date",
+    "Broker Effective Date"
+  ],
+  "channels": [
+    "shared"
+  ],
+  "EndorsementNumber": [
+    "Broker Endorsement Number"
+  ],
+  "type": "ContractDrafterSetting",
+  "createdAt": "2017-10-24 14:36:00"
+}

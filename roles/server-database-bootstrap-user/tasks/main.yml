@@ -1,0 +1,39 @@
+---
+# tasks file for roles/server-database-bootstrap
+
+- name: gather some facts on the public IP address attached to the couchbase load balancer
+  azure_rm_publicipaddress_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_couchbase.name }}-lb-pip"
+  register: cb_ip_address
+  when: bootstrap_database_add_user == true
+
+- name: gather some facts on the couchbase load balancer
+  set_fact:
+    cb_server: "https://{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ couchbase.admin_port }}"
+  when: bootstrap_database_add_user == true
+
+
+- name: create the {{ couchbase.bucket }} bucket
+  command: >
+      curl -k -X POST
+        -u {{ couchbase.username }}:{{ couchbase.password }}
+        -d 'name={{ couchbase.bucket }}'
+        -d 'ramQuotaMB=100'
+        -d 'authType=none'
+        -d 'replicaNumber=1'
+        {{ cb_server }}/pools/default/buckets
+  args:
+    warn: no
+  when: bootstrap_database_add_user == true
+
+- name: add the additional users
+  command: >
+      curl -k -X PUT 
+        -u {{ couchbase.username }}:{{ couchbase.password }}
+        -d 'name={{ item.username }}&password={{ item.password }}&roles={{ couchbase_bootstrap.rbac_roles | urlencode() }}'
+        {{ cb_server }}/settings/rbac/users/local/{{ item.username }}
+  with_items: "{{  couchbase.additional_users }}"
+  args:
+    warn: no
+  when: bootstrap_database_add_user == true

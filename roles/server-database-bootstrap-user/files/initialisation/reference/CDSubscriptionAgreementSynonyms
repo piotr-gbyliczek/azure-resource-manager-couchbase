@@ -1,0 +1,47 @@
+{
+  "NonBureauxArrangements": [
+    "Non Bureau Arrangements",
+    "Non Bureau Arrangement"
+  ],
+  "InstalmentPremiumPeriodOfCredit": [],
+  "SlipLeader": [
+    "Contract Leader"
+  ],
+  "BasisOfAgreementToContractChanges": [
+    "Agreement basis to contract  changes"
+  ],
+  "BureauLeader": [
+    "Bureaux Leaders"
+  ],
+  "OtherAgreementPartiesForContractChangesForPart2GUAChangesOnly": [
+    "OtherAgreementPartiesForContractChangesForPartTwoGuaChangesOnly"
+  ],
+  "AdjustmentPremiumPeriodOfCredit": [],
+  "ClaimsAdministration": [
+    "Claim Administration"
+  ],
+  "RulesAndExtentOfAnyOtherDelegatedClaimsAuthority": [
+    "Rules and Extent of Any other Delegated Authority"
+  ],
+  "BasisOfClaimsAgreement": [],
+  "createdAt": "2017-02-27 10:16:00",
+  "BureauxArrangements": [
+    "Bureau Arrangements",
+    "Bureau and Non-Bureau Arrangements",
+    "Bureaux & Non Bureaux Arrangements"
+  ],
+  "ClaimsAgreementParties": [],
+  "type": "ContractDrafterSetting",
+  "AgreementPartiesForContractChangesForTheirProportionOnly": [
+    "Other Agreement Parties For Contract Changes For Their Proportion Only",
+    "Agreement parties for contract changes for their participation only"
+  ],
+  "channels": [
+    "shared"
+  ],
+  "ExpertsFeesCollection": [
+    "Experts Fee Collection",
+    "Expert Fee Collection",
+    "Expert Fees"
+  ]
+}
