@@ -6,12 +6,12 @@
     resource_group: "{{ resource_group }}"
     name: "{{ vmss_couchbase.name }}-lb-pip"
   register: cb_ip_address
-  when: "bootstrap_database_add_user.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_add_user'
 
 - name: gather some facts on the couchbase load balancer
   set_fact:
     cb_server: "https://{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ couchbase.admin_port }}"
-  when: "bootstrap_database_add_user.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_add_user'
 
 
 - name: create the {{ couchbase.bucket }} bucket
@@ -25,7 +25,7 @@
         {{ cb_server }}/pools/default/buckets
   args:
     warn: no
-  when: "bootstrap_database_add_user.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_add_user'
 
 - name: add the additional users
   command: >
@@ -36,4 +36,4 @@
   with_items: "{{  couchbase.additional_users }}"
   args:
     warn: no
-  when: "bootstrap_database_add_user.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_add_user'

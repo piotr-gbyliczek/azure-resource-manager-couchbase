@@ -6,17 +6,17 @@
     resource_group: "{{ resource_group }}"
     name: "{{ vmss_syncgateway.name }}-lb-pip"
   register: sg_ip_address
-  when: "bootstrap_database_create_schema.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_create_schema'
 
 - name: gather some facts on the couchbase load balancer
   set_fact:
     sg_server: "https://{{ sg_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ sync_gateway.admin_port }}"
-  when: "bootstrap_database_create_schema.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_create_schema'
 
 - name: wait for a minute to couchbase catchup with itself
   pause:
     minutes: 1
-  when: "bootstrap_database_create_schema.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_create_schema'
 
 - name: users
   command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/_user/public -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/users/{{ item }}"
@@ -24,7 +24,7 @@
       - "publicuser.json"
   args:
     warn: no
-  when: "bootstrap_database_create_schema.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_create_schema'
 
 - name: corporates
   command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/{{ item }} -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/corporates/{{ item }}"   
@@ -32,7 +32,7 @@
       - "Corporate-WSBKR"
   args:
     warn: no
-  when: "bootstrap_database_create_schema.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_create_schema'
 
 - name: reference
   command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/{{ item }} -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/reference/{{ item }}"   
@@ -50,4 +50,4 @@
       - "sdccodes"
   args:
     warn: no
-  when: "bootstrap_database_create_schema.find('v=' ~ yes) == -1"
+  when: '"yes" in bootstrap_database_create_schema'
