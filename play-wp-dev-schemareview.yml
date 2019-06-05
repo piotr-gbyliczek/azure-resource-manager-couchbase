@@ -61,15 +61,41 @@
   roles:
     - roles/server-sync-whitespace
 
-- name: bootstrap the database if needed
+- name: bootstrap the database (add create db and add user)
   hosts: localhost
   connection: local
   gather_facts: true
 
+  vars_files:
+    - group_vars/wp-dev-schemareview.yml
+
+  roles:
+    - roles/server-database-bootstrap-user
+
+- name: restart the syncgateway
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/rm-dev-schemareview.yml
+
+  tasks:
+    - name: restart sync_gateway
+      systemd:
+        name: "sync_gateway"
+        state: "started"
+        enabled: "true"
+      when: bootstrap_database_add_user == true
+
+- name: bootstrap the database (create the schema)
+  hosts: localhost
+  connection: local
+  gather_facts: true
 
   vars_files:
     - group_vars/wp-dev-schemareview.yml
-    - group_vars/openid-dev.yml
 
   roles:
-    - roles/server-database-bootstrap
+    - roles/server-database-bootstrap-schema

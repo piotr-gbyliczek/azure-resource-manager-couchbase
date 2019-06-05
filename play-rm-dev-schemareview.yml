@@ -68,7 +68,6 @@
 
   vars_files:
     - group_vars/rm-dev-schemareview.yml
-    - group_vars/openid-dev.yml
 
   roles:
     - roles/server-database-bootstrap-user
@@ -97,7 +96,6 @@
 
   vars_files:
     - group_vars/rm-dev-schemareview.yml
-    - group_vars/openid-dev.yml
 
   roles:
     - roles/server-database-bootstrap-schema
