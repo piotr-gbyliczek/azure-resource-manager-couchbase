@@ -3,5 +3,5 @@
 
 stack_packages: 
     - "git"
-    - "azure-cli"
+    # - "azure-cli"
     - "libselinux-python"
