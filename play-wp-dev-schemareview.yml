@@ -87,7 +87,7 @@
         name: "sync_gateway"
         state: "started"
         enabled: "true"
-      when: bootstrap_database_add_user == true
+      when: "bootstrap_database_add_user.find('v=' ~ yes) == -1"
 
 - name: bootstrap the database (create the schema)
   hosts: localhost

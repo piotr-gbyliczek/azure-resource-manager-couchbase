@@ -2,10 +2,10 @@
 
 # Some options, this should be accessible via survey
 
-install_trend: true
-bootstrap_database_add_user: true
-bootstrap_database_create_schema: true
-configure_application_gateway: false
+install_trend: "yes"
+bootstrap_database_add_user: "no"
+bootstrap_database_create_schema: "no"
+configure_application_gateway: "no"
 
 # Application vars
 

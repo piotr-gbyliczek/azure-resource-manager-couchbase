@@ -86,7 +86,7 @@
     allocation_method: "Dynamic"
     name: "{{ vmss_syncgateway.name }}-agw-pip"
     tags: "{{ common_tags }}"
-  when: configure_application_gateway == true
+  when: "configure_application_gateway.find('v=' ~ yes) == -1"
 
 - name: get info about the subnet
   azure_rm_resource_facts:
@@ -99,7 +99,7 @@
       - type: subnets
         name: "{{ vmss_syncgateway.subnet_name_agw }}"
   register: agw_subnet
-  when: configure_application_gateway == true
+  when: "configure_application_gateway.find('v=' ~ yes) == -1"
 
 - name: gather some facts on the NICs attached to the VMs in the virtual machine scale set
   azure_rm_resource_facts:
@@ -111,7 +111,7 @@
     subresource:
       - type: "networkInterfaces"
   register: vmss_network_interfaces
-  when: configure_application_gateway == true
+  when: "configure_application_gateway.find('v=' ~ yes) == -1"
 
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:
@@ -192,7 +192,7 @@
         path: '/sync/'
         timeout: 30
     tags: "{{ common_tags }}"
-  when: configure_application_gateway == true
+  when: "configure_application_gateway.find('v=' ~ yes) == -1"
 
 - name: gather facts about resource
   azure_rm_resource_facts:
@@ -200,7 +200,7 @@
     resource_name: "{{ vmss_couchbase.name }}-awg"
     resource_type: "applicationgateway"
   register: agw_facts
-  when: configure_application_gateway == true
+  when: "configure_application_gateway.find('v=' ~ yes) == -1"
 
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:
@@ -284,4 +284,4 @@
         path: '/sync/'
         timeout: 30
     tags: "{{ common_tags }}"
-  when: configure_application_gateway == true
+  when: "configure_application_gateway.find('v=' ~ yes) == -1"
