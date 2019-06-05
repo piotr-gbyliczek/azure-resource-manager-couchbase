@@ -1,0 +1,7 @@
+{
+  "name": "public",
+  "password" : "public",
+  "admin_channels": [
+    "shared"
+  ]
+}

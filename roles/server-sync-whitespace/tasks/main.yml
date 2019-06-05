@@ -143,7 +143,7 @@
 # Print some information to the screen
 ########################################################################
 
-- debug:
-    msg: "The sync gate way username is '{{ sync_gateway.user }}' and password '{{ sync_gateway.password }}'"
-  tags:
-      - "application"
+# - debug:
+#     msg: "The sync gate way username is '{{ sync_gateway.user }}' and password '{{ sync_gateway.password }}'"
+#   tags:
+#       - "application"

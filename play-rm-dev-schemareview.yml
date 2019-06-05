@@ -6,7 +6,7 @@
   gather_facts: true
 
   vars_files:
-    - group_vars/wp-dev-schemareview.yml
+    - group_vars/rm-dev-schemareview.yml
     - group_vars/cert-whitespace.yml
     - group_vars/cert-selfsigned.yml
 
@@ -26,7 +26,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-dev-schemareview.yml
+    - group_vars/rm-dev-schemareview.yml
     - group_vars/users-all.yml
     - group_vars/users-dev.yml
 
@@ -42,7 +42,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-dev-schemareview.yml
+    - group_vars/rm-dev-schemareview.yml
 
   roles:
     - roles/server-sync-nginx
@@ -55,7 +55,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-dev-schemareview.yml
+    - group_vars/rm-dev-schemareview.yml
     - group_vars/openid-dev.yml
 
   roles:
@@ -67,7 +67,7 @@
   gather_facts: true
 
   vars_files:
-    - group_vars/wp-dev-schemareview.yml
+    - group_vars/rm-dev-schemareview.yml
 
   roles:
     - roles/server-database-bootstrap-user
@@ -89,13 +89,13 @@
         enabled: "true"
       when: bootstrap_database_add_user == true
 
-- name: bootstrap the database (create the schema)
+- name: bootstrap the database (schema)
   hosts: localhost
   connection: local
   gather_facts: true
 
   vars_files:
-    - group_vars/wp-dev-schemareview.yml
+    - group_vars/rm-dev-schemareview.yml
 
   roles:
     - roles/server-database-bootstrap-schema

@@ -1,0 +1,53 @@
+---
+# tasks file for roles/server-database-bootstrap
+
+- name: gather some facts on the public IP address attached to the couchbase load balancer
+  azure_rm_publicipaddress_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_syncgateway.name }}-lb-pip"
+  register: sg_ip_address
+  when: bootstrap_database_create_schema == true
+
+- name: gather some facts on the couchbase load balancer
+  set_fact:
+    sg_server: "https://{{ sg_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ sync_gateway.admin_port }}"
+  when: bootstrap_database_create_schema == true
+
+- name: wait for a minute to couchbase catchup with itself
+  pause:
+    minutes: 1
+  when: bootstrap_database_create_schema == true
+
+- name: users
+  command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/_user/public -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/users/{{ item }}"
+  with_items:
+      - "publicuser.json"
+  args:
+    warn: no
+  when: bootstrap_database_create_schema == true
+
+- name: corporates
+  command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/{{ item }} -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/corporates/{{ item }}"   
+  with_items:
+      - "Corporate-WSBKR"
+  args:
+    warn: no
+  when: bootstrap_database_create_schema == true
+
+- name: reference
+  command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/{{ item }} -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/reference/{{ item }}"   
+  with_items:
+      - "CDBrokerRemunerationAndDeductionsSynonyms"
+      - "CDEndorsementSynonyms"
+      - "CDFiscalAndRegulatorySynonyms"
+      - "CDInformationSynonyms"
+      - "CDOtherSynonyms"
+      - "CDRiskDetailsSynonyms"
+      - "CDSectionSynonyms"
+      - "CDSecurityDetailsSynonyms"
+      - "CDSubscriptionAgreementSynonyms"
+      - "MRCScanSuggestions"
+      - "sdccodes"
+  args:
+    warn: no
+  when: bootstrap_database_create_schema == true

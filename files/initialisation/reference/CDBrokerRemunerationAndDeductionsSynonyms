@@ -1,0 +1,13 @@
+{
+  "Commission": [
+    "AON Carrier Commission"
+  ],
+  "TotalBrokerage": [
+    "Brokerage"
+  ],
+  "channels": [
+    "shared"
+  ],
+  "createdAt": "2017-02-24 16:43:00",
+  "type": "ContractDrafterSetting"
+}

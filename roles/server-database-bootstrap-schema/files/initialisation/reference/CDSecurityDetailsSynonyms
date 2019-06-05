@@ -1,0 +1,22 @@
+{
+  "InsurersWrittenLine": [
+    "Insurers Line",
+    "Insurers Lines",
+    "Insurers Written Lines",
+    "Written Lines"
+  ],
+  "LineConditions": [],
+  "ReinsurersLiability": [
+    "Insurers Liability",
+    "Reinsurers LiabilityClause"
+  ],
+  "type": "ContractDrafterSetting",
+  "BasisOfWrittenLines": [],
+  "createdAt": "2017-02-27 10:16:00",
+  "BasisOfSignedLines": [],
+  "SigningProvisions": [],
+  "SigningInstructions": [],
+  "channels": [
+    "shared"
+  ]
+}
