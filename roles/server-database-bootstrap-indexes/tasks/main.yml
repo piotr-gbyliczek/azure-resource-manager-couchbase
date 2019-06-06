@@ -10,4 +10,4 @@
   args:
     warn: no
   with_items: "{{ indexes }}"
-  when: '"yes" in bootstrap_database_indexes' and item[0] != inventory_hostname
+  when: '"yes" in bootstrap_database_indexes and item[0] != inventory_hostname'
