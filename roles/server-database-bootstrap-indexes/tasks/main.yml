@@ -13,12 +13,13 @@
     cb_server: "https://{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ couchbase.admin_port }}"
   when: '"yes" in bootstrap_database_indexes'
 
-- name: create the {{ couchbase.bucket }} bucket
+- name: loop through adding the indexes
   command: >
       curl -k -X POST
         -u {{ couchbase.username }}:{{ couchbase.password }}
-        -d 'CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt) WITH { "num_replica":1 }'
+        -d '{{ item | urlencode() }}'
         {{ cb_server }}/query/service
   args:
     warn: no
+  with_items: "{{ indexes }}"
   when: '"yes" in bootstrap_database_indexes'
