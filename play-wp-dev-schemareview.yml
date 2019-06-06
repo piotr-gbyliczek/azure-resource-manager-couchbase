@@ -79,7 +79,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/rm-dev-schemareview.yml
+    - group_vars/wp-dev-schemareview.yml
 
   tasks:
     - name: restart sync_gateway
@@ -108,7 +108,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/rm-dev-schemareview.yml
+    - group_vars/wp-dev-schemareview.yml
 
   roles:
     - roles/server-database-bootstrap-indexes
