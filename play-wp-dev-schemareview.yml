@@ -89,7 +89,7 @@
         enabled: "true"
       when: '"yes" in bootstrap_database_add_user'
 
-- name: bootstrap the database (create the schema and indexes)
+- name: bootstrap the database (create the schema)
   hosts: localhost
   connection: local
   gather_facts: true
@@ -99,4 +99,16 @@
 
   roles:
     - roles/server-database-bootstrap-schema
+
+
+- name: bootstrap the database (create the indexes)
+  hosts: vmss_couchbase
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/rm-dev-schemareview.yml
+
+  roles:
     - roles/server-database-bootstrap-indexes
