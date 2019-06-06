@@ -1,0 +1,24 @@
+---
+# tasks file for roles/server-database-bootstrap-indexes
+
+- name: gather some facts on the public IP address attached to the couchbase load balancer
+  azure_rm_publicipaddress_facts:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vmss_couchbase.name }}-lb-pip"
+  register: cb_ip_address
+  when: '"yes" in bootstrap_database_indexes'
+
+- name: gather some facts on the couchbase load balancer
+  set_fact:
+    cb_server: "https://{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ couchbase.admin_port }}"
+  when: '"yes" in bootstrap_database_indexes'
+
+- name: create the {{ couchbase.bucket }} bucket
+  command: >
+      curl -k -X POST
+        -u {{ couchbase.username }}:{{ couchbase.password }}
+        -d 'CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt) WITH { "num_replica":1 }'
+        {{ cb_server }}/query/service
+  args:
+    warn: no
+  when: '"yes" in bootstrap_database_indexes'

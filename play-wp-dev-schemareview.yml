@@ -89,7 +89,7 @@
         enabled: "true"
       when: '"yes" in bootstrap_database_add_user'
 
-- name: bootstrap the database (create the schema)
+- name: bootstrap the database (create the schema and indexes)
   hosts: localhost
   connection: local
   gather_facts: true
@@ -99,3 +99,4 @@
 
   roles:
     - roles/server-database-bootstrap-schema
+    - roles/server-database-bootstrap-indexes

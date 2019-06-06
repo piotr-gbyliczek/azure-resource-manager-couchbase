@@ -5,6 +5,7 @@
 install_trend: "yes"
 bootstrap_database_add_user: "no"
 bootstrap_database_create_schema: "no"
+bootstrap_database_indexes: "no"
 configure_application_gateway: "no"
 
 # Application vars
