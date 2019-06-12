@@ -1,0 +1,7 @@
+
+{
+    "name": "ws_notif_user",
+    "password" : "brownSILKchances",
+    "admin_channels": ["notif_settings", "notif_messages"],
+    "admin_roles": ["notif_service"]
+  }

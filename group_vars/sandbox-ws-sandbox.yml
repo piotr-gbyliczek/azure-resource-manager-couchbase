@@ -7,6 +7,7 @@ app:
   shortname: "wssand" # all lower-case, all one word
   env: "sandbox"
   working_folder: "/wsdocker"
+  url: "sandbox.whitespace.co.uk"
 
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
 the_hash: "{{ raw_hash[:5] }}" # lets shorten it down

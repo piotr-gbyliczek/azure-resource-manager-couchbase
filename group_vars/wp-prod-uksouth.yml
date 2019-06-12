@@ -15,6 +15,7 @@ app:
   shortname: "wpproduks" # all lower-case, all one word
   env: "dev" # 
   working_folder: "/wsdocker"
+  url: "prod.whitespace.co.uk"
 
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
 the_hash: "{{ raw_hash[:5] }}" # lets shorten it down
