@@ -30,9 +30,7 @@ services:
   wsnotif:
     image: wsinternalcontainerregistry.azurecr.io/wsnotif:{{ app.env }}
     environment:
-      - localSG={{ ansible_default_ipv4.address }}
-      - BUCKET={{ couchbase.bucket }}
-      - URL=https://{{ app.url }}/p/
+      - localSG={{ ansible_default_ipv4.address }}    
     restart: always
     extra_hosts:
     - "localSG:{{ ansible_default_ipv4.address }}"
