@@ -19,7 +19,8 @@
 {% if groups['vmss_couchbase'] | length > 1 %}
                 "server": "{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }},{{ hostvars[groups['vmss_couchbase'][1]]["ansible_eth0"]["ipv4"]["address"] }},{{ hostvars[groups['vmss_couchbase'][2]]["ansible_eth0"]["ipv4"]["address"] }}",
 {% else %}
-                "server": "{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+                "num_index_replicas": 0,
+                "server": "{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}",
 {% endif %}
             "oidc": {
                 "default_provider": "microsoft",
