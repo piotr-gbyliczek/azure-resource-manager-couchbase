@@ -26,7 +26,7 @@
   become_method: sudo
 
   vars_files:
-    -  group_vars/wp-prod-support.yml
+    - group_vars/wp-prod-support.yml
     - group_vars/users-all.yml
     - group_vars/users-dev.yml
 
