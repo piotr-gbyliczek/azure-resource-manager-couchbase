@@ -9,7 +9,7 @@ services:
     environment:
       - ENVCONFIG=api{{ app.env }}
     extra_hosts:
-      {% if groups['vmss_couchbase'] | length > 1 %}
+{% if groups['vmss_couchbase'] | length > 1 %}
     - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL0:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL1:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
@@ -18,7 +18,7 @@ services:
     - "localSG0:{{ hostvars[groups['vmss_syncgateway'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localSG1:{{ hostvars[groups['vmss_syncgateway'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localAV:{{ ansible_default_ipv4.address }}"
-    {% else %}
+{% else %}
     - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL0:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL1:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
@@ -27,7 +27,7 @@ services:
     - "localSG0:{{ hostvars[groups['vmss_syncgateway'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localSG1:{{ hostvars[groups['vmss_syncgateway'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localAV:{{ ansible_default_ipv4.address }}"
-    {% endif %}
+{% endif %}
   pdf-fragment-service:
     image: wsinternalcontainerregistry.azurecr.io/pdf-fragment-service:{{ app.env }}
     ports:
