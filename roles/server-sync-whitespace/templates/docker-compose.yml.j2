@@ -9,7 +9,7 @@ services:
     environment:
       - ENVCONFIG=api{{ app.env }}
     extra_hosts:
-      {% if hostvars[groups['vmss_couchbase'] | length > 1 %}
+      {% if hostvars[groups['vmss_couchbase']] | length > 1 %}
     - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL0:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
     - "localN1QL1:{{ hostvars[groups['vmss_couchbase'][1]]["ansible_eth0"]["ipv4"]["address"] }}"
