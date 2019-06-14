@@ -1,19 +1,22 @@
 ---
 
-# Some
+# Some options, this should be accessible via survey
 
-install_trend: false
-bootstrap_database_add_user: true
-bootstrap_database_create_schema: true
-configure_application_gateway: false
+install_trend: "no"
+bootstrap_database_add_user: "no"
+bootstrap_database_create_schema: "no"
+bootstrap_database_indexes: "no"
+configure_application_gateway: "no"
+configure_dns_zone: "yes"
 
 # Application vars
 
 app:
-  name: "rm-dev-schemareview" # this can contain characters such as -, don't get too creative though
-  shortname: "rmdevschem" # all lower-case, all one word
-  env: "dev"
+  name: "rm-wptest1" # this can contain characters such as -, don't get too creative though
+  shortname: "rmwptest1" # all lower-case, all one word
+  env: "dev" # 
   working_folder: "/wsdocker"
+  dnszone: "rm-wp-test1.wp"
 
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
 the_hash: "{{ raw_hash[:5] }}" # lets shorten it down
@@ -66,7 +69,6 @@ ssl_cert_pass: !vault |
           3939653631346332330a373432346639666537663535366138643963323363386437303037346432
           61326264633365323939336431653465343162613938643134616638643938303361
 ssl_cert_name: "whitespace_ssl_cert"
-
 self_signed_cert_name: "self-signed-cert"
 
 containers:
@@ -94,6 +96,12 @@ docker:
   prune_command: "docker image prune -af"
   compose_path: "/usr/local/bin/docker-compose"
 
+indexes:
+  - 'statement=CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt) WITH { "num_replica":1 }'
+  - 'statement=CREATE INDEX idx_parentdocid ON {{ couchbase.bucket }} ( parentDocID ) WHERE not meta().id like "_sync:%" WITH { "num_replica":1 }'
+  - 'statement=CREATE INDEX idx_rwplacing ON {{ couchbase.bucket }} (`type`, distinct array c for c in channels end,`channels`,`_sync`.`rev`,`createdAt`,`updatedAt`,(`control`.`insuredName`),(`control`.`status`),(`control`.`umr`), (`control`.`limitSummary`),(`control`.`contractType`),(`control`.`leadUnderwriterChannel`),(`control`.`placingBrokerChannel`),`provenance`,`user`,`proposedEndorsementFollowers`) WHERE `type` = "RWPlacing" and not meta().`id` like "_sync:%" WITH { "num_replica":1 }'
+  - 'statement=CREATE INDEX idx_type ON {{ couchbase.bucket }} (type, meta().id ) WITH {"num_replica": 1}'
+
 nginx:
   user: "nginx"
   default_page_dir: "/usr/share/nginx/html"
@@ -113,8 +121,8 @@ location: "uksouth"
 common_tags:
   "Name": "{{ app.name }}"
   "Application": "{{  app.name }}"
-  "Environment": "development"
-  "Costcenter": "development"
+  "Environment": "production"
+  "Costcenter": "production"
   "Division": "whitespace platform"
   "Consumer": "robert.taylor@whitespace.co.uk"
 
@@ -124,10 +132,10 @@ common_tags:
 # virtual network
 network:
   name: "{{ app.name }}-vnet"
-  cidr_block: "10.10.0.0/23"
+  cidr_block: "10.20.0.0/23"
   subnets:
-    - { name: 'app-sub',    subnet: '10.10.0.0/24' }
-    - { name: 'appgw-sub',   subnet: '10.10.1.0/24' }
+    - { name: 'app-sub',    subnet: '10.20.0.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.20.1.0/24' }
 
 trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible

@@ -1,0 +1,11 @@
+---
+# tasks file for roles/azure-dnszone
+
+- name: Create a DNS zone
+  azure_rm_dnszone:
+    resource_group: "{{ resource_group }}"
+    name: "{{ app.dnszone }}"
+    type: "private"
+    registration_virtual_networks: "{{ network.name }}"
+    tags: "{{ common_tags }}"
+  when: '"yes" in configure_dns_zone'
