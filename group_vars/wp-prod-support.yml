@@ -188,7 +188,7 @@ vmss_syncgateway:
   name: "{{ app.name }}-sg"
   short_name: "sync"
   size: "Standard_B2ms"
-  capacity: "2"
+  capacity: "1"
   admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"
