@@ -136,7 +136,7 @@
     backend_address_pools:
       - backend_addresses:
           - ip_address: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
-          - ip_address: "{{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress if (vmss_syncgateway.capacity != 1) else vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress  }}"            
+          - ip_address: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress if (vmss_syncgateway.capacity == 1) else vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress  }}"            
         name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
     backend_http_settings_collection:
       - port: "80"
