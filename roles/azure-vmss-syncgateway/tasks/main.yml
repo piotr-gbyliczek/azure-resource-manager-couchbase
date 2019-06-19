@@ -124,6 +124,7 @@
 
 - name: load dynamic security group rules
   include_vars: "{{ local_path }}"
+  debug: msg="{{ dyn_back_end_address_pool }}"
 
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:
