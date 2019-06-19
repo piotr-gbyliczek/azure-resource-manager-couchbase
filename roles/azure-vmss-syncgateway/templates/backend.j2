@@ -4,5 +4,4 @@ dyn_back_end_address_pool: |
       - backend_addresses:          
 {% for item in vmss_network_interfaces.response %}
             - ip_address: "{{ item.properties.ipConfigurations[0].properties.privateIPAddress }}"
-{% endfor %}     
-        name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+{% endfor %}        name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
