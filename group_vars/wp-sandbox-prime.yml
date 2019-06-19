@@ -141,7 +141,7 @@ network:
   cidr_block: "10.30.0.0/20"
   subnets:
     - { name: 'app-sub',    subnet: '10.30.0.0/24' }
-    - { name: 'appgw-sub',   subnet: '10.30.15.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.30.1.0/24' }
 
 trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
