@@ -138,7 +138,7 @@ common_tags:
 # virtual network
 network:
   name: "{{ app.name }}-vnet"
-  cidr_block: "10.90.0.0/20"
+  cidr_block: "10.30.0.0/20"
   subnets:
     - { name: 'app-sub',    subnet: '10.30.0.0/24' }
     - { name: 'appgw-sub',   subnet: '10.30.15.0/24' }
