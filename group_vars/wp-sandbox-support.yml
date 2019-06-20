@@ -12,14 +12,13 @@ configure_dns_zone: "yes"
 # Application vars
 
 app:
-  name: "wp-sandbox" # this can contain characters such as -, don't get too creative though
-  shortname: "wpsandbox" # all lower-case, all one word
+  name: "wp-sandbox-support" # this can contain characters such as -, don't get too creative though
+  shortname: "wpsandboxsup" # all lower-case, all one word
   env: "sandbox" # 
   working_folder: "/wsdocker"
-  url: "sandbox.whitespace.co.uk"
+  url: "sandboxsupport.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
-
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
 the_hash: "{{ raw_hash[:5] }}" # lets shorten it down
 
@@ -140,10 +139,10 @@ common_tags:
 # virtual network
 network:
   name: "{{ app.name }}-vnet"
-  cidr_block: "10.30.0.0/20"
+  cidr_block: "10.92.0.0/23"
   subnets:
-    - { name: 'app-sub',    subnet: '10.30.0.0/24' }
-    - { name: 'appgw-sub',   subnet: '10.30.1.0/24' }
+    - { name: 'app-sub',    subnet: '10.92.0.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.92.1.0/24' }
 
 trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible
@@ -166,7 +165,7 @@ vmss_couchbase:
   name: "{{ app.name }}-cb"
   short_name: "couch"
   size: "Standard_B2ms"
-  capacity: "3"
+  capacity: "1"
   admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"
@@ -191,7 +190,7 @@ vmss_syncgateway:
   name: "{{ app.name }}-sg"
   short_name: "sync"
   size: "Standard_B2ms"
-  capacity: "2"
+  capacity: "1"
   admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"

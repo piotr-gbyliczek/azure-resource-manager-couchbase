@@ -7,6 +7,7 @@ bootstrap_database_add_user: "no"
 bootstrap_database_create_schema: "no"
 bootstrap_database_indexes: "no"
 configure_application_gateway: "no"
+configure_dns_zone: "yes"
 
 # Application vars
 
@@ -17,6 +18,7 @@ app:
   working_folder: "/wsdocker"
   url: "support.whitespace.co.uk"
 
+dnszone: "{{ app.name }}-{{ location }}.internal"
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
 the_hash: "{{ raw_hash[:5] }}" # lets shorten it down
 
@@ -97,9 +99,9 @@ docker:
 
 indexes_norep:
   - 'statement=CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt)'
+  - 'statement=CREATE INDEX idx_type ON {{ couchbase.bucket }} (type, meta().id )'
   - 'statement=CREATE INDEX idx_parentdocid ON {{ couchbase.bucket }} ( parentDocID ) WHERE not meta().id like "_sync:%"'
   - 'statement=CREATE INDEX idx_rwplacing ON {{ couchbase.bucket }} (`type`, distinct array c for c in channels end,`channels`,`_sync`.`rev`,`createdAt`,`updatedAt`,(`control`.`insuredName`),(`control`.`status`),(`control`.`umr`), (`control`.`limitSummary`),(`control`.`contractType`),(`control`.`leadUnderwriterChannel`),(`control`.`placingBrokerChannel`),`provenance`,`user`,`proposedEndorsementFollowers`) WHERE `type` = "RWPlacing" and not meta().`id` like "_sync:%"'
-  - 'statement=CREATE INDEX idx_type ON {{ couchbase.bucket }} (type, meta().id )'
 
 indexes:
   - 'statement=CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt) WITH { "num_replica":1 }'
