@@ -26,6 +26,14 @@
     warn: no
   when: '"yes" in bootstrap_database_create_schema'
 
+- name: usersWSNOTIF
+  command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/_user/ws_notif_user -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/users/{{ item }}"
+  with_items:
+      - "wsnotifuser.json"
+  args:
+    warn: no
+  when: '"yes" in bootstrap_database_create_schema'
+
 - name: corporates
   command: "curl -k {{ sg_server }}{{ couchbase_bootstrap.auth }}/{{ couchbase.bucket }}/{{ item }} -X PUT -H {{ couchbase_bootstrap.ctaj }} -T files/initialisation/corporates/{{ item }}"   
   with_items:

@@ -113,6 +113,18 @@
   register: vmss_network_interfaces
   when: '"yes" in configure_application_gateway'
 
+- name: set the local path for the dynamic rules
+  set_fact:
+    local_path: "./group_vars/dynamic_rules_{{ vmss_syncgateway.name }}_backend_rules.yml"
+
+- name: create the dynamic backend rules
+  template:
+    src: "backend.j2"
+    dest: "{{ local_path }}"
+
+- name: load dynamic security group rules
+  include_vars: "{{ local_path }}"
+  
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:
     resource_group: "{{ resource_group }}"
@@ -133,11 +145,7 @@
         name: "{{ vmss_syncgateway.name }}-agw-frontend-80"
       - port: "443"
         name: "{{ vmss_syncgateway.name }}-agw-frontend-443"
-    backend_address_pools:
-      - backend_addresses:
-          - ip_address: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
-          - ip_address: "{{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress }}"
-        name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+    backend_address_pools: "{{ dyn_back_end_address_pool }}"      
     backend_http_settings_collection:
       - port: "80"
         protocol: http
@@ -222,11 +230,7 @@
         name: "{{ vmss_syncgateway.name }}-agw-frontend-80"
       - port: "443"
         name: "{{ vmss_syncgateway.name }}-agw-frontend-443"
-    backend_address_pools:
-      - backend_addresses:
-          - ip_address: "{{ vmss_network_interfaces.response[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
-          - ip_address: "{{ vmss_network_interfaces.response[1].properties.ipConfigurations[0].properties.privateIPAddress }}"
-        name: "{{ vmss_syncgateway.name }}-agw-backend-pool"
+    backend_address_pools: "{{ dyn_back_end_address_pool }}"                                  
     backend_http_settings_collection:
       - port: "80"
         protocol: http
