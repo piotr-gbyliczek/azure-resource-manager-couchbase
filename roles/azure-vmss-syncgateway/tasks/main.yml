@@ -125,8 +125,6 @@
 - name: load dynamic security group rules
   include_vars: "{{ local_path }}"
   
-- debug: msg="{{ dyn_back_end_address_pool }}"
-
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:
     resource_group: "{{ resource_group }}"
@@ -147,11 +145,7 @@
         name: "{{ vmss_syncgateway.name }}-agw-frontend-80"
       - port: "443"
         name: "{{ vmss_syncgateway.name }}-agw-frontend-443"
-    backend_address_pools: "{{ dyn_back_end_address_pool }}"
-      #- backend_addresses:          
-      #  - ip_address: "10.30.0.7"
-      #  - ip_address: "10.30.0.8"  
-      #  name: "wp-sandbox-sg-agw-backend-pool"
+    backend_address_pools: "{{ dyn_back_end_address_pool }}"      
     backend_http_settings_collection:
       - port: "80"
         protocol: http
@@ -237,10 +231,6 @@
       - port: "443"
         name: "{{ vmss_syncgateway.name }}-agw-frontend-443"
     backend_address_pools: "{{ dyn_back_end_address_pool }}"                                  
-    #- backend_addresses:          
-    #    - ip_address: "10.30.0.7"
-    #    - ip_address: "10.30.0.8"  
-    #  name: "wp-sandbox-sg-agw-backend-pool"
     backend_http_settings_collection:
       - port: "80"
         protocol: http
