@@ -10,10 +10,9 @@
     tags: "{{ common_tags }}"
 
 - name: prepare the files for upload
-  copy:
+  template:
     src: "{{ item }}"
     dest: "/tmp/{{ item }}"
-    remote_src: "no"
   with_items: "{{ storage.files }}"
 
 - name: create a container and upload the scripts

@@ -44,7 +44,6 @@ tuneDisks
 
 echo "Configuring Couchbase Server..."
 
-
 nodeShort="null"
 while [[ $nodeShort == "null" ]]
 do
@@ -60,13 +59,13 @@ done
 nodeDNS="null"
 while [[ $nodeDNS == "null" ]]
 do
-  nodeDNS=`hostname -f`
+  nodeDNS=`echo ${nodeShort}.{{ dnszone }}`
 done
 
 rallyDNS="null"
 while [[ $rallyDNS == "null" ]]
 do
-  rallyDNS=`hostname -s | sed 's/[0-9]*//g'`000000.`hostname -d`
+  rallyDNS=`hostname -s | sed 's/[0-9]*//g'`000000.{{ dnszone }}
 done
 
 echo "Adding an entry to /etc/hosts to simulate split brain DNS..."
