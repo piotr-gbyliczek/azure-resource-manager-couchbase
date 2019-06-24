@@ -7,7 +7,7 @@
 
   vars_files:
     - group_vars/wp-prod-uksouth.yml
-    - group_vars/cert-whitespace.yml
+    - group_vars/cert-whitespace-platform.yml
     - group_vars/cert-selfsigned.yml
 
   roles:
