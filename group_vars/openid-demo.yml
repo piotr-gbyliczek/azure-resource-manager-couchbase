@@ -1,0 +1,8 @@
+---
+
+openid:
+  url: "https://{{ app.url }}/login"
+  user_prefix: "wsdemo"
+  client_id: "1cc0af85-d9de-457b-8b0d-fe9976cc50ec"
+  issuer: "https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0"
+  valkey: ""

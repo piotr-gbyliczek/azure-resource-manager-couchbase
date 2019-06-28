@@ -1,7 +1,7 @@
 ---
 
 openid:
-  url: "https://devukwest.whitespace.co.uk/browser/login"
+  url: "https://{{ app.url }}/login"
   user_prefix: "wsdev"
   client_id: "4c939aea-47bf-46c5-8d14-d9cb4a81982e"
   issuer: "https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0"

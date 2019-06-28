@@ -1,0 +1,8 @@
+---
+
+openid:
+  url: "https://{{ app.url }}/login"
+  user_prefix: "wstest"
+  client_id: "2fe378b8-fe90-4cd8-b5cb-ebcec10164d3"
+  issuer: "https://login.microsoftonline.com/0a0d0df1-e485-485d-9919-4d4980a42e50/v2.0"
+  valkey: ""
