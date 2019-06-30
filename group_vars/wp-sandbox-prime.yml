@@ -16,7 +16,7 @@ app:
   shortname: "wpsandbox" # all lower-case, all one word
   env: "sandbox" # 
   working_folder: "/wsdocker"
-  url: "sandbox3.whitespace.co.uk"
+  url: "sandbox.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
 
