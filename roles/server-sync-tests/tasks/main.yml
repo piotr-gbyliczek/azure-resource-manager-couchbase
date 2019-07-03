@@ -1,2 +1,80 @@
 ---
 # tasks file for roles/server-sync-tests
+
+
+# this should be like running curl -u public:public localhost:8092/builtAt
+- name: run "builtAt" check
+  uri:
+    url: "localhost:8092/builtAt"
+    user: "public"
+    password: "public"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+    register: builtAt_output
+
+- name: print builtAt_output
+  debug:
+    msg: "builtAt: {{ builtAt_output.json[0].builtAt }}"
+
+# this should be like running curl -u public:public localhost:8092/routedAt
+- name: run "routedAt" check
+  uri:
+    url: "localhost:8092/routedAt"
+    user: "public"
+    password: "public"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+    register: routedAt_output
+
+- name: print routedAt_output
+  debug:
+    msg: "routedAt: {{ routedAt_output.json[0].routedAt }}"
+
+# this should be like running curl -u public:public localhost:8092/notifiedAt
+- name: run "notifiedAt" check
+  uri:
+    url: "localhost:8092/notifiedAt"
+    user: "public"
+    password: "public"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+    register: notifiedAt_output
+
+- name: print notifiedAt_output
+  debug:
+    msg: "notifiedAt: {{ notifiedAt_output.json[0].notifiedAt }}"
+
+# this should be like running curl -v -u public:public localhost:8092/admincorp/updateSelf -X POST -d {} 
+- name: run "updateSelf" check
+  uri:
+    url: "localhost:8092/admincorp/updateSelf"
+    user: "public"
+    password: "public"
+    method: "POST"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+    body: "{}"
+    register: updateSelf_output
+
+# this should be like running curl -u public:public localhost:8092/shared/corporate
+- name: run "corporate" check
+  uri:
+    url: "localhost:8092/shared/corporate"
+    user: "public"
+    password: "public"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+    register: corporate_output
+
+- name: print corporate_output
+  debug:
+    msg: "{{ corporate_output }}"
