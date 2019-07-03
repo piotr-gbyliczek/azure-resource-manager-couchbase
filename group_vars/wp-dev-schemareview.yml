@@ -41,7 +41,7 @@ couchbase:
   admin_port: "18100"
   additional_users:
     - { username: '{{ sync_gateway.user }}', password: '{{ sync_gateway.password }}' }
-    - { username: 'n1qluser', password: 'fds234fwer23' }
+    - { username: 'n1qluser', password: 'barbadosBORNlook24' }
 
 couchbase_bootstrap:
   rbac_roles: 'bucket_admin[{{couchbase.bucket}}],bucket_full_access[{{couchbase.bucket}}],views_admin[{{couchbase.bucket}}],views_reader[{{couchbase.bucket}}],data_reader[{{couchbase.bucket}}],data_writer[{{couchbase.bucket}}],data_dcp_reader[{{couchbase.bucket}}],data_backup[{{couchbase.bucket}}],data_monitoring[{{couchbase.bucket}}],fts_admin[{{couchbase.bucket}}],fts_searcher[{{couchbase.bucket}}],query_select[{{couchbase.bucket}}],query_update[{{couchbase.bucket}}],query_insert[{{couchbase.bucket}}],query_delete[{{couchbase.bucket}}],query_manage_index[{{couchbase.bucket}}],replication_target[{{couchbase.bucket}}],analytics_manager[{{couchbase.bucket}}]'
