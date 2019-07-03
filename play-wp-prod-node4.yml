@@ -1,0 +1,114 @@
+---
+
+- name: create, launch and configure our azure environment
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars_files:
+    - group_vars/wp-prod-node4.yml
+    - group_vars/cert-whitespace-platform.yml
+    - group_vars/cert-selfsigned.yml
+
+  roles:
+    - roles/azure-rg
+    - roles/azure-virtualnetwork
+    - roles/azure-dnszone
+    - roles/azure-storage
+    - roles/azure-nsg
+    - roles/azure-vmss-couchbase
+    - roles/azure-vmss-syncgateway
+    - roles/azure-getinstances
+
+- name: run the tasks common across all instances
+  hosts: azure_vms
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/wp-prod-node4.yml
+    - group_vars/users-all.yml
+    - group_vars/users-prod.yml
+
+  roles:
+    - roles/server-all-stack
+    - roles/server-all-users
+    - roles/server-trend
+
+- name: run the syncgateway tasks
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    -  group_vars/wp-prod-node4.yml
+
+  roles:
+    - roles/server-sync-nginx
+    - roles/server-sync-docker
+
+- name: run the docker tasks on the syncgateway instances
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    -  group_vars/wp-prod-node4.yml
+    - group_vars/openid-prod.yml
+
+  roles:
+    - roles/server-sync-whitespace
+
+- name: bootstrap the database (add create db and add user)
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars_files:
+    - group_vars/wp-prod-node4.yml
+
+  roles:
+    - roles/server-database-bootstrap-user
+
+- name: restart the syncgateway
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/wp-prod-node4.yml
+
+  tasks:
+    - name: restart sync_gateway
+      systemd:
+        name: "sync_gateway"
+        state: "started"
+        enabled: "true"
+      when: '"yes" in bootstrap_database_add_user'
+
+- name: bootstrap the database (create the schema)
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars_files:
+    - group_vars/wp-prod-node4.yml
+
+  roles:
+    - roles/server-database-bootstrap-schema
+
+- name: bootstrap the database (create the indexes)
+  hosts: vmss_couchbase
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/wp-prod-node4.yml
+
+  roles:
+    - roles/server-database-bootstrap-indexes
