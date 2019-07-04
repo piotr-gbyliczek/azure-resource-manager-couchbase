@@ -43,7 +43,7 @@
   become_method: sudo
 
   vars_files:
-    -  group_vars/wp-prod-node4.yml
+    - group_vars/wp-prod-node4.yml
 
   roles:
     - roles/server-sync-nginx
@@ -56,8 +56,8 @@
   become_method: sudo
 
   vars_files:
-    -  group_vars/wp-prod-node4.yml
-    - group_vars/openid-prod.yml
+    - group_vars/wp-prod-node4.yml
+    - group_vars/openid-sandbox.yml
 
   roles:
     - roles/server-sync-whitespace
