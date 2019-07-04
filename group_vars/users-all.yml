@@ -28,5 +28,5 @@ def_usrs:
 ################################################################################
   - { name: 'robert.taylor',    comment: 'Whitespace user', uid: '3100', gid: '3001', action: 'create', sudo: 1, nopasswd: 1, noexpire: 1, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEA1X/vxN6HGUlP780LVJYNAZxDJqTsU6HduXl+bwZFhQ7D1IU1p4lVOG7h5BgZPH+lU+N2nx3qnCh2VQteKwDl1fqRqbetXRRm8aqNqZt/9oDxBL1jbJLM8BLUjhCJTQB1I6YVHLmxsgvPYomZsNRaG+WmwldTxH7ZvKbUHhQO+SNUfPyENuPMKr0MDjb/ZF3YoUOG0FcWIiplB/YA+8yIITGLDXXX+smju9CGtilCosS4ssplyixlb5cd1/XV2Tg68bApvJ04Qs84bhzLnDyB7oZ9bNGIwwmLAXDQzOVczFzM7MnV1WgOB8kbF6SIOoup3tYVv+bx+jSExU3GlM5PJw== rsa-key-20190416' }
 
-usrs: "{{ def_usrs|default([]) | union(group_usrs|default([])) | union(host_usrs|default([])) }}"
-grps: "{{ def_grps|default([]) | union(group_grps|default([])) | union(host_grps|default([])) }}"
+usrs: "{{ def_usrs|default([]) | union(group_usrs|default([])) | union(host_usrs|default([])) | union(custom_usrs|default([])) }}"
+grps: "{{ def_grps|default([]) | union(group_grps|default([])) | union(host_grps|default([])) | union(custom_grps|default([])) }}"
