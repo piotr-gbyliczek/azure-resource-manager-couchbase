@@ -51,18 +51,18 @@
     msg: "{{ notifiedAt_output }}"
 
 # this should be like running curl -v -u public:public localhost:8092/admincorp/updateSelf -X POST -d {} 
-- name: run "updateSelf" check
-  uri:
-    url: "http://localhost:8092/admincorp/updateSelf"
-    user: "public"
-    password: "public"
-    method: "POST"
-    return_content: "yes"
-    status_code: "200"
-    force_basic_auth: "yes"
-    body_format: "json"
-    body: "{}"
-  register: updateSelf_output
+# - name: run "updateSelf" check
+#   uri:
+#     url: "http://localhost:8092/admincorp/updateSelf"
+#     user: "public"
+#     password: "public"
+#     method: "POST"
+#     return_content: "yes"
+#     status_code: "200"
+#     force_basic_auth: "yes"
+#     body_format: "json"
+#     body: "{}"
+#   register: updateSelf_output
 
 # this should be like running curl -u public:public localhost:8092/shared/corporate
 - name: run "corporate" check
