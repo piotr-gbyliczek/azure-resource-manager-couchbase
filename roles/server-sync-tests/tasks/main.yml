@@ -12,7 +12,7 @@
     return_content: "yes"
     status_code: "200"
     body_format: "json"
-    register: builtAt_output
+  register: builtAt_output
 
 - name: print builtAt_output
   debug:
@@ -28,7 +28,7 @@
     return_content: "yes"
     status_code: "200"
     body_format: "json"
-    register: routedAt_output
+  register: routedAt_output
 
 - name: print routedAt_output
   debug:
@@ -44,7 +44,7 @@
     return_content: "yes"
     status_code: "200"
     body_format: "json"
-    register: notifiedAt_output
+  register: notifiedAt_output
 
 - name: print notifiedAt_output
   debug:
@@ -61,7 +61,7 @@
     status_code: "200"
     body_format: "json"
     body: "{}"
-    register: updateSelf_output
+  register: updateSelf_output
 
 # this should be like running curl -u public:public localhost:8092/shared/corporate
 - name: run "corporate" check
@@ -73,7 +73,7 @@
     return_content: "yes"
     status_code: "200"
     body_format: "json"
-    register: corporate_output
+  register: corporate_output
 
 - name: print corporate_output
   debug:
