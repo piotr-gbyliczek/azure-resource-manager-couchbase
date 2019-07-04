@@ -59,6 +59,7 @@
     method: "POST"
     return_content: "yes"
     status_code: "200"
+    force_basic_auth: "yes"
     body_format: "json"
     body: "{}"
   register: updateSelf_output
