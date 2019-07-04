@@ -16,7 +16,7 @@
 
 - name: print builtAt_output
   debug:
-    msg: "builtAt: {{ builtAt_output.json[0].builtAt }}"
+    msg: "{{ builtAt_output }}"
 
 # this should be like running curl -u public:public localhost:8092/routedAt
 - name: run "routedAt" check
@@ -32,7 +32,7 @@
 
 - name: print routedAt_output
   debug:
-    msg: "routedAt: {{ routedAt_output.json[0].routedAt }}"
+    msg: "{{ routedAt_output }}"
 
 # this should be like running curl -u public:public localhost:8092/notifiedAt
 - name: run "notifiedAt" check
@@ -48,7 +48,7 @@
 
 - name: print notifiedAt_output
   debug:
-    msg: "notifiedAt: {{ notifiedAt_output.json[0].notifiedAt }}"
+    msg: "{{ notifiedAt_output }}"
 
 # this should be like running curl -v -u public:public localhost:8092/admincorp/updateSelf -X POST -d {} 
 - name: run "updateSelf" check
