@@ -7,8 +7,8 @@
     warn: no    
   with_items: "{{ indexes }}"
   run_once: true
-  loop_control:
-    pause: 10
+  # loop_control:
+  #   pause: 10
   when: '"yes" in bootstrap_database_indexes and vmss_couchbase.capacity != "1"'
 
 - name: loop through adding the indexes with no replication
@@ -16,7 +16,7 @@
   args:
     warn: no    
   with_items: "{{ indexes_norep }}"
-  loop_control:
-    pause: 10
+  # loop_control:
+  #   pause: 10
   run_once: true
   when: '"yes" in bootstrap_database_indexes and vmss_couchbase.capacity == "1"'
