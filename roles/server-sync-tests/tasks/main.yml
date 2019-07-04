@@ -5,7 +5,7 @@
 # this should be like running curl -u public:public localhost:8092/builtAt
 - name: run "builtAt" check
   uri:
-    url: "localhost:8092/builtAt"
+    url: "http://localhost:8092/builtAt"
     user: "public"
     password: "public"
     method: "GET"
@@ -21,7 +21,7 @@
 # this should be like running curl -u public:public localhost:8092/routedAt
 - name: run "routedAt" check
   uri:
-    url: "localhost:8092/routedAt"
+    url: "http://localhost:8092/routedAt"
     user: "public"
     password: "public"
     method: "GET"
@@ -37,7 +37,7 @@
 # this should be like running curl -u public:public localhost:8092/notifiedAt
 - name: run "notifiedAt" check
   uri:
-    url: "localhost:8092/notifiedAt"
+    url: "http://localhost:8092/notifiedAt"
     user: "public"
     password: "public"
     method: "GET"
@@ -53,7 +53,7 @@
 # this should be like running curl -v -u public:public localhost:8092/admincorp/updateSelf -X POST -d {} 
 - name: run "updateSelf" check
   uri:
-    url: "localhost:8092/admincorp/updateSelf"
+    url: "http://localhost:8092/admincorp/updateSelf"
     user: "public"
     password: "public"
     method: "POST"
@@ -66,7 +66,7 @@
 # this should be like running curl -u public:public localhost:8092/shared/corporate
 - name: run "corporate" check
   uri:
-    url: "localhost:8092/shared/corporate"
+    url: "http://localhost:8092/shared/corporate"
     user: "public"
     password: "public"
     method: "GET"
