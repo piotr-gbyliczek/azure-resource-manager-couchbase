@@ -116,15 +116,18 @@
 - name: set the local path for the dynamic rules
   set_fact:
     local_path: "./group_vars/dynamic_rules_{{ vmss_syncgateway.name }}_backend_rules.yml"
+  when: '"yes" in configure_application_gateway'
 
 - name: create the dynamic backend rules
   template:
     src: "backend.j2"
     dest: "{{ local_path }}"
+  when: '"yes" in configure_application_gateway'
 
 - name: load dynamic security group rules
   include_vars: "{{ local_path }}"
-  
+  when: '"yes" in configure_application_gateway' 
+
 - name: create a syncgateway application gateway using the public IP above
   azure_rm_appgateway:
     resource_group: "{{ resource_group }}"
