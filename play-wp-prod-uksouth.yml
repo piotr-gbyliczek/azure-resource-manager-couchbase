@@ -13,6 +13,7 @@
   roles:
     - roles/azure-rg
     - roles/azure-virtualnetwork
+    - roles/azure-dnszone
     - roles/azure-storage
     - roles/azure-nsg
     - roles/azure-vmss-couchbase
@@ -28,7 +29,7 @@
   vars_files:
     - group_vars/wp-prod-uksouth.yml
     - group_vars/users-all.yml
-    - group_vars/users-dev.yml
+    - group_vars/users-prod.yml
 
   roles:
     - roles/server-all-stack
@@ -56,7 +57,7 @@
 
   vars_files:
     - group_vars/wp-prod-uksouth.yml
-    - group_vars/openid-dev.yml
+    - group_vars/openid-prod.yml
 
   roles:
     - roles/server-sync-whitespace
