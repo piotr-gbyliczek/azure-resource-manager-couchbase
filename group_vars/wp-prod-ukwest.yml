@@ -12,7 +12,7 @@ configure_dns_zone: "no"
 # Application vars
 
 app:
-  name: "wp-prod-ukwest" # this can contain characters such as -, don't get too creative though
+  name: "wp-prod-ukw" # this can contain characters such as -, don't get too creative though
   shortname: "wpprodukw" # all lower-case, all one word
   env: "prod" # 
   working_folder: "/wsdocker"
