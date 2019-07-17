@@ -6,6 +6,7 @@
     name: "{{ ansible_user_id }}"
     generate_ssh_key: yes
     ssh_key_file: "~/.ssh/id_rsa"
+  when: '"yes" in intital_deploy'
 
 - name: create the VMSS
   azure_rm_virtualmachinescaleset:
@@ -33,6 +34,7 @@
     data_disks: "{{ vmss.disk.data_disks }}"
     upgrade_policy: "{{ vmss.upgrade_policy }}"
     tags: "{{ common_tags }}"
+  when: '"yes" in intital_deploy'
 
 - name: install VMSS extension
   azure_rm_virtualmachinescalesetextension:
@@ -44,3 +46,4 @@
     type_handler_version: "2.0"
     settings: '{"commandToExecute": "hostname"}'
     auto_upgrade_minor_version: true
+  when: '"yes" in intital_deploy'

@@ -7,6 +7,7 @@
     name: "{{ network.name }}"
     address_prefixes: "{{ network.cidr_block }}"
     tags: "{{ common_tags }}"
+  when: '"yes" in intital_deploy'
 
 - name: add the subnets
   azure_rm_subnet:
@@ -15,3 +16,4 @@
     address_prefix: "{{ item.subnet }}"
     virtual_network: "{{ network.name }}"
   with_items: "{{ network.subnets }}"
+  when: '"yes" in intital_deploy'

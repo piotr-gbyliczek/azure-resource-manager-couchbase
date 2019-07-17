@@ -7,6 +7,7 @@
     allocation_method: "{{ loadbalancer.public_ip.allocation_method }}"
     name: "{{ loadbalancer.public_ip.name }}"
     tags: "{{ common_tags }}"
+  when: '"yes" in intital_deploy'
 
 - name: create a load balancer using the public IP above
   azure_rm_loadbalancer:
@@ -41,3 +42,4 @@
         enable_floating_ip: false
     tags: "{{ common_tags }}"
   ignore_errors: True
+  when: '"yes" in intital_deploy'
