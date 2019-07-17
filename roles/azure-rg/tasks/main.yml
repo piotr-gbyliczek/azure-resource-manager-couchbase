@@ -6,4 +6,4 @@
     name: "{{ resource_group }}"
     location: "{{ location }}"
     tags: "{{ common_tags }}"
-  when: '"yes" in intital_deploy'
+  when: '"yes" in initial_deploy'

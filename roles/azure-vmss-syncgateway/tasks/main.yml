@@ -7,7 +7,7 @@
     allocation_method: "Static"
     name: "{{ vmss_syncgateway.name }}-lb-pip"
     tags: "{{ common_tags }}"
-  when: '"yes" in intital_deploy'
+  when: '"yes" in initial_deploy'
 
 - name: create a syncgateway load balancer using the public IP above
   azure_rm_loadbalancer:
@@ -37,14 +37,14 @@
         frontend_port_range_end: "18205"
         backend_port: "18100"
     tags: "{{ common_tags }}"
-  when: '"yes" in intital_deploy'
+  when: '"yes" in initial_deploy'
 
 - name: check the user {{ ansible_user_id }} has a key, if not create one
   user:
     name: "{{ ansible_user_id }}"
     generate_ssh_key: yes
     ssh_key_file: "~/.ssh/id_rsa"
-  when: '"yes" in intital_deploy'
+  when: '"yes" in initial_deploy'
 
 - name: create the syncgateway VMSS
   azure_rm_virtualmachinescaleset:
@@ -71,7 +71,7 @@
     managed_disk_type: "{{ vmss_syncgateway.disk.managed_disk_type }}"
     upgrade_policy: "{{ vmss_syncgateway.upgrade_policy }}"
     tags: "{{ common_tags }}"
-  when: '"yes" in intital_deploy'
+  when: '"yes" in initial_deploy'
 
 - name: install syncgateway VMSS extension
   azure_rm_virtualmachinescalesetextension:
@@ -83,7 +83,7 @@
     type_handler_version: "2.0"
     settings: '{ "fileUris": [ "https://{{ storage.name }}{{ the_hash }}.blob.core.windows.net/{{ storage.container }}/syncGateway.sh", "https://{{ storage.name }}{{ the_hash }}.blob.core.windows.net/{{ storage.container }}/util.sh" ], "commandToExecute": "bash syncGateway.sh {{ sync_gateway.version }}" }'
     auto_upgrade_minor_version: true
-  when: '"yes" in intital_deploy'
+  when: '"yes" in initial_deploy'
 
 - name: create the public IP address needed for the syncgateway application gateway
   azure_rm_publicipaddress:
