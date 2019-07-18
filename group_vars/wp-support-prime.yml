@@ -13,7 +13,7 @@ initial_deploy: "no"
 # Application vars
 
 app:
-  name: "wp-support-prime.yml" # this can contain characters such as -, don't get too creative though
+  name: "wp-support-prime" # this can contain characters such as -, don't get too creative though
   shortname: "wpsupprime" # all lower-case, all one word
   env: "support" # 
   working_folder: "/wsdocker"
