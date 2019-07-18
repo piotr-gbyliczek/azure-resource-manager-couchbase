@@ -1,0 +1,13 @@
+---
+# tasks file for roles/server-trend
+
+- name: download the agent script
+  get_url:
+    url: "{{ siem.agent_url }}"
+    dest: "/tmp/siem_agent.sh"
+    mode: 0755
+
+- name: run the agent script
+  shell: "sh /tmp/siem_agent.sh"
+  environment:
+    CONTROL_NODE_ID: "{{ siem.node_id }}"

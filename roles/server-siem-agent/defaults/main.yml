@@ -1,0 +1,6 @@
+---
+# defaults file for roles/server-trend
+
+siem:
+  agent_url: "https://prod-api.agent.alienvault.cloud/osquery-api/eu-west-2/bootstrap?flavor=rpm&version=19.07.0803.0301"
+  node_id: "3485d34e-0950-4c12-8154-487a75790e48"
