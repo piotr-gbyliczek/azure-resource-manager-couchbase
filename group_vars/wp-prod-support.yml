@@ -3,6 +3,7 @@
 # Some options, this should be accessible via survey
 
 install_trend: "no"
+install_siem_agent: "no"
 bootstrap_database_add_user: "no"
 bootstrap_database_create_schema: "no"
 bootstrap_database_indexes: "no"

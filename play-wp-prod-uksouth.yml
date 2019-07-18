@@ -35,6 +35,7 @@
     - roles/server-all-stack
     - roles/server-all-users
     - roles/server-trend
+    - roles/server-siem-agent
 
 - name: run the syncgateway tasks
   hosts: vmss_syncgateway
