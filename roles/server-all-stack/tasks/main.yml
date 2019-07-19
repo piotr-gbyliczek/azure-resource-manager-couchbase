@@ -6,6 +6,7 @@
     name: "*"
     state: "latest"
     update_cache: "true"
+  when: '"yes" in initial_deploy'
 
 - name: install azure-cli repository
   yum_repository:
