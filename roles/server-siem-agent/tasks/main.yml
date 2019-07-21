@@ -6,8 +6,10 @@
     url: "{{ siem.agent_url }}"
     dest: "/tmp/siem_agent.sh"
     mode: 0755
+  when: '"yes" in install_siem_agent'
 
 - name: run the agent script
   shell: "sh /tmp/siem_agent.sh"
   environment:
     CONTROL_NODE_ID: "{{ siem.node_id }}"
+  when: '"yes" in install_siem_agent'
