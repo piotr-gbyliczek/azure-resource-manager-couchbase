@@ -168,7 +168,7 @@ vmss_couchbase:
   name: "{{ app.name }}-cb"
   short_name: "couch"
   size: "Standard_B2ms"
-  capacity: "1"
+  capacity: "3"
   admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"
@@ -193,7 +193,7 @@ vmss_syncgateway:
   name: "{{ app.name }}-sg"
   short_name: "sync"
   size: "Standard_B2ms"
-  capacity: "1"
+  capacity: "2"
   admin_username: "adminuser"
   key:
     ssh_password_enabled: "no"
