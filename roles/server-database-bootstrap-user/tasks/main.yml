@@ -13,7 +13,6 @@
     cb_server: "https://{{ cb_ip_address.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}:{{ couchbase.admin_port }}"
   when: '"yes" in bootstrap_database_add_user'
 
-
 - name: create the {{ couchbase.bucket }} bucket
   command: >
       curl -k -X POST
