@@ -1,0 +1,13 @@
+---
+
+- name: run the tasks common across all instances
+  hosts: azure_vms
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - group_vars/users-all.yml
+
+  roles:
+    - roles/server-all-users
