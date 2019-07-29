@@ -18,7 +18,7 @@ app:
   shortname: "wpprodpreprod" # all lower-case, all one word
   env: "prod" # 
   working_folder: "/wsdocker"
-  url: "preprod.whitespace.co.uk"
+  url: "prod-preprod.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
 
