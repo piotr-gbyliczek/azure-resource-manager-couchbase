@@ -201,12 +201,12 @@
         protocol: 'https'
         host: 'whitespace.co.uk'
         path: '/api/test'
-        timeout: 30
+        timeout: 60
       - name: "{{ vmss_syncgateway.name }}-hp-2"
         protocol: 'https'
         host: 'whitespace.co.uk'
         path: '/sync/'
-        timeout: 30
+        timeout: 60
     tags: "{{ common_tags }}"
   when: '"yes" in configure_application_gateway'
 
@@ -289,11 +289,11 @@
         protocol: 'https'
         host: 'whitespace.co.uk'
         path: '/api/test'
-        timeout: 30
+        timeout: 60
       - name: "{{ vmss_syncgateway.name }}-hp-2"
         protocol: 'https'
         host: 'whitespace.co.uk'
         path: '/sync/'
-        timeout: 30
+        timeout: 60
     tags: "{{ common_tags }}"
   when: '"yes" in configure_application_gateway'
