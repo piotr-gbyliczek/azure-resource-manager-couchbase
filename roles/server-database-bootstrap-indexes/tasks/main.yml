@@ -2,7 +2,7 @@
 # tasks file for roles/server-database-bootstrap-indexes
 
 - name: loop through adding the indexes
-  command: curl -k -X POST -u {{ couchbase.username }}:{{ couchbase.password }} -d '{{ item }}' http://localhost:8093/query/service
+  command: curl -k -X POST -u {{ couchbase.username }}:{{ couchbase.password }} --data-urlencode '{{ item }}' http://localhost:8093/query/service
   args:
     warn: no    
   with_items: "{{ indexes }}"
@@ -12,7 +12,7 @@
   when: '"yes" in bootstrap_database_indexes and vmss_couchbase.capacity != "1"'
 
 - name: loop through adding the indexes with no replication
-  command: curl -k -X POST -u {{ couchbase.username }}:{{ couchbase.password }} -d '{{ item }}' http://localhost:8093/query/service
+  command: curl -k -X POST -u {{ couchbase.username }}:{{ couchbase.password }} --data-urlencode '{{ item }}' http://localhost:8093/query/service
   args:
     warn: no    
   with_items: "{{ indexes_norep }}"
