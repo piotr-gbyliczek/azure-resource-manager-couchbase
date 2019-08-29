@@ -123,3 +123,12 @@
 
   roles:
     - roles/server-sync-tests
+    
+- name: run some tests to make sure everything is working as expected
+  hosts: vmss_syncgateway
+  gather_facts: true
+  become: yes
+  become_method: sudo
+
+  roles:
+    - roles/server-sync-tests
