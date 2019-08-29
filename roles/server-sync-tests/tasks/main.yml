@@ -75,6 +75,19 @@
     status_code: "200"
     body_format: "json"
   register: corporate_output
+  ignore_errors: true
+
+- name: run "corporate" check
+  uri:
+    url: "http://localhost:8092/shared/corporate"
+    user: "public"
+    password: "public"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+  register: corporate_output
+  ignore_errors: true
 
 - name: print corporate_output
   debug:
