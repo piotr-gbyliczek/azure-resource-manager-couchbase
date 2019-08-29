@@ -64,28 +64,13 @@
     body: "{}"
   register: updateSelf_output
 
-# this should be like running curl -u public:public localhost:8092/notifiedAt
-- name: run "notifiedAt" check
-  uri:
-    url: "http://localhost:8092/notifiedAt"
-    user: "public"
-    password: "public"
-    method: "GET"
-    return_content: "yes"
-    status_code: "200"
-    body_format: "json"
-  register: notifiedAt_output
-
-- name: print notifiedAt_output
-  debug:
-    msg: "{{ notifiedAt_output }}"
-
 # this should be like running curl -u public:public localhost:8092/shared/corporate
 - name: run "corporate" check
   uri:
     url: "http://localhost:8092/shared/corporate"
     user: "public"
     password: "public"
+    force_basic_auth: "yes"
     method: "GET"
     return_content: "yes"
     status_code: "200"
