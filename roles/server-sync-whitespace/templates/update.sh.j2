@@ -6,6 +6,7 @@ function run() {
     docker pull wsinternalcontainerregistry.azurecr.io/pdf-fragment-service:{{ app.env }}
     docker pull wsinternalcontainerregistry.azurecr.io/wsnotif:{{ app.env }}
     docker pull wsinternalcontainerregistry.azurecr.io/doc-router:{{ app.env }}
+    docker pull wsinternalcontainerregistry.azurecr.io/mivapi:{{ app.env }}
 
     cd docker_{{ app.env }}
     {{ docker.compose_path }} up -d --no-deps

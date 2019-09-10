@@ -47,3 +47,16 @@ services:
     ports:
       - "3310:3310"
     restart: always
+  mivapi:
+    image: wsinternalcontainerregistry.azurecr.io/mivapi:{{ app.env }}
+    ports:
+      - "9092:8092"
+    restart: always
+    environment:
+      - ENVCONFIG=api{{ app.env }}
+    extra_hosts:
+      - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+      - "localN1QL0:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+      - "localN1QL1:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+      - "localN1QL2:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+      - "localSG:{{ ansible_default_ipv4.address }}"                            
