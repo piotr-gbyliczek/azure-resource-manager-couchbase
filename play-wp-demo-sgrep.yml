@@ -30,6 +30,7 @@
     - group_vars/wp-demo-sgrep.yml
     - group_vars/users-all.yml
     - group_vars/users-demo.yml
+    - group_vars/users-demo-sgrep.yml
     
 
   roles:

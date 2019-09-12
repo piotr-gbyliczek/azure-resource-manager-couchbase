@@ -1,0 +1,6 @@
+---
+
+custom_usrs:
+# Demo users to create or remove
+################################################################################
+      - { name: 'david.harrison',  comment: 'WP Dev user', uid: '3210', gid: '3001', action: 'create', sudo: 1, nopasswd: 1, noexpire: 1, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmgQuOWcwkyD3PhLX/eO7zLFyEkhuSUPlqqDNK/eYV6lSsqyrRpjk6aSessQRBJI1wgCm8tgBuBxfrcQgazuk4ZnMZOIXbYkQ84QFxcX6D0MKpIARInwH77G4nUuI7V3g5STih5CQd86BMBgN7n7kVY0ecsSc3ZnftBL3JSZVzaXbtfsb/7Cbsv0CV9+r3jF+jIIUwF3F7pdrZaLgJMvwvHhclrk5eLvw6PlZK90y7KdDTHvBS6ohldopJh9gFhrbIXNAa6wYdSNHeNIYSQQfjkwF7+4ApZrNHt0m/AWdySxWHI62GOq09lopA7g/M2zpTh/4fLqsx4p3mymAGK3qx davidh@Davids-MacBook-Pro.local' }     
