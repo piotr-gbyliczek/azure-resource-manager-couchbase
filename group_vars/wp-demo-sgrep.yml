@@ -18,7 +18,7 @@ app:
   shortname: "wpdemosgrep" # all lower-case, all one word
   env: "demo" # 
   working_folder: "/wsdocker"
-  url: "demosgrep.whitespace.co.uk"
+  url: "demo-sgrep.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
