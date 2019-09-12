@@ -6,7 +6,7 @@
   gather_facts: true
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
+    - group_vars/wp-demo-sgrep.yml
     - group_vars/cert-whitespace.yml
     - group_vars/cert-selfsigned.yml
 
@@ -27,10 +27,9 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
+    - group_vars/wp-demo-sgrep.yml
     - group_vars/users-all.yml
-    - group_vars/users-sandbox-staging.yml
-    - group_vars/users-sandbox.yml
+    - group_vars/users-demo.yml
     
 
   roles:
@@ -45,7 +44,7 @@
   become_method: sudo
 
   vars_files:
-    -  group_vars/wp-sandbox-staging2.yml
+    -  group_vars/wp-demo-sgrep.yml
 
   roles:
     - roles/server-sync-nginx
@@ -58,8 +57,8 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
-    - group_vars/openid-sandbox.yml
+    - group_vars/wp-demo-sgrep.yml
+    - group_vars/openid-demo.yml
 
   roles:
     - roles/server-sync-whitespace
@@ -70,7 +69,7 @@
   gather_facts: true
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
+    - group_vars/wp-demo-sgrep.yml
 
   roles:
     - roles/server-database-bootstrap-user
@@ -82,7 +81,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
+    - group_vars/wp-demo-sgrep.yml
 
   tasks:
     - name: restart sync_gateway
@@ -98,7 +97,7 @@
   gather_facts: true
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
+    - group_vars/wp-demo-sgrep.yml
 
   roles:
     - roles/server-database-bootstrap-schema
@@ -110,7 +109,7 @@
   become_method: sudo
 
   vars_files:
-    - group_vars/wp-sandbox-staging2.yml
+    - group_vars/wp-demo-sgrep.yml
 
   roles:
     - roles/server-database-bootstrap-indexes

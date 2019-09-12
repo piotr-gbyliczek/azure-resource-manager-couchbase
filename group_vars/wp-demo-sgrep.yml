@@ -14,14 +14,13 @@ initial_deploy: "no"
 # Application vars
 
 app:
-  name: "wp-support-prime" # this can contain characters such as -, don't get too creative though
-  shortname: "wpsupprime" # all lower-case, all one word
-  env: "support" # 
+  name: "wp-demo-sgrep" # this can contain characters such as -, don't get too creative though
+  shortname: "wpdemosgrep" # all lower-case, all one word
+  env: "demo" # 
   working_folder: "/wsdocker"
-  url: "support-prod.whitespace.co.uk"
+  url: "demosgrep.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
-
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
 the_hash: "{{ raw_hash[:5] }}" # lets shorten it down
 
@@ -42,11 +41,11 @@ couchbase:
           3236653637346162350a633136326539626238333032653931353366393033623934363962343434
           30336233373230383236366233396239636166386233653934383338303763613636
   services: "data,index,query,fts,eventing" # these are used to enable services
-  bucket: "supportbucket" # name of the bucket to create and use
+  bucket: "demobucket" # name of the bucket to create and use
   admin_port: "18100"
   additional_users:
     - { username: '{{ sync_gateway.user }}', password: '{{ sync_gateway.password }}' }
-    - { username: 'n1qluser', password: 'trinidadBALLfree17' }
+    - { username: 'n1qluser', password: 'barbadosBORNlook24' }
 
 couchbase_bootstrap:
   rbac_roles: 'bucket_admin[{{couchbase.bucket}}],bucket_full_access[{{couchbase.bucket}}],views_admin[{{couchbase.bucket}}],views_reader[{{couchbase.bucket}}],data_reader[{{couchbase.bucket}}],data_writer[{{couchbase.bucket}}],data_dcp_reader[{{couchbase.bucket}}],data_backup[{{couchbase.bucket}}],data_monitoring[{{couchbase.bucket}}],fts_admin[{{couchbase.bucket}}],fts_searcher[{{couchbase.bucket}}],query_select[{{couchbase.bucket}}],query_update[{{couchbase.bucket}}],query_insert[{{couchbase.bucket}}],query_delete[{{couchbase.bucket}}],query_manage_index[{{couchbase.bucket}}],replication_target[{{couchbase.bucket}}],analytics_manager[{{couchbase.bucket}}]'
@@ -132,10 +131,11 @@ location: "uksouth"
 common_tags:
   "Name": "{{ app.name }}"
   "Application": "{{  app.name }}"
-  "Environment": "support"
-  "Costcenter": "support"
+  "Environment": "demo"
+  "Costcenter": "demo"
   "Division": "whitespace platform"
   "Consumer": "robert.taylor@whitespace.co.uk"
+  "Owner": "marcus.broome@whitespace.co.uk"
 
 # Environmentment Details
 ##################################################
@@ -143,10 +143,10 @@ common_tags:
 # virtual network
 network:
   name: "{{ app.name }}-vnet"
-  cidr_block: "10.91.0.0/23"
+  cidr_block: "10.36.0.0/20"
   subnets:
-    - { name: 'app-sub',    subnet: '10.91.0.0/24' }
-    - { name: 'appgw-sub',   subnet: '10.91.1.0/24' }
+    - { name: 'app-sub',    subnet: '10.36.0.0/24' }
+    - { name: 'appgw-sub',   subnet: '10.36.1.0/24' }
 
 trusted_ips:
   - "{{ your_public_ip }}/32"  # The IP address of whomever is running Ansible

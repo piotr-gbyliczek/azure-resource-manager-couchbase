@@ -80,6 +80,7 @@ containers:
   - "{{ docker.registry_url }}/pdf-fragment-service:{{ app.env }}"
   - "{{ docker.registry_url }}/wsnotif:{{ app.env }}"
   - "{{ docker.registry_url }}/doc-router:{{ app.env }}"
+  - "{{ docker.registry_url }}/mivapi:{{ app.env }}"
   - "mkodockx/docker-clamav:latest"
 
 docker:
