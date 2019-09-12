@@ -53,6 +53,23 @@
   debug:
     msg: "{{ notifiedAt_output }}"
 
+# this should be like running curl -u public:public http://localhost:9092/version 
+- name: run "MiiVapi version" check
+  uri:
+    url: "http://localhost:9092/version"
+    user: "public"
+    password: "public"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+  register: miivapiVersion_output
+  ignore_errors: true
+
+- name: print miivapiVersion_output
+  debug:
+    msg: "{{ miivapiVersion_output }}"  
+
 # this should be like running curl -v -u public:public localhost:8092/admincorp/updateSelf -X POST -d {} 
 - name: run "updateSelf" check
   uri:
