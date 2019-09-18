@@ -11,6 +11,7 @@
   yum:
     name: "{{ docker_packages }}"
     state: "present"
+    lock_timeout: "500"
 
 - name: add docker user to docker group
   user:

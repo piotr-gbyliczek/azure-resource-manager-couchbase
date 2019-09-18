@@ -6,7 +6,16 @@
     name: "*"
     state: "latest"
     update_cache: "true"
+    lock_timeout: "500"
   when: '"yes" in initial_deploy'
+
+- name: update all packages
+  yum:
+    name: "*"
+    state: "latest"
+    update_cache: "true"
+    lock_timeout: "500"
+  when: '"yes" in run_update'
 
 - name: install azure-cli repository
   yum_repository:
@@ -23,6 +32,7 @@
     name: "{{ stack_packages }}"
     state: "present"
     update_cache: "true"
+    lock_timeout: "500"
 
 - name: put SELinux in permissive mode, logging actions that would be blocked
   selinux:

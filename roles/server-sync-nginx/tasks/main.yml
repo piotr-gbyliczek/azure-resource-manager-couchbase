@@ -25,6 +25,7 @@
   yum:
     name: "{{ nginx_packages }}"
     state: "present"
+    lock_timeout: "500"
 
 - name: create nginx ssl directory
   file:
