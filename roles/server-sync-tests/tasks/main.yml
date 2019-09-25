@@ -103,3 +103,22 @@
   debug:
     msg: "{{ corporate_output }}"
     
+
+# this should be like running curl -u localhost:8092/sdctable/reload
+# Ths should output a number
+- name: run "reload sdc tables" check
+  uri:
+    url: "http://localhost:8092/sdctable/reload"
+    user: "public"
+    password: "public"
+    force_basic_auth: "yes"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+  register: reloadsdctables
+  ignore_errors: true
+
+- name: print reloadsdctables
+  debug:
+    msg: "{{ reloadsdctables }}"
