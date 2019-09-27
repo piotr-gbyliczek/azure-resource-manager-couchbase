@@ -122,3 +122,57 @@
 - name: print reloadsdctables
   debug:
     msg: "{{ reloadsdctables }}"
+
+# this should be like running curl -u curl  http://localhost:4985/prodbucket/AppValidity
+- name: run "appValidity" check
+  uri:
+    url: "http://localhost:4985/prodbucket/AppValidity"
+    user: "public"
+    password: "public"
+    force_basic_auth: "yes"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+  register: appValidity
+  ignore_errors: true
+
+- name: print appValidity
+  debug:
+    msg: "{{ appValidity }}"
+
+  # this should be like running curl -u curl   curl -k http://localhost:4985/prodbucket/BrowserValidity
+- name: run "browserValidity" check
+  uri:
+    url: "curl -k http://localhost:4985/prodbucket/BrowserValidity"
+    user: "public"
+    password: "public"
+    force_basic_auth: "yes"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+  register: browserValidity
+  ignore_errors: true
+
+- name: print browserValidity
+  debug:
+    msg: "{{ browserValidity }}"
+
+# this should be like running curl -u curl   curl -k curl -k https://localhost/assets/commit.txt
+- name: run "Browser Validity rebrowse version" check
+  uri:
+    url: "curl -k https://localhost/assets/commit.txt"
+    user: "public"
+    password: "public"
+    force_basic_auth: "yes"
+    method: "GET"
+    return_content: "yes"
+    status_code: "200"
+    body_format: "json"
+  register: browserValidityRebrowse
+  ignore_errors: true
+
+- name: print browserValidityRebrowse
+  debug:
+    msg: "{{ browserValidityRebrowse }}"
