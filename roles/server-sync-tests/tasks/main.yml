@@ -170,6 +170,7 @@
     return_content: "yes"
     status_code: "200"
     body_format: "json"
+    validate_certs: no
   register: browserValidityRebrowse
   ignore_errors: true
 
