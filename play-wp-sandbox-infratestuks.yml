@@ -119,6 +119,9 @@
   gather_facts: true
   become: yes
   become_method: sudo
-
+  
+  vars_files:
+    - group_vars/wp-sandbox-infratestuks.yml
+  
   roles:
     - roles/server-sync-tests

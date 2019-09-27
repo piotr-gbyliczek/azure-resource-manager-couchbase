@@ -120,5 +120,8 @@
   become: yes
   become_method: sudo
 
+  vars_files:
+    - group_vars/wp-prod-uksouth.yml
+    
   roles:
     - roles/server-sync-tests
