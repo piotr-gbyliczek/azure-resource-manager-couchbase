@@ -126,7 +126,7 @@
 # this should be like running curl -u curl  http://localhost:4985/prodbucket/AppValidity
 - name: run "appValidity" check
   uri:
-    url: "http://localhost:4985/prodbucket/AppValidity"
+    url: "http://localhost:4985/{{ couchbase.bucket }}/AppValidity"
     user: "public"
     password: "public"
     force_basic_auth: "yes"
@@ -144,7 +144,7 @@
   # this should be like running curl -u curl   curl -k http://localhost:4985/prodbucket/BrowserValidity
 - name: run "browserValidity" check
   uri:
-    url: "curl -k http://localhost:4985/prodbucket/BrowserValidity"
+    url: "http://localhost:4985/{{ couchbase.bucket }}/BrowserValidity"
     user: "public"
     password: "public"
     force_basic_auth: "yes"
@@ -162,7 +162,7 @@
 # this should be like running curl -u curl   curl -k curl -k https://localhost/assets/commit.txt
 - name: run "Browser Validity rebrowse version" check
   uri:
-    url: "curl -k https://localhost/assets/commit.txt"
+    url: "https://localhost/assets/commit.txt"
     user: "public"
     password: "public"
     force_basic_auth: "yes"
