@@ -49,10 +49,12 @@ services:
     - "localSG:{{ ansible_default_ipv4.address }}"
   doc-router:
     image: wsinternalcontainerregistry.azurecr.io/doc-router:{{ app.env }}
-    restart: always
-    extra_hosts:
-      - "localSG:{{ ansible_default_ipv4.address }}"
-      - "localN1QL:{{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}"
+    restart: always    
+    environment:     
+      - localSG={{ ansible_default_ipv4.address }}
+      - localN1QL={{ hostvars[groups['vmss_couchbase'][0]]["ansible_eth0"]["ipv4"]["address"] }}
+      - BUCKET={{ couchbase.bucket }}
+
   clamav:
     image: mkodockx/docker-clamav:latest
     ports:
