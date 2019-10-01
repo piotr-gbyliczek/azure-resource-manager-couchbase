@@ -6,8 +6,9 @@
 <h3>{{ ansible_hostname }} ({{ location }}) <br>AzureCluster:({{ app.name }}) AG URL:({{ app.url }}) ({{ app.env }})<br> 
 {{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-sg <br>
 {{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-cb <br>
-CBAd 18100 <br>
-SGAd 18200 <br>
+CBAd :18100 <br>
+SGAd :18200/cbadmin/ <br>
+SH   :2220
 </h3>
 </body>
 </html>
