@@ -106,12 +106,12 @@ indexes_norep:
   - 'statement=CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt)'
   - 'statement=CREATE INDEX idx_type ON {{ couchbase.bucket }} (type, meta().id )'
   - 'statement=CREATE INDEX idx_parentdocid ON {{ couchbase.bucket }} ( parentDocID ) WHERE not meta().id like "_sync:%"'
-  - 'statement=CREATE INDEX idx_rwplacing ON {{ couchbase.bucket }} (`type`, distinct array c for c in channels end,`channels`,`_sync`.`rev`,`createdAt`,`updatedAt`,(`control`.`insuredName`),(`control`.`status`),(`control`.`umr`), (`control`.`limitSummary`),(`control`.`contractType`),(`control`.`leadUnderwriterChannel`),(`control`.`placingBrokerChannel`),`provenance`,`user`,`proposedEndorsementFollowers`) WHERE `type` = "RWPlacing" and not meta().`id` like "_sync:%"'
+  - 'statement=CREATE INDEX idx_rwplacing ON {{ couchbase.bucket }} (`type`,distinct array c for c in channels end,`channels`,`_sync`.`rev`,`createdAt`,`updatedAt`,(`control`.`insuredName`),(`control`.`status`),(`control`.`umr`),(`control`.`limitSummary`),(`control`.`contractType`),(`control`.`leadUnderwriterChannel`),(`control`.`placingBrokerChannel`),(`control`.`isFacility`),(`control`.`associatedFacilityIDs`),`provenance`,`user`,`proposedEndorsementFollowers`) WHERE `type` = RWPlacing" and not meta().`id` like "_sync:%"'
 
 indexes:
   - 'statement=CREATE INDEX idx_base ON {{ couchbase.bucket }} ( type, distinct array c for c in channels end, channels, createdAt, _sync.rev, updatedAt) WITH { "num_replica":1 }'
   - 'statement=CREATE INDEX idx_parentdocid ON {{ couchbase.bucket }} ( parentDocID ) WHERE not meta().id like "_sync:%" WITH { "num_replica":1 }'
-  - 'statement=CREATE INDEX idx_rwplacing ON {{ couchbase.bucket }} (`type`, distinct array c for c in channels end,`channels`,`_sync`.`rev`,`createdAt`,`updatedAt`,(`control`.`insuredName`),(`control`.`status`),(`control`.`umr`), (`control`.`limitSummary`),(`control`.`contractType`),(`control`.`leadUnderwriterChannel`),(`control`.`placingBrokerChannel`),`provenance`,`user`,`proposedEndorsementFollowers`) WHERE `type` = "RWPlacing" and not meta().`id` like "_sync:%" WITH { "num_replica":1 }'
+  - 'statement=CREATE INDEX idx_rwplacing ON {{ couchbase.bucket }} (`type`,distinct array c for c in channels end,`channels`,`_sync`.`rev`,`createdAt`,`updatedAt`,(`control`.`insuredName`),(`control`.`status`),(`control`.`umr`),(`control`.`limitSummary`),(`control`.`contractType`),(`control`.`leadUnderwriterChannel`),(`control`.`placingBrokerChannel`),(`control`.`isFacility`),(`control`.`associatedFacilityIDs`),`provenance`,`user`,`proposedEndorsementFollowers`) WHERE `type` = RWPlacing" and not meta().`id` like "_sync:%" WITH { "num_replica":1 }'
   - 'statement=CREATE INDEX idx_type ON {{ couchbase.bucket }} (type, meta().id ) WITH {"num_replica": 1}'
 
 nginx:
