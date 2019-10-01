@@ -4,8 +4,10 @@
 <title>{{ ansible_hostname }} ({{ location }})</title>
 <body>
 <h1>{{ ansible_hostname }} ({{ location }}) <br>AzureCluster:({{ app.name }}) AG URL:({{ app.url }}) ({{ app.env }}) </h1>
-{{ app.name | regex_replace('^wp','\\1') }}
-SGAd:18100
-CBAd:18200
+<pre>
+{{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}
+SGAd 18100
+CBAd 18200
+</pre>
 </body>
 </html>
