@@ -136,7 +136,7 @@ common_tags:
   "Costcenter": "test"
   "Division": "whitespace platform"
   "Consumer": "robert.taylor@whitespace.co.uk"
-  "Owner" :"jonathan.clarke@whitespace.co.uk"
+  "Owner": "jonathan.clarke@whitespace.co.uk"
 
 # Environmentment Details
 ##################################################
