@@ -57,7 +57,7 @@
 
   vars_files:
     - group_vars/wp-test-prime.yml
-    - group_vars/openid-dev.yml
+    - group_vars/openid-test.yml
 
   roles:
     - roles/server-sync-whitespace
