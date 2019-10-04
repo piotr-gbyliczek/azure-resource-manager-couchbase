@@ -19,7 +19,7 @@ app:
   shortname: "wpsandboxstaging2" # all lower-case, all one word
   env: "sandbox" # 
   working_folder: "/wsdocker"
-  url: "staging2.whitespace.co.uk"
+  url: "staging.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
