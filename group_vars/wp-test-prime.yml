@@ -19,7 +19,7 @@ app:
   shortname: "wptestprime02oct" # all lower-case, all one word
   env: "test" # 
   working_folder: "/wsdocker"
-  url: "test-prime02oct.whitespace.co.uk"
+  url: "tess.whitespace.co.uk"
 
 dnszone: "{{ app.name }}-{{ location }}.internal"
 raw_hash: "{{ app.name | hash('sha1') }}" # this creates a hash based on the name of the application
