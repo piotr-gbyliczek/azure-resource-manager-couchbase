@@ -104,7 +104,7 @@
     msg: "{{ corporate_output }}"
     
 
-# this should be like running curl -u localhost:8092/sdctable/reload
+# this should be like running curl -u public:public localhost:8092/sdctable/reload
 # Ths should output a number
 - name: run "reload sdc tables" check
   uri:
