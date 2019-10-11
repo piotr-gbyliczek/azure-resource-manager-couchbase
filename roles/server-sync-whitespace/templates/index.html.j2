@@ -4,11 +4,13 @@
 <title>{{ ansible_hostname }} ({{ location }})</title>
 <body>
 <h3>{{ ansible_hostname }} ({{ location }}) <br>AzureCluster:({{ app.name }}) AG URL:({{ app.url }}) BUILD:({{ app.env }})<br> 
-SG   : {{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-sg.whitespace.co.uk<br>
-CB   : {{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-cb.whitespace.co.uk<br>
-CBAd : https://{{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-cb.whitespace.co.uk:18100 <br>
-SGAd : 18200/cbadmin/ <br>
-SH   : 2220
+<table>
+<tr><td>SG   </td><td>: {{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-sg.whitespace.co.uk</td></tr>
+<tr><td>CB   </td><td>: {{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-cb.whitespace.co.uk</td></tr>
+<tr><td>CBAd </td><td>: https://{{ app.name|replace("wp-","")|replace("sandbox-","sb-") }}-cb.whitespace.co.uk:18100</td></tr>
+<tr><td>SGAd </td><td>: 18200/cbadmin/ </td></tr>
+<tr><td>SH   </td><td>: 2220 </td></tr>
+</table>
 </h3>
 </body>
 </html>
