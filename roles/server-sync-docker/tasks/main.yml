@@ -16,6 +16,7 @@
 - name: add docker user to docker group
   user:
     name: "{{ docker.user }}"
+    uid: "{{ docker.uid }}"
     groups: "docker"
     append: "yes"
   notify: "restart docker"

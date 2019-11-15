@@ -9,3 +9,7 @@ docker_packages:
     - "docker-ce"
     - "python-docker-py"
     - "python2-pip"
+
+docker:
+  user: "admin-user"
+  uid: 3199
