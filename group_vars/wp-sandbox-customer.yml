@@ -15,8 +15,8 @@ run_update: "no"
 # Application vars
 
 app:
-  name: "wp-sandbox-customer" # this can contain characters such as -, don't get too creative though
-  shortname: "wpsandbox" # all lower-case, all one word
+  name: "wp-sandbox-customer08nov" # this can contain characters such as -, don't get too creative though
+  shortname: "wpsandbox08nov" # all lower-case, all one word
   env: "sandbox" # 
   working_folder: "/wsdocker"
   url: "sandbox.whitespace.co.uk"
@@ -169,7 +169,7 @@ storage:
 vmss_couchbase:
   name: "{{ app.name }}-cb"
   short_name: "couch"
-  size: "Standard_B2ms"
+  size: "Standard_D4s_v3"
   capacity: "3"
   admin_username: "adminuser"
   key:
@@ -194,7 +194,7 @@ vmss_couchbase:
 vmss_syncgateway:
   name: "{{ app.name }}-sg"
   short_name: "sync"
-  size: "Standard_B2ms"
+  size: "Standard_B4ms"
   capacity: "2"
   admin_username: "adminuser"
   key:
